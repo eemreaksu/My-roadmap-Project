@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotik Mühendisliği 0→Pro Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@400;600;700;900&family=Chivo:ital,wght@0,300;0,400;0,700;1,400&family=Chivo+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #0a0804;
+  --bg2:   #110f07;
+  --bg3:   #1a1709;
+  --bg4:   #231f0c;
+  --panel: rgba(255,255,255,.025);
+  --glass: rgba(255,255,255,.05);
+
+  --ink:   #f5f0e0;
+  --ink2:  #c0b888;
+  --ink3:  #7a7040;
+
+  --or:  #ff6b00;   /* orange        */
+  --or2: #ff9233;   /* light orange  */
+  --or3: rgba(255,107,0,.1);
+  --yw:  #ffd200;   /* yellow        */
+  --yw2: rgba(255,210,0,.08);
+  --cy:  #00d4ff;   /* cyan          */
+  --gn:  #39e07b;   /* green         */
+  --rd:  #ff3333;   /* red           */
+  --sl:  #8899aa;   /* slate         */
+
+  --bord:  rgba(255,107,0,.2);
+  --bord2: rgba(255,107,0,.08);
+  --bord3: rgba(255,210,0,.18);
+
+  --fh: 'Big Shoulders Display', sans-serif;
+  --fb: 'Chivo', sans-serif;
+  --fm: 'Chivo Mono', monospace;
+  --r: 2px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur {position:fixed;width:12px;height:12px;background:var(--or);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);clip-path:polygon(50% 0%,100% 100%,0% 100%);transition:width .12s,height .12s;}
+#cur2{position:fixed;width:30px;height:30px;border:1.5px solid rgba(255,107,0,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);transition:width .2s,height .2s;}
+
+/* ── HEX GRID BG ── */
+#hex-canvas{position:fixed;inset:0;z-index:0;opacity:.18;}
+
+/* ── GRID LINES ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,107,0,.04) 0, rgba(255,107,0,.04) 1px, transparent 1px, transparent 80px),
+    repeating-linear-gradient(0deg,  rgba(255,107,0,.04) 0, rgba(255,107,0,.04) 1px, transparent 1px, transparent 80px);
+}
+
+/* ── WARNING TAPE TOP ── */
+.warn-tape{
+  height:6px;
+  background:repeating-linear-gradient(
+    90deg,
+    var(--yw) 0, var(--yw) 20px,
+    var(--bg) 20px, var(--bg) 40px
+  );
+  position:sticky;top:0;z-index:100;
+}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{padding:56px 0 44px;border-bottom:2px solid var(--bord);position:relative;}
+.hero::before{
+  content:'ROBOTİK';
+  position:absolute;right:-10px;top:20px;
+  font-family:var(--fh);font-size:10rem;font-weight:900;
+  color:rgba(255,107,0,.04);line-height:1;pointer-events:none;
+  white-space:nowrap;
+}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fm);font-size:.62rem;letter-spacing:.25em;
+  color:var(--or);margin-bottom:18px;animation:up .5s ease both;
+}
+.hero-tag::before{content:'▶';font-size:.5rem;}
+
+.hero-layout{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;}
+
+.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(4rem,11vw,9.5rem);
+  font-weight:900;line-height:.86;
+  letter-spacing:-.02em;
+  animation:up .5s .07s ease both;
+}
+.hero-h .l1{display:block;color:var(--ink);}
+.hero-h .l2{display:block;color:var(--or);text-shadow:0 0 40px rgba(255,107,0,.4);}
+.hero-h .l3{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(245,240,224,.15);}
+
+.hero-right{
+  display:grid;grid-template-rows:repeat(3,auto);
+  border:1px solid var(--bord);flex-shrink:0;
+  background:var(--bg2);
+  animation:up .5s .14s ease both;
+  position:relative;overflow:hidden;
+}
+.hero-right::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--or),var(--yw),var(--or));}
+.hstat{padding:12px 20px;border-bottom:1px solid var(--bord);text-align:center;}
+.hstat:last-child{border-bottom:none;}
+.hstat-n{font-family:var(--fh);font-size:2.4rem;font-weight:700;color:var(--or);line-height:1;}
+.hstat-l{font-family:var(--fm);font-size:.5rem;letter-spacing:.15em;color:var(--ink3);margin-top:3px;}
+
+.hero-desc{margin-top:20px;font-size:.9rem;color:var(--ink2);max-width:560px;line-height:1.75;animation:up .5s .21s ease both;}
+.hero-desc strong{color:var(--ink);}
+
+/* ══════════ DANGER STAT ══════════ */
+.danger-strip{
+  display:grid;grid-template-columns:auto 1fr;
+  border:1px solid var(--bord);border-top:none;background:var(--bg2);
+  animation:up .5s .26s ease both;
+}
+.ds-icon{
+  padding:14px 20px;border-right:1px solid var(--bord);
+  font-family:var(--fh);font-size:1.2rem;color:var(--rd);
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+  letter-spacing:.05em;
+}
+.ds-stats{display:flex;}
+.ds-item{flex:1;padding:10px 14px;border-right:1px solid var(--bord);display:flex;align-items:center;gap:10px;transition:background .2s;}
+.ds-item:last-child{border-right:none;}
+.ds-item:hover{background:var(--or3);}
+.ds-n{font-family:var(--fh);font-size:2rem;font-weight:700;flex-shrink:0;line-height:1;}
+.ds-t{font-size:.75rem;line-height:1.35;color:var(--ink2);}
+.ds-t strong{color:var(--ink);display:block;}
+
+/* ══════════ PHASE STRIP ══════════ */
+.phases{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  border:1px solid var(--bord);border-top:none;
+  animation:up .5s .3s ease both;
+}
+.ph{
+  padding:12px 6px;border-right:1px solid var(--bord);
+  cursor:pointer;text-align:center;position:relative;overflow:hidden;
+  transition:background .2s;
+}
+.ph:last-child{border-right:none;}
+.ph::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--pc,var(--or));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.ph:hover{background:var(--or3);}
+.ph:hover::after{transform:scaleX(1);}
+.ph-n{font-family:var(--fh);font-size:1.6rem;font-weight:700;color:rgba(255,255,255,.07);line-height:1;transition:color .2s;}
+.ph:hover .ph-n{color:var(--pc,var(--or));}
+.ph-lbl{font-family:var(--fm);font-size:.48rem;letter-spacing:.1em;color:var(--ink3);margin-top:3px;}
+.ph-time{font-family:var(--fh);font-size:.7rem;color:var(--or);margin-top:2px;font-weight:600;}
+
+/* ══════════ MAIN ══════════ */
+.main{display:grid;grid-template-columns:1fr 290px;gap:0;border:1px solid var(--bord);border-top:none;}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:1px solid var(--bord);}
+.sec{border-bottom:1px solid var(--bord);opacity:0;transform:translateX(-8px);transition:opacity .5s,transform .5s;}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{display:grid;grid-template-columns:60px 1fr auto;cursor:pointer;transition:background .2s;align-items:start;}
+.sec-hd:hover{background:var(--or3);}
+.sec-hd.open{background:var(--bg3);}
+
+.sec-nc{padding:17px 0 0 16px;display:flex;flex-direction:column;gap:4px;}
+.sec-num{font-family:var(--fh);font-size:2rem;font-weight:700;color:rgba(255,255,255,.07);line-height:1;transition:color .2s;}
+.sec-hd.open .sec-num,.sec-hd:hover .sec-num{color:var(--sc,var(--or));}
+.sec-tick{width:20px;height:2px;background:var(--sc,var(--or));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.sec-hd.open .sec-tick,.sec-hd:hover .sec-tick{transform:scaleX(1);}
+
+.sec-info{padding:17px 11px;}
+.sec-time{display:inline-block;font-family:var(--fm);font-size:.54rem;padding:2px 8px;background:var(--sc,var(--or));color:var(--bg);letter-spacing:.1em;margin-bottom:5px;font-weight:700;}
+.sec-lv{font-family:var(--fm);font-size:.52rem;letter-spacing:.2em;color:var(--sc,var(--or));margin-bottom:4px;}
+.sec-title{font-family:var(--fh);font-size:1.15rem;font-weight:700;line-height:1.15;letter-spacing:.02em;}
+.sec-sub{font-family:var(--fm);font-size:.61rem;color:var(--ink3);margin-top:3px;line-height:1.4;}
+.sec-arr{padding:17px 13px 0 0;font-size:.58rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--or));}
+
+.sec-body{display:none;border-top:1px solid var(--bord);}
+.sec-body.open{display:block;animation:bIn .25s ease;}
+@keyframes bIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.sec-in{padding:20px 20px 24px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.chip{font-family:var(--fm);font-size:.6rem;padding:3px 9px;border:1px solid var(--bord);color:var(--ink3);background:var(--panel);transition:all .18s;cursor:default;}
+.chip:hover{background:var(--or);color:var(--bg);border-color:var(--or);}
+
+/* ── CODE ── */
+.code{
+  background:rgba(0,0,0,.7);border:1px solid rgba(255,107,0,.12);
+  border-left:3px solid var(--sc,var(--or));
+  font-family:var(--fm);font-size:.71rem;line-height:1.82;
+  padding:13px 16px;margin:11px 0;overflow-x:auto;position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:5px;right:9px;font-size:.5rem;letter-spacing:.12em;color:var(--ink3);}
+.kw{color:#93c5fd;} .fn{color:#86efac;} .str{color:#fde68a;}
+.cm{color:#3d3010;font-style:italic;} .op{color:var(--or2);}
+.num{color:#fdba74;} .cls{color:#c4b5fd;} .hi2{color:var(--cy);}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0;}
+
+.card{
+  padding:11px 12px;border:1px solid var(--bord);background:var(--panel);
+  transition:all .2s;border-left:3px solid var(--sc,var(--or));position:relative;overflow:hidden;
+}
+.card:hover{border-color:var(--sc,var(--or));background:var(--or3);transform:translateY(-2px);}
+.card-t{font-family:var(--fm);font-size:.7rem;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.card-d{font-size:.69rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{padding:10px 13px;margin:10px 0;font-size:.78rem;line-height:1.65;color:var(--ink2);border-left:3px solid var(--nc,var(--or));background:var(--or3);}
+.note strong{color:var(--nc,var(--or2));}
+.note.yw{--nc:var(--yw);background:var(--yw2);}
+.note.cy{--nc:var(--cy);background:rgba(0,212,255,.05);}
+.note.gn{--nc:var(--gn);background:rgba(57,224,123,.05);}
+.note.rd{--nc:var(--rd);background:rgba(255,51,51,.06);}
+
+/* ── TARGET ── */
+.target{display:flex;align-items:center;gap:9px;padding:8px 12px;border:1px solid var(--bord);border-left:3px solid var(--sc,var(--or));font-family:var(--fm);font-size:.67rem;margin-top:11px;color:var(--ink3);}
+.target::before{content:'▶';color:var(--sc,var(--or));flex-shrink:0;font-size:.5rem;}
+
+/* ── PROJ BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pb{display:flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--bord);background:var(--panel);font-size:.73rem;font-weight:600;transition:all .18s;cursor:default;}
+.pb:hover{background:var(--or);color:var(--bg);border-color:var(--or);}
+
+/* ── TECH TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.71rem;margin:10px 0;}
+.tbl th{background:var(--bg4);padding:7px 10px;text-align:left;font-family:var(--fm);font-size:.55rem;letter-spacing:.14em;color:var(--ink3);border-bottom:1px solid var(--bord);}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--bord2);color:var(--ink2);}
+.tbl tr:hover td{background:var(--or3);}
+.hi{color:var(--or2);font-family:var(--fm);}
+.hi2{color:var(--cy);font-family:var(--fm);}
+.hi3{color:var(--gn);font-family:var(--fm);}
+
+/* ── KINEMATIC VISUAL ── */
+.kin-flow{display:flex;align-items:center;gap:0;margin:11px 0;overflow-x:auto;padding:12px 0;}
+.kf-step{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;}
+.kf-box{
+  width:70px;height:44px;border:1px solid var(--bord);background:var(--panel);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:.6rem;text-align:center;color:var(--or2);
+  transition:all .2s;cursor:default;
+}
+.kf-box:hover{background:var(--or3);border-color:var(--or);}
+.kf-lbl{font-family:var(--fm);font-size:.5rem;color:var(--ink3);letter-spacing:.1em;}
+.kf-arrow{font-size:1.2rem;color:var(--or);flex-shrink:0;padding:0 6px;margin-top:-16px;}
+
+/* ── SENSOR GRID ── */
+.sensor-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:11px 0;}
+.sensor{padding:10px;border:1px solid var(--bord);background:var(--panel);text-align:center;transition:all .2s;}
+.sensor:hover{background:var(--or3);border-color:var(--or);}
+.sensor-icon{font-size:1.4rem;margin-bottom:4px;}
+.sensor-name{font-family:var(--fm);font-size:.62rem;font-weight:500;color:var(--ink);}
+.sensor-desc{font-size:.62rem;color:var(--ink3);margin-top:2px;}
+
+/* ──────── SIDEBAR ──────── */
+.sidebar{background:var(--bg2);}
+.sb{padding:17px 15px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{font-family:var(--fm);font-size:.54rem;letter-spacing:.22em;color:var(--ink3);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase;}
+.sb-t::before{content:'//';color:var(--or);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tlr{display:grid;grid-template-columns:52px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid var(--bord2);align-items:center;}
+.tlr:last-child{border-bottom:none;}
+.tld{font-family:var(--fh);font-size:1.4rem;font-weight:700;color:var(--or);line-height:1;text-align:center;}
+.tlu{font-family:var(--fm);font-size:.44rem;color:var(--ink3);display:block;text-align:center;}
+.tln{font-size:.8rem;font-weight:700;}
+.tls{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* Skills */
+.skills{display:flex;flex-direction:column;gap:7px;}
+.skr{display:flex;align-items:center;gap:7px;}
+.skl{font-family:var(--fm);font-size:.58rem;color:var(--ink2);width:82px;flex-shrink:0;}
+.skt{flex:1;height:3px;background:rgba(255,255,255,.05);}
+.skf{height:100%;background:var(--sc2,var(--or));width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+.skp{font-family:var(--fm);font-size:.55rem;color:var(--ink3);width:26px;text-align:right;flex-shrink:0;}
+
+/* Career */
+.career-list{display:flex;flex-direction:column;gap:6px;}
+.car{padding:9px 11px;border:1px solid var(--bord);background:var(--panel);transition:all .2s;border-left:3px solid var(--cc,var(--or));}
+.car:hover{background:var(--or3);border-color:var(--cc,var(--or));}
+.car-n{font-size:.8rem;font-weight:700;}
+.car-d{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* Tech stack */
+.stack-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.st{padding:8px 10px;border:1px solid var(--bord);background:var(--panel);transition:all .18s;}
+.st:hover{background:var(--or3);border-color:var(--or);}
+.st-cat{font-family:var(--fm);font-size:.52rem;letter-spacing:.12em;color:var(--or);margin-bottom:3px;}
+.st-items{font-size:.7rem;font-weight:600;color:var(--ink);}
+
+/* Competition */
+.comp-list{display:flex;flex-direction:column;gap:5px;}
+.comp{padding:8px 10px;border:1px solid var(--bord);background:var(--panel);transition:all .18s;display:flex;gap:8px;align-items:flex-start;}
+.comp:hover{background:var(--or3);border-color:var(--yw);}
+.comp-medal{font-size:.9rem;flex-shrink:0;}
+.comp-n{font-size:.76rem;font-weight:700;}
+.comp-d{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{border:1px solid var(--bord);border-top:none;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.bottom::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 25% 50%,rgba(255,107,0,.06) 0%,transparent 70%);}
+.bot-l,.bot-r{padding:40px 34px;position:relative;z-index:1;}
+.bot-l{border-right:1px solid var(--bord);background:rgba(255,107,0,.03);}
+.bot-h{font-family:var(--fh);font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;line-height:.92;margin-bottom:14px;letter-spacing:-.01em;}
+.bot-h em{font-style:normal;color:var(--or);}
+.bot-p{font-size:.84rem;color:var(--ink2);line-height:1.75;margin-bottom:20px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:var(--fh);font-size:.8rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.btn-or{background:var(--or);color:var(--bg);border:none;}
+.btn-or:hover{background:var(--or2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,.3);}
+.btn-gh{background:transparent;border:1px solid var(--bord);color:var(--ink2);margin-left:7px;}
+.btn-gh:hover{border-color:var(--or);color:var(--or);}
+.plan-list{display:flex;flex-direction:column;gap:0;}
+.plan-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--bord2);align-items:flex-start;}
+.plan-item:last-child{border-bottom:none;}
+.plan-n{font-family:var(--fh);font-size:1.5rem;font-weight:700;color:rgba(255,107,0,.2);line-height:1;flex-shrink:0;width:28px;transition:color .2s;}
+.plan-item:hover .plan-n{color:var(--or);}
+.plan-t{font-size:.82rem;font-weight:700;color:var(--ink);}
+.plan-d{font-family:var(--fm);font-size:.59rem;color:var(--ink3);margin-top:2px;line-height:1.4;}
+
+/* FOOTER */
+footer{padding:16px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.58rem;color:var(--ink3);border-top:1px solid var(--bord);}
+footer span:first-child{color:var(--or);}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* GEAR DECO */
+.gear{display:inline-block;animation:rotate 8s linear infinite;transform-origin:center;}
+
+/* RESPONSIVE */
+@media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{border-top:1px solid var(--bord)}.bottom{grid-template-columns:1fr}.bot-l{border-right:none;border-bottom:1px solid var(--bord)}.phases{grid-template-columns:repeat(4,1fr)}.hero-layout{grid-template-columns:1fr}}
+@media(max-width:640px){.page{padding:0 14px 60px}.phases{grid-template-columns:repeat(3,1fr)}.g2,.g3,.g4,.sensor-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="warn-tape"></div>
+<canvas id="hex-canvas"></canvas>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-tag">ROBOTİK MÜHENDİSLİĞİ · 0 → PRO ROADMAP</div>
+  <div class="hero-layout">
+    <div>
+      <h1 class="hero-h">
+        <span class="l1">ROBOTİK</span>
+        <span class="l2">MÜHENDİSLİĞİ</span>
+        <span class="l3">ROADMAP</span>
+      </h1>
+      <p class="hero-desc">
+        Matematik + Elektronik + Yazılım + Yapay Zeka. <strong>Dört alan aynı anda</strong>.
+        Bu roadmap zor ama <strong>rekabet avantajın çok yüksek</strong> — öğrenen az, ihtiyaç büyük.
+      </p>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">AŞAMA</div></div>
+      <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">AY (TAM YOL)</div></div>
+      <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">PROJE</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ DANGER STRIP ══ -->
+<div class="danger-strip">
+  <div class="ds-icon">⚠ GERÇEK UYARI</div>
+  <div class="ds-stats">
+    <div class="ds-item"><div class="ds-n" style="color:var(--rd)">ZOR</div><div class="ds-t"><strong>Çok Disiplin Gerekir</strong>Sabır + tutarlılık şart</div></div>
+    <div class="ds-item"><div class="ds-n" style="color:var(--yw)">2 YIL</div><div class="ds-t"><strong>"İyi" Seviyesi</strong>3+ yıl "çok iyi"</div></div>
+    <div class="ds-item"><div class="ds-n" style="color:var(--gn)">AZ</div><div class="ds-t"><strong>Rekabet Düşük</strong>Öğrenen az → avantaj büyük</div></div>
+    <div class="ds-item" style="background:rgba(255,210,0,.04)"><div class="ds-n" style="color:var(--or)">∞</div><div class="ds-t"><strong>Kariyer Fırsatı</strong>ASELSAN · TUSAŞ · Drone</div></div>
+  </div>
+</div>
+
+<!-- ══ PHASE STRIP ══ -->
+<div class="phases">
+  <div class="ph" style="--pc:var(--gn)"><div class="ph-n">1</div><div class="ph-lbl" style="color:var(--gn)">TEMEL</div><div class="ph-time">0–2 AY</div></div>
+  <div class="ph" style="--pc:var(--cy)"><div class="ph-n">2</div><div class="ph-lbl" style="color:var(--cy)">MÜHENDİSLİK</div><div class="ph-time">2–5 AY</div></div>
+  <div class="ph" style="--pc:var(--or)"><div class="ph-n">3</div><div class="ph-lbl" style="color:var(--or)">ROBOTİK CORE</div><div class="ph-time">5–9 AY</div></div>
+  <div class="ph" style="--pc:var(--or2)"><div class="ph-n">4</div><div class="ph-lbl" style="color:var(--or2)">OTONOM</div><div class="ph-time">9–15 AY</div></div>
+  <div class="ph" style="--pc:var(--yw)"><div class="ph-n">5</div><div class="ph-lbl" style="color:var(--yw)">ARAÇ/DRONE</div><div class="ph-time">15–20 AY</div></div>
+  <div class="ph" style="--pc:var(--rd)"><div class="ph-n">6</div><div class="ph-lbl" style="color:var(--rd)">İLERİ</div><div class="ph-time">20+ AY</div></div>
+  <div class="ph" style="--pc:var(--gn)"><div class="ph-n">★</div><div class="ph-lbl" style="color:var(--gn)">PROJELER</div><div class="ph-time">SÜREKLI</div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── B1: TEMEL ALTYAPI ──── -->
+<div class="sec">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--gn)">
+    <div class="sec-nc"><div class="sec-num">1</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">0 → 2 AY</div>
+      <div class="sec-title">Temel Altyapı — Matematik + Python + C++ + Linux</div>
+      <div class="sec-sub">Lineer Cebir · Türev · OOP · Multi-threading · Bash · Process</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--gn)">
+    <div class="sec-in">
+      <div class="note gn"><strong>Robot = Matematik + Fizik.</strong> Bu temel olmadan robotik yazılımı "kara kutu" olarak kullanırsın. PID parametrelerini anlamazsın, Kalman Filter çalışmaz, kinematiği hesaplayamazsın. Sağlam temel = sağlam robot.</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--gn)">
+          <div class="card-t">📐 Lineer Cebir</div>
+          <div class="card-d" style="margin-top:4px;">
+            <div>• Vektör & matris operasyonları</div>
+            <div>• Matris çarpımı — dönüşüm matrisleri</div>
+            <div>• Rotation matrix (3D uzay)</div>
+            <div>• Eigenvalue/eigenvector (PCA, vibrasyon)</div>
+            <div>• Homogeneous coordinates (robotik standart)</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--or)">
+          <div class="card-t">∂ Türev & Optimizasyon</div>
+          <div class="card-d" style="margin-top:4px;">
+            <div>• Zincir kuralı → backprop</div>
+            <div>• Kısmi türev → gradient</div>
+            <div>• Jacobian matrisi → robot hızı</div>
+            <div>• Lagrangian mekaniği (dinamik)</div>
+            <div>• Least squares → sensör fusion</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--cy)">
+          <div class="card-t">P Olasılık & İstatistik</div>
+          <div class="card-d" style="margin-top:4px;">
+            <div>• Koşullu olasılık, Bayes teoremi</div>
+            <div>• Gaussian (Normal) dağılım</div>
+            <div>• Kalman Filter temeli</div>
+            <div>• Çok değişkenli dağılımlar</div>
+            <div>• Belirsizlik modellemesi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON/C++">
+<span class="cm"># Python — hızlı prototipleme</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 3D Rotation Matrix (Z ekseni etrafında θ)</span>
+<span class="kw">def</span> <span class="fn">rot_z</span>(<span class="fn">theta</span>: float) -> np.ndarray:
+    c, s = np.<span class="fn">cos</span>(<span class="fn">theta</span>), np.<span class="fn">sin</span>(<span class="fn">theta</span>)
+    <span class="kw">return</span> np.<span class="fn">array</span>([[c,-s,<span class="num">0</span>],[s,c,<span class="num">0</span>],[<span class="num">0</span>,<span class="num">0</span>,<span class="num">1</span>]])
+
+<span class="cm"># Jacobian — uç efektör hızı</span>
+<span class="cm"># ẋ = J(q) · q̇</span>
+
+<span class="cm">// C++ — gerçek zamanlı kontrol</span>
+<span class="cm">// #include &lt;Eigen/Dense&gt;</span>
+<span class="fn">Eigen</span>::<span class="fn">Matrix3d</span> <span class="fn">rotZ</span>(double theta) {
+    <span class="fn">Eigen</span>::<span class="fn">AngleAxisd</span> aa(theta, <span class="fn">Eigen</span>::<span class="fn">Vector3d</span>::<span class="fn">UnitZ</span>());
+    <span class="kw">return</span> aa.<span class="fn">toRotationMatrix</span>();
+}
+
+<span class="cm">// Multi-threading — paralel sensör okuma</span>
+std::thread <span class="fn">camera_thread</span>([&amp;]{ <span class="fn">readCamera</span>(); });
+std::thread <span class="fn">lidar_thread</span> ([&amp;]{ <span class="fn">readLidar</span>();  });
+<span class="fn">camera_thread</span>.<span class="fn">join</span>(); <span class="fn">lidar_thread</span>.<span class="fn">join</span>();</div>
+
+      <div class="target">Hedef: Linux'ta C++ derleyip çalıştır. NumPy ile rotation matrix hesapla. Terminal'den process yönet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B2: MÜHENDİSLİK ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--cy)">
+    <div class="sec-nc"><div class="sec-num">2</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">2 → 5 AY</div>
+      <div class="sec-title">Mühendislik Temelleri — Elektronik + Mekanik + Gömülü</div>
+      <div class="sec-sub">Sensörler · Arduino · Raspberry Pi · Kinematik · PID · UART/I2C/SPI</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--cy)">
+    <div class="sec-in">
+      <div class="sensor-grid">
+        <div class="sensor"><div class="sensor-icon">📡</div><div class="sensor-name">Ultrasonik</div><div class="sensor-desc">HC-SR04, mesafe ölçüm</div></div>
+        <div class="sensor"><div class="sensor-icon">🔄</div><div class="sensor-name">IMU</div><div class="sensor-desc">MPU-6050, açı/ivme</div></div>
+        <div class="sensor"><div class="sensor-icon">🔴</div><div class="sensor-name">LiDAR</div><div class="sensor-desc">RPLIDAR, 2D/3D haritalama</div></div>
+        <div class="sensor"><div class="sensor-icon">📷</div><div class="sensor-name">Depth Camera</div><div class="sensor-desc">RealSense, 3D görüntü</div></div>
+        <div class="sensor"><div class="sensor-icon">🛰️</div><div class="sensor-name">GPS/GNSS</div><div class="sensor-desc">Konum, navigasyon</div></div>
+        <div class="sensor"><div class="sensor-icon">🌡️</div><div class="sensor-name">Encoder</div><div class="sensor-desc">Motor pozisyon geri bildirimi</div></div>
+        <div class="sensor"><div class="sensor-icon">💨</div><div class="sensor-name">Barometer</div><div class="sensor-desc">Yükseklik (drone)</div></div>
+        <div class="sensor"><div class="sensor-icon">⚡</div><div class="sensor-name">Force/Torque</div><div class="sensor-desc">Temas algılama</div></div>
+      </div>
+
+      <div class="code" data-lang="ARDUINO/C++">
+<span class="cm">// PID Kontrol — Robotik'in temel taşı</span>
+<span class="kw">class</span> <span class="cls">PIDController</span> {
+    double kp, ki, kd, prev_error = <span class="num">0</span>, integral = <span class="num">0</span>;
+  <span class="kw">public</span>:
+    <span class="fn">PIDController</span>(double p, double i, double d): kp(p), ki(i), kd(d){}
+
+    double <span class="fn">compute</span>(double setpoint, double measured, double dt) {
+        double <span class="fn">error</span>      = setpoint - measured;
+        <span class="fn">integral</span>        += <span class="fn">error</span> * dt;
+        double <span class="fn">derivative</span> = (<span class="fn">error</span> - prev_error) / dt;
+        <span class="fn">prev_error</span>       = <span class="fn">error</span>;
+        <span class="kw">return</span> kp*<span class="fn">error</span> + ki*<span class="fn">integral</span> + kd*<span class="fn">derivative</span>;
+    }
+};
+
+<span class="cm">// I2C ile IMU okuma (MPU-6050)</span>
+Wire.<span class="fn">begin</span>();
+Wire.<span class="fn">beginTransmission</span>(<span class="num">0x68</span>);  <span class="cm">// IMU adresi</span>
+Wire.<span class="fn">write</span>(<span class="num">0x3B</span>);               <span class="cm">// Accelerometer register</span>
+Wire.<span class="fn">endTransmission</span>(<span class="kw">false</span>);
+Wire.<span class="fn">requestFrom</span>(<span class="num">0x68</span>, <span class="num">14</span>);    <span class="cm">// 14 byte: accel+gyro+temp</span></div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Motor Tipleri</div><div class="card-d">DC motor (hız kontrol) · Servo (açı kontrol) · Stepper (adım hassas) · BLDC (drone/yüksek güç)</div></div>
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Real-Time Sistemler</div><div class="card-d">RTOS (FreeRTOS) · Deterministik zamanlama · Interrupt handling · Watchdog timer</div></div>
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Güç Elektroniği</div><div class="card-d">H-bridge motor sürücü · PWM · ESC (elektronik hız kontrolörü) · Güç dağıtım kartı</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B3: ROBOTİK CORE ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--or)">
+    <div class="sec-nc"><div class="sec-num">3</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">5 → 9 AY</div>
+      <div class="sec-title">Robotik Core — Kinematik + Dinamik + ROS2</div>
+      <div class="sec-sub">FK/IK · PID · State-Space · ROS2 · Topic/Node/Service · Gazebo</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--or)">
+    <div class="sec-in">
+      <div class="note"><strong>ROS2 neden kritik?</strong> ROS (Robot Operating System) robot yazılımının Linux'udur. Endüstri standardı. Tüm büyük robot şirketleri (Boston Dynamics, NASA, ASELSAN) ROS kullanır. ROS1 artık legacy — direkt ROS2 öğren.</div>
+
+      <!-- Kinematic Flow -->
+      <div style="font-family:var(--fm);font-size:.56rem;letter-spacing:.15em;color:var(--or);margin-bottom:8px;">// KİNEMATİK AKIŞI</div>
+      <div class="kin-flow">
+        <div class="kf-step"><div class="kf-box">Eklem<br>Açıları<br>q₁,q₂,q₃</div><div class="kf-lbl">GİRİŞ</div></div>
+        <div class="kf-arrow">→</div>
+        <div class="kf-step"><div class="kf-box">İleri<br>Kinematik<br>FK(q)</div><div class="kf-lbl">FORWARD K.</div></div>
+        <div class="kf-arrow">→</div>
+        <div class="kf-step"><div class="kf-box">Uç<br>Efektör<br>Pozisyon</div><div class="kf-lbl">ÇIKIŞ x,y,z</div></div>
+        <div class="kf-arrow" style="color:var(--cy)">⇄</div>
+        <div class="kf-step"><div class="kf-box">Ters<br>Kinematik<br>IK(x,y,z)</div><div class="kf-lbl">INVERSE K.</div></div>
+        <div class="kf-arrow">→</div>
+        <div class="kf-step"><div class="kf-box">Eklem<br>Komutları<br>q₁,q₂,q₃</div><div class="kf-lbl">KONTROL</div></div>
+      </div>
+
+      <div class="code" data-lang="ROS2/PYTHON">
+<span class="cm"># ROS2 — Node + Publisher + Subscriber</span>
+<span class="kw">import</span> rclpy
+<span class="kw">from</span> rclpy.node     <span class="kw">import</span> Node
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> Twist
+<span class="kw">from</span> sensor_msgs.msg   <span class="kw">import</span> LaserScan
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class="cls">ObstacleAvoidance</span>(Node):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="fn">super</span>().__init__(<span class="str">"obstacle_avoidance"</span>)
+        self.pub = self.<span class="fn">create_publisher</span>(Twist, <span class="str">"/cmd_vel"</span>, <span class="num">10</span>)
+        self.sub = self.<span class="fn">create_subscription</span>(
+            LaserScan, <span class="str">"/scan"</span>, self.<span class="fn">laser_callback</span>, <span class="num">10</span>
+        )
+        self.<span class="fn">get_logger</span>().<span class="fn">info</span>(<span class="str">"Obstacle Avoidance node başlatıldı"</span>)
+
+    <span class="kw">def</span> <span class="fn">laser_callback</span>(self, msg: LaserScan):
+        <span class="fn">ranges</span>   = np.<span class="fn">array</span>(msg.ranges)
+        <span class="fn">min_dist</span> = np.<span class="fn">nanmin</span>(<span class="fn">ranges</span>[<span class="num">0</span>:<span class="num">30</span>])  <span class="cm"># önden ölç</span>
+        <span class="fn">cmd</span>      = Twist()
+        <span class="kw">if</span> <span class="fn">min_dist</span> > <span class="num">0.5</span>:
+            <span class="fn">cmd</span>.linear.x  = <span class="num">0.3</span>
+        <span class="kw">else</span>:
+            <span class="fn">cmd</span>.angular.z = <span class="num">0.8</span>  <span class="cm"># dön</span>
+        self.pub.<span class="fn">publish</span>(<span class="fn">cmd</span>)
+
+<span class="kw">def</span> <span class="fn">main</span>():
+    rclpy.<span class="fn">init</span>()
+    rclpy.<span class="fn">spin</span>(<span class="cls">ObstacleAvoidance</span>())
+    rclpy.<span class="fn">shutdown</span>()</div>
+
+      <div class="g4">
+        <div class="card"><div class="card-t">Topic</div><div class="card-d">Pub/sub. Sensor data, cmd_vel, images. Async iletişim.</div></div>
+        <div class="card"><div class="card-t">Service</div><div class="card-d">Request/response. Koordinat sorgusu, arm enable. Senkron.</div></div>
+        <div class="card"><div class="card-t">Action</div><div class="card-d">Uzun görevler. Navigate to pose. İptal edilebilir.</div></div>
+        <div class="card"><div class="card-t">Gazebo</div><div class="card-d">3D fizik simülasyonu. Gerçek robot olmadan test.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">🤖 ROS2 Talker/Listener</div>
+        <div class="pb">🚧 Engelden Kaçan Robot</div>
+        <div class="pb">📐 Kinematik Solver</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B4: OTONOM SİSTEMLER ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--or2)">
+    <div class="sec-nc"><div class="sec-num">4</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">9 → 15 AY</div>
+      <div class="sec-title">Otonom Sistemler — CV + SLAM + Path Planning + Karar</div>
+      <div class="sec-sub">OpenCV · YOLO · Kalman Filter · EKF-SLAM · A* · RRT · Behavior Trees</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--or2)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Kalman Filter — belirsizlik altında durum tahmini</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class="cls">KalmanFilter</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, F, H, Q, R, x0, P0):
+        self.F, self.H = F, H   <span class="cm"># durum geçiş, gözlem matrisi</span>
+        self.Q, self.R = Q, R   <span class="cm"># proses gürültüsü, ölçüm gürültüsü</span>
+        self.x, self.P = x0, P0 <span class="cm"># başlangıç durumu, kovaryans</span>
+
+    <span class="kw">def</span> <span class="fn">predict</span>(self, u=<span class="kw">None</span>):
+        self.x = self.F @ self.x            <span class="cm"># ön tahmin</span>
+        self.P = self.F @ self.P @ self.F.T + self.Q
+
+    <span class="kw">def</span> <span class="fn">update</span>(self, z):
+        <span class="fn">S</span>      = self.H @ self.P @ self.H.T + self.R
+        <span class="fn">K</span>      = self.P @ self.H.T @ np.<span class="fn">linalg.inv</span>(<span class="fn">S</span>)  <span class="cm"># Kalman kazancı</span>
+        self.x += <span class="fn">K</span> @ (z - self.H @ self.x)
+        self.P  = (<span class="fn">np.eye</span>(<span class="op">len</span>(self.x)) - <span class="fn">K</span> @ self.H) @ self.P</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># A* Path Planning</span>
+<span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">astar</span>(<span class="fn">grid</span>, <span class="fn">start</span>, <span class="fn">goal</span>):
+    <span class="fn">h</span> = <span class="kw">lambda</span> p: abs(p[<span class="num">0</span>]-goal[<span class="num">0</span>]) + abs(p[<span class="num">1</span>]-goal[<span class="num">1</span>])  <span class="cm"># Manhattan</span>
+    <span class="fn">open_set</span> = [(<span class="num">0</span>, <span class="fn">start</span>)]
+    <span class="fn">came_from</span>, <span class="fn">g</span> = {}, {<span class="fn">start</span>:<span class="num">0</span>}
+    <span class="kw">while</span> <span class="fn">open_set</span>:
+        _, <span class="fn">current</span> = heapq.<span class="fn">heappop</span>(<span class="fn">open_set</span>)
+        <span class="kw">if</span> <span class="fn">current</span> == <span class="fn">goal</span>: <span class="kw">return</span> <span class="fn">reconstruct</span>(<span class="fn">came_from</span>, <span class="fn">current</span>)
+        <span class="kw">for</span> <span class="fn">nb</span> <span class="kw">in</span> <span class="fn">neighbors</span>(<span class="fn">grid</span>, <span class="fn">current</span>):
+            <span class="fn">ng</span> = <span class="fn">g</span>[<span class="fn">current</span>] + <span class="num">1</span>
+            <span class="kw">if</span> <span class="fn">ng</span> < <span class="fn">g</span>.<span class="fn">get</span>(<span class="fn">nb</span>, <span class="op">float</span>(<span class="str">'inf'</span>)):
+                <span class="fn">came_from</span>[<span class="fn">nb</span>] = <span class="fn">current</span>; <span class="fn">g</span>[<span class="fn">nb</span>] = <span class="fn">ng</span>
+                heapq.<span class="fn">heappush</span>(<span class="fn">open_set</span>, (<span class="fn">ng</span>+<span class="fn">h</span>(<span class="fn">nb</span>), <span class="fn">nb</span>))</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--or2)"><div class="card-t">SLAM (kritik!)</div><div class="card-d">Eş zamanlı haritalama + lokalizasyon. EKF-SLAM, Graph SLAM, ORB-SLAM2/3. gmapping, cartographer (ROS).</div></div>
+        <div class="card" style="--sc:var(--or2)"><div class="card-t">Sensör Füzyonu</div><div class="card-d">IMU + GPS + LiDAR birleşimi. EKF/UKF. robot_localization paketi. GNSS + odometry fusion.</div></div>
+        <div class="card" style="--sc:var(--or2)"><div class="card-t">Behavior Trees</div><div class="card-d">FSM'den üstün — modüler, test edilebilir. BehaviorTree.CPP (C++), py_trees (Python). Nav2 içinde.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">📷 Kamera ile Nesne Tanıma</div>
+        <div class="pb">🗺️ SLAM Haritası</div>
+        <div class="pb">🛤️ Path Planning Demo</div>
+        <div class="pb">🚗 Mini Otonom Araç</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B5: OTONOM ARAÇ / DRONE ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--yw)">
+    <div class="sec-nc"><div class="sec-num">5</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">15 → 20 AY</div>
+      <div class="sec-title">Otonom Araç / Drone Sistemleri</div>
+      <div class="sec-sub">Lane Detection · Sensor Fusion · PX4 · ArduPilot · PID Tuning · GPS Nav</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--yw)">
+    <div class="sec-in">
+      <div class="g2">
+        <div class="card" style="--sc:var(--yw)">
+          <div class="card-t">🚗 Otonom Araç Stack</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• <strong>Perception:</strong> Camera + LiDAR fusion, lane detection, object tracking</div>
+            <div>• <strong>Localization:</strong> HD harita + GPS + SLAM</div>
+            <div>• <strong>Planning:</strong> Global (A*) + Local (TEB, DWA)</div>
+            <div>• <strong>Control:</strong> Lateral (Stanley/MPC) + Longitudinal (ACC)</div>
+            <div>• <strong>Framework:</strong> Autoware, Apollo, CARLA sim</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--cy)">
+          <div class="card-t">🚁 Drone Sistemleri</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• <strong>Flight Controller:</strong> PX4 (açık kaynak standart)</div>
+            <div>• <strong>Ardupilot:</strong> ArduCopter/Plane, MAVLink protokolü</div>
+            <div>• <strong>PID Tuning:</strong> Roll/Pitch/Yaw halkası ayarı</div>
+            <div>• <strong>GPS Nav:</strong> Waypoint mission, geofencing</div>
+            <div>• <strong>Sim:</strong> Gazebo + SITL, AirSim, JSBSim</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON/MAVROS">
+<span class="cm"># MAVROS — ROS ile Drone kontrolü</span>
+<span class="kw">import</span> rospy
+<span class="kw">from</span> mavros_msgs.msg   <span class="kw">import</span> State
+<span class="kw">from</span> mavros_msgs.srv   <span class="kw">import</span> CommandBool, SetMode
+<span class="kw">from</span> geometry_msgs.msg <span class="kw">import</span> PoseStamped
+
+<span class="kw">class</span> <span class="cls">DroneController</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="fn">rospy.init_node</span>(<span class="str">"drone_controller"</span>)
+        self.pose_pub = <span class="fn">rospy.Publisher</span>(<span class="str">"/mavros/setpoint_position/local"</span>, PoseStamped, queue_size=<span class="num">10</span>)
+        self.arm_srv  = <span class="fn">rospy.ServiceProxy</span>(<span class="str">"/mavros/cmd/arming"</span>,  CommandBool)
+        self.mode_srv = <span class="fn">rospy.ServiceProxy</span>(<span class="str">"/mavros/set_mode"</span>,    SetMode)
+
+    <span class="kw">def</span> <span class="fn">takeoff</span>(self, height: float):
+        self.mode_srv(custom_mode=<span class="str">"OFFBOARD"</span>)     <span class="cm"># OFFBOARD modu</span>
+        self.arm_srv(value=<span class="kw">True</span>)                   <span class="cm"># arm et</span>
+        <span class="fn">pose</span> = PoseStamped()
+        <span class="fn">pose</span>.pose.position.z = height
+        <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">100</span>): self.pose_pub.<span class="fn">publish</span>(<span class="fn">pose</span>)</div>
+
+      <div class="note yw"><strong>💡 CARLA & AirSim:</strong> Gerçek araç olmadan otonom araç geliştirmek için açık kaynak simülatörler. CARLA, sensör veri üretiminden trafik senaryosuna kadar tüm stack'i destekler. İlk self-driving projen burada olsun.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B6: İLERİ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--rd)">
+    <div class="sec-nc"><div class="sec-num">6</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">20+ AY</div>
+      <div class="sec-title">İleri Seviye — RL + Swarm + Edge AI + Real-Time AI</div>
+      <div class="sec-sub">DQN · PPO · Sim-to-Real · Isaac Gym · NVIDIA Jetson · TensorRT · Swarm</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--rd)">
+    <div class="sec-in">
+      <div class="g2">
+        <div class="card" style="--sc:var(--rd)">
+          <div class="card-t">🎮 Reinforcement Learning for Robotics</div>
+          <div class="card-d" style="margin-top:4px;">
+            <div>• <strong>Sim-to-Real:</strong> Isaac Gym / MuJoCo → gerçek robot</div>
+            <div>• <strong>PPO / SAC:</strong> Locomotion, manipulation policy</div>
+            <div>• <strong>Domain Randomization:</strong> Gerçek dünya transferi</div>
+            <div>• <strong>Boston Dynamics:</strong> Spot, Atlas bu yöntemle eğitildi</div>
+            <div>• <strong>Imitation Learning:</strong> Robot taklit ederek öğrenir</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--or)">
+          <div class="card-t">⚡ Edge AI — NVIDIA Jetson</div>
+          <div class="card-d" style="margin-top:4px;">
+            <div>• <strong>Jetson Orin/Nano:</strong> Robotik AI için tasarlandı</div>
+            <div>• <strong>TensorRT:</strong> Model inference hızlandırma (4-8x)</div>
+            <div>• <strong>DeepStream:</strong> Gerçek zamanlı video analytics</div>
+            <div>• <strong>INT8 Quantization:</strong> GPU'suz yerleşik çıkarım</div>
+            <div>• <strong>Triton Inference:</strong> Çoklu model paralel servis</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Swarm Robotics — çok robot koordinasyonu</span>
+<span class="cm"># Boid algoritması — sürü davranışı</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">class</span> <span class="cls">Boid</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, pos, vel):
+        self.pos, self.vel = np.<span class="fn">array</span>(pos, float), np.<span class="fn">array</span>(vel, float)
+
+    <span class="kw">def</span> <span class="fn">update</span>(self, boids, dt=<span class="num">0.1</span>):
+        <span class="fn">separation</span> = self.<span class="fn">_separation</span>(boids)    <span class="cm"># çarpışmaktan kaç</span>
+        <span class="fn">alignment</span>  = self.<span class="fn">_alignment</span>(boids)     <span class="cm"># aynı yöne git</span>
+        <span class="fn">cohesion</span>   = self.<span class="fn">_cohesion</span>(boids)      <span class="cm"># merkeze yaklaş</span>
+        self.vel   += (<span class="fn">separation</span> * <span class="num">1.5</span> + <span class="fn">alignment</span> * <span class="num">1.0</span> + <span class="fn">cohesion</span> * <span class="num">1.0</span>) * dt
+        self.vel    = self.vel / np.<span class="fn">linalg.norm</span>(self.vel) * <span class="num">2.0</span>
+        self.pos   += self.vel * dt</div>
+
+      <div class="proj-row">
+        <div class="pb">🤖 SLAM Yapan Robot</div>
+        <div class="pb">🚁 Otonom Drone</div>
+        <div class="pb">🚗 Self-Driving Mini Car</div>
+        <div class="pb">🐝 Swarm Robots (3+)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Zaman Planı</div>
+    <div class="tl">
+      <div class="tlr"><div class="tld">2<span class="tlu">AY</span></div><div><div class="tln">Temel</div><div class="tls">Matematik · Python · C++ · Linux</div></div></div>
+      <div class="tlr"><div class="tld">5<span class="tlu">AY</span></div><div><div class="tln">Mühendislik</div><div class="tls">Elektronik · Arduino · RasPi</div></div></div>
+      <div class="tlr"><div class="tld">9<span class="tlu">AY</span></div><div><div class="tln">Robotik Core</div><div class="tls">ROS2 · Kinematik · PID</div></div></div>
+      <div class="tlr"><div class="tld">15<span class="tlu">AY</span></div><div><div class="tln">Otonom</div><div class="tls">SLAM · CV · Path Planning</div></div></div>
+      <div class="tlr"><div class="tld">20<span class="tlu">AY</span></div><div><div class="tln">İleri</div><div class="tls">RL · Edge AI · Swarm</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Konu Öncelikleri</div>
+    <div class="skills" id="skills">
+      <div class="skr"><div class="skl">ROS2 / C++</div><div class="skt"><div class="skf" style="--sc2:var(--or)"></div></div><div class="skp">95%</div></div>
+      <div class="skr"><div class="skl">SLAM</div><div class="skt"><div class="skf" style="--sc2:var(--or2)"></div></div><div class="skp">90%</div></div>
+      <div class="skr"><div class="skl">Computer Vision</div><div class="skt"><div class="skf" style="--sc2:var(--cy)"></div></div><div class="skp">80%</div></div>
+      <div class="skr"><div class="skl">RL</div><div class="skt"><div class="skf" style="--sc2:var(--rd)"></div></div><div class="skp">60%</div></div>
+      <div class="skr"><div class="skl">Edge AI</div><div class="skt"><div class="skf" style="--sc2:var(--gn)"></div></div><div class="skp">55%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Kariyer Yolları</div>
+    <div class="career-list">
+      <div class="car" style="--cc:var(--or)"><div class="car-n">🛡️ Savunma Sanayi</div><div class="car-d">ASELSAN · TUSAŞ · ROKETSAN · STM</div></div>
+      <div class="car" style="--cc:var(--cy)"><div class="car-n">🚗 Otonom Araç</div><div class="car-d">Ford Otonom · Togg · Uluslararası</div></div>
+      <div class="car" style="--cc:var(--yw)"><div class="car-n">🚁 Drone Şirketleri</div><div class="car-d">Baykar · Havelsan · Startuplar</div></div>
+      <div class="car" style="--cc:var(--gn)"><div class="car-n">🤖 Robotik Startup</div><div class="car-d">Endüstriyel · Medikal · Tarım</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Tech Stack</div>
+    <div class="stack-grid">
+      <div class="st"><div class="st-cat">YAZILIM</div><div class="st-items">Python · C++ · ROS2</div></div>
+      <div class="st"><div class="st-cat">AI/ML</div><div class="st-items">PyTorch · TensorRT</div></div>
+      <div class="st"><div class="st-cat">SİMÜLASYON</div><div class="st-items">Gazebo · CARLA · AirSim</div></div>
+      <div class="st"><div class="st-cat">DONANIM</div><div class="st-items">Arduino · RPi · Jetson</div></div>
+      <div class="st"><div class="st-cat">DRONE</div><div class="st-items">PX4 · ArduPilot · MAVLink</div></div>
+      <div class="st"><div class="st-cat">VERSİYON</div><div class="st-items">Git · GitHub · Docker</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Yarışmalar</div>
+    <div class="comp-list">
+      <div class="comp"><div class="comp-medal">🏆</div><div><div class="comp-n">Teknofest</div><div class="comp-d">İnsansız sistemler, otonom araç</div></div></div>
+      <div class="comp"><div class="comp-medal">🥇</div><div><div class="comp-n">RoboCup</div><div class="comp-d">Uluslararası robot futbol yarışması</div></div></div>
+      <div class="comp"><div class="comp-medal">🥈</div><div><div class="comp-n">DARPA Robotics</div><div class="comp-d">İnsansı robot challenge</div></div></div>
+      <div class="comp"><div class="comp-medal">⚡</div><div><div class="comp-n">AWS DeepRacer</div><div class="comp-d">RL ile mini otonom araç</div></div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">Simülasyon +<br>Gerçek Robot<br><em>Birlikte Git.</em></h2>
+    <p class="bot-p">Sadece Gazebo yeterli değil, sadece fiziksel robot da yeterli değil. İkisini paralel kullan. Gazebo'da test et, robota aktar. Her başarısızlık veriden öğrenmektir.</p>
+    <a class="btn btn-or" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-gh" href="https://github.com/ros2" target="_blank">ROS2 GitHub →</a>
+  </div>
+  <div class="bot-r">
+    <div class="plan-list">
+      <div class="plan-item"><div class="plan-n">1</div><div><div class="plan-t">Çizgi izleyen robot yap (ay 1)</div><div class="plan-d">Arduino + motor + IR sensör. Fiziksel dokunuş kritik.</div></div></div>
+      <div class="plan-item"><div class="plan-n">2</div><div><div class="plan-t">ROS2 kurulumu + Gazebo (ay 3–4)</div><div class="plan-d">turtlesim → engelden kaçma → Gazebo simülasyon.</div></div></div>
+      <div class="plan-item"><div class="plan-n">3</div><div><div class="plan-t">Kamera + YOLO + ROS2 (ay 6–8)</div><div class="plan-d">Nesne algıla → robotu yönlendir. CV + robotik birleşimi.</div></div></div>
+      <div class="plan-item"><div class="plan-n">4</div><div><div class="plan-t">SLAM yapan robot (ay 10–12)</div><div class="plan-d">LiDAR + gmapping/cartographer. Harita çıkar. Nav2.</div></div></div>
+      <div class="plan-item"><div class="plan-n">5</div><div><div class="plan-t">GitHub + Blog + Teknofest (sürekli)</div><div class="plan-d">Her projeyi paylaş. Yaz. Yarış. Fark bu.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Robotik Mühendisliği 0→Pro Roadmap</span>
+  <span>7 Aşama · 20+ Ay · 8+ Proje · Simülasyon + Gerçek = Öğrenme.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// ── HEX CANVAS ──
+const hc=document.getElementById('hex-canvas');
+const hctx=hc.getContext('2d');
+let HW,HH;
+function resizeHex(){HW=hc.width=window.innerWidth;HH=hc.height=window.innerHeight;}
+resizeHex();window.addEventListener('resize',resizeHex);
+function drawHex(){
+  hctx.clearRect(0,0,HW,HH);
+  const r=28,w=r*2,h=Math.sqrt(3)*r,cols=Math.ceil(HW/w)+2,rows=Math.ceil(HH/h)+2;
+  hctx.strokeStyle='rgba(255,107,0,0.5)';hctx.lineWidth=.5;
+  for(let row=0;row<rows;row++){
+    for(let col=0;col<cols;col++){
+      const x=col*w*0.75+(row%2===0?0:w*0.375)-r;
+      const y=row*h-h;
+      hctx.beginPath();
+      for(let i=0;i<6;i++){const a=i*60*Math.PI/180;hctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));}
+      hctx.closePath();hctx.stroke();
+    }
+  }
+}
+drawHex();window.addEventListener('resize',drawHex);
+
+// ── CURSOR ──
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.ph,.car,.st,.comp,.pb,.kf-box,.sensor').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='16px';c1.style.height='16px';c2.style.width='42px';c2.style.height='42px';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='12px';c1.style.height='12px';c2.style.width='30px';c2.style.height='30px';});
+});
+
+// ── ACCORDION ──
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// ── SCROLL REVEAL ──
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// ── COUNTERS ──
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),7,800);cnt(document.getElementById('s2'),20,1000);cnt(document.getElementById('s3'),8,900);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-right'));
+
+// ── SKILL BARS ──
+const widths=['95%','90%','80%','60%','55%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skf').forEach((f,i)=>{setTimeout(()=>{f.style.width=widths[i];},i*100);});
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+</script>
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 0 → PRO PENTEST YOL HARİTASI</title>
+    <style>
+        /* === TEMEL STİLLER (MODERN DARK THEME) === */
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --primary: #58a6ff; /* Mavi */
+            --success: #3fb950; /* Yeşil */
+            --warning: #d29922; /* Sarı */
+            --danger: #f85149;  /* Kırmızı */
+            --purple: #a371f7;  /* Mor */
+            --border: #30363d;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; padding-bottom: 50px; }
+
+        /* === SCROLLBAR STİLİ === */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* === CONTAINER & HEADER === */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+        header { text-align: center; padding: 60px 0; border-bottom: 1px solid var(--border); margin-bottom: 40px; position: relative;}
+        header h1 { font-size: 2.8rem; background: linear-gradient(90deg, #58a6ff, #a371f7, #f85149); -webkit-background-clip: text; color: transparent; margin-bottom: 10px; animation: titleLoad 1s ease-out; }
+        header p { color: var(--text-muted); font-size: 1.1rem; animation: subtitleLoad 1s ease-out 0.3s both; }
+
+        /* === YOL HARİTASI AKIŞI (TIMELINE MANTIĞI) === */
+        .roadmap-flow { position: relative; padding-left: 30px; }
+        .roadmap-flow::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--border); border-radius: 2px; }
+
+        /* Süzülen Ok Animasyonu */
+        .connector-arrow { font-size: 2rem; color: var(--primary); text-align: center; margin: 20px 0; animation: floatArrow 2s infinite ease-in-out; position: relative; left: -15px;}
+
+        /* === ADIM KARTLARI (STAGES) === */
+        .stage-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 30px; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; opacity: 0; transform: translateY(30px); }
+        .stage-card.visible { opacity: 1; transform: translateY(0); }
+        .stage-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: var(--text-muted); }
+
+        /* Renk Kodlu Sol Kenar Barı */
+        .stage-card::before { content: ''; position: absolute; left: 0; top: 20px; bottom: 20px; width: 5px; border-radius: 0 5px 5px 0; }
+
+        .stage-title { font-size: 1.8rem; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; }
+        .stage-subtitle { color: var(--text-muted); font-weight: normal; font-size: 1.1rem; margin-left: 10px; font-style: italic;}
+
+        /* Renk Kodları */
+        .stage-1 { border-color: var(--success); } .stage-1 .stage-title { color: var(--success); } .stage-1::before { background-color: var(--success); }
+        .stage-2 { border-color: var(--warning); } .stage-2 .stage-title { color: var(--warning); } .stage-2::before { background-color: var(--warning); }
+        .stage-3 { border-color: var(--primary); } .stage-3 .stage-title { color: var(--primary); } .stage-3::before { background-color: var(--primary); }
+        .stage-4 { border-color: var(--purple); }  .stage-4 .stage-title { color: var(--purple); }  .stage-4::before { background-color: var(--purple); }
+        .stage-5 { border-color: var(--danger); }  .stage-5 .stage-title { color: var(--danger); }  .stage-5::before { background-color: var(--danger); }
+
+        /* === LİSTE STİLLERİ === */
+        .content-section { margin-bottom: 20px; }
+        .section-heading { color: var(--text-main); font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+
+        ul { list-style: none; padding-left: 10px; }
+        li { position: relative; padding-left: 25px; margin-bottom: 8px; color: var(--text-main); opacity: 0; transform: translateX(-10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .stage-card.visible li { opacity: 1; transform: translateX(0); }
+
+        li::before { content: '▹'; position: absolute; left: 0; color: var(--primary); font-weight: bold; }
+        
+        /* Alt Listeler (OWASP vb.) */
+        ul ul { padding-left: 20px; margin-top: 5px; }
+        ul ul li { color: var(--text-muted); font-size: 0.95rem; }
+        ul ul li::before { content: '▪'; color: var(--text-muted); font-size: 0.8rem; top: 2px;}
+
+        /* Özel Vurgular (OWASP, SQLi vb.) */
+        .highlight-critical { color: var(--danger); font-weight: bold; }
+        .highlight-tool { color: var(--primary); font-weight: bold; }
+        .highlight-project { color: var(--success); font-weight: bold; }
+
+        /* === EKSTRA BİLGİ KARTLARI (SIDEBAR MANTIĞI) === */
+        .extra-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 40px; border-top: 1px solid var(--border); padding-top: 40px;}
+        .info-card { background: rgba(110, 118, 129, 0.1); border: 1px solid var(--border); border-radius: 12px; padding: 25px; opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease;}
+        .info-card.visible { opacity: 1; transform: translateY(0); }
+        .info-card h3 { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
+        .info-card p, .info-card li { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* === FOOTER (SON HEDEF) === */
+        footer { text-align: center; margin-top: 60px; padding: 40px 20px; border-top: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        footer.visible { opacity: 1; transform: translateY(0); }
+        footer h2 { color: var(--primary); margin-bottom: 20px; }
+        .final-check { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto; }
+        .check-item { background: rgba(56, 139, 253, 0.1); border: 1px solid rgba(56, 139, 253, 0.3); color: var(--primary); padding: 10px 20px; border-radius: 20px; width: 100%; font-weight: bold; }
+        .final-status { margin-top: 25px; font-size: 1.3rem; font-weight: bold; color: var(--success); text-transform: uppercase; letter-spacing: 2px;}
+
+        /* === ANİMASYON TANIMLAMALARI === */
+        @keyframes titleLoad { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes subtitleLoad { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes floatArrow { 0%, 100% { transform: translateY(0) left(-15px); } 50% { transform: translateY(10px) left(-15px); } }
+
+        /* === RESPONSIVE AYARLAR === */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .stage-title { font-size: 1.5rem; flex-direction: column; align-items: flex-start; gap: 5px; }
+            .stage-subtitle { margin-left: 0; font-size: 1rem; }
+            .roadmap-flow { padding-left: 20px; }
+            .stage-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <h1>🎯 0 → PRO SIZMA TESTİ (PENTEST) ROADMAP</h1>
+            <p>Kanka, senin backend ve sistem ilgin için hazırladığım efsanevi savaş planı!</p>
+        </header>
+
+        <div class="roadmap-flow">
+
+            <div class="stage-card stage-1 js-scroll">
+                <h2 class="stage-title">🟢 1. TEMEL (0 → 1) <span class="stage-subtitle">“Bilgisayarın içini anlamadan hack olmaz”</span></h2>
+                
+                <div class="content-section">
+                    <p class="section-heading">📌 Öğrenmen gereken temel konular:</p>
+                    <ul>
+                        <li>💻 <strong>İşletim Sistemleri</strong>
+                            <ul>
+                                <li class="highlight-critical">Linux (çok kritik)</li>
+                                <li>Kali Linux</li>
+                                <li>Ubuntu</li>
+                                <li>Windows mantığı (AD yapısı ileride lazım)</li>
+                            </ul>
+                        </li>
+                        <li>🌐 <strong>Networking (AĞ) — <span class="highlight-critical">EN KRİTİK</span></strong>
+                            <ul>
+                                <li>IP, MAC</li>
+                                <li>TCP / UDP</li>
+                                <li>DNS</li>
+                                <li>DHCP</li>
+                                <li>NAT</li>
+                                <li>OSI modeli</li>
+                                <li class="highlight-critical">👉 Bu kısmı anlamazsan pentest OLMAZ</li>
+                            </ul>
+                        </li>
+                        <li>🖥️ <strong>Komut Satırı (CLI)</strong>
+                            <ul>
+                                <li>Linux terminal</li>
+                                <li>Bash scripting (temel)</li>
+                            </ul>
+                        </li>
+                        <li>📦 <strong>Temel Programlama</strong>
+                            <ul>
+                                <li>Python (otomasyon için)</li>
+                                <li>JavaScript (web hack için)</li>
+                                <li>Biraz C (buffer overflow için)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <p class="section-heading">🎯 Bu seviyede hedef:</p>
+                    <ul>
+                        <li>Linux’ta rahat hareket etmek</li>
+                        <li>Network mantığını anlamak</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="connector-arrow">↓</div>
+
+            <div class="stage-card stage-2 js-scroll">
+                <h2 class="stage-title">🟡 2. ORTA SEVİYE <span class="stage-subtitle">“Gerçek hacking başlıyor”</span></h2>
+                
+                <div class="content-section">
+                    <ul>
+                        <li>📌 <strong>Web Temelleri</strong>
+                            <ul>
+                                <li>HTTP / HTTPS</li>
+                                <li>Cookies / Sessions</li>
+                                <li>REST API</li>
+                            </ul>
+                        </li>
+                        <li>📌 <strong>Web Güvenliği (OWASP)</strong>
+                            <ul>
+                                <li><span class="highlight-critical">👉 OWASP Top 10 EZBERLE:</span>
+                                    <ul>
+                                        <li>SQL Injection</li>
+                                        <li>XSS</li>
+                                        <li>CSRF</li>
+                                        <li>Authentication bypass</li>
+                                        <li>Security misconfiguration</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>📌 <strong>Araçlar (<span class="highlight-tool">Tools</span>)</strong>
+                            <ul>
+                                <li>🔍 <strong>Tarama & Keşif</strong>: <span class="highlight-tool">Nmap</span>, <span class="highlight-tool">Netcat</span></li>
+                                <li>🕷️ <strong>Web Test</strong>: <span class="highlight-tool">Burp Suite</span>, <span class="highlight-tool">OWASP ZAP</span></li>
+                                <li>🔓 <strong>Exploit</strong>: <span class="highlight-tool">Metasploit</span></li>
+                            </ul>
+                        </li>
+                        <li>📌 <strong>Temel Pentest Aşamaları</strong>
+                            <ul>
+                                <li>Recon (bilgi toplama)</li>
+                                <li>Scanning</li>
+                                <li>Exploitation</li>
+                                <li>Privilege escalation</li>
+                                <li>Reporting</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <p class="section-heading">🎯 Projeler:</p>
+                    <ul>
+                        <li class="highlight-project">DVWA kur hackle</li>
+                        <li class="highlight-project">Basit web app hackle</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="connector-arrow">↓</div>
+
+            <div class="stage-card stage-3 js-scroll">
+                <h2 class="stage-title">🔵 3. İLERİ SEVİYE <span class="stage-subtitle">“Gerçek pentester seviyesi”</span></h2>
+                
+                <div class="content-section">
+                    <ul>
+                        <li>📌 <strong>Web Exploitation Deep Dive</strong>
+                            <ul>
+                                <li>🔥 <strong>SQL Injection (ileri)</strong>: Blind SQLi, Time-based SQLi</li>
+                                <li>🔥 <strong>XSS (derin)</strong>: Stored, Reflected, DOM-based</li>
+                                <li>🔥 <strong>File Upload Exploit</strong>: RCE (Remote Code Execution)</li>
+                                <li>🔥 <strong>Authentication Attacks</strong>: Brute force, Session hijacking</li>
+                            </ul>
+                        </li>
+                        <li>📌 <strong>Sistem Hackleme</strong>
+                            <ul>
+                                <li>🐧 <strong>Linux Exploitation</strong>: SUID, Cron jobs, PATH hijacking</li>
+                                <li>🪟 <strong>Windows Exploitation</strong>: Active Directory, Pass-the-hash, Kerberoasting</li>
+                            </ul>
+                        </li>
+                        <li>📌 <strong>Privilege Escalation</strong>
+                            <ul>
+                                <li><span class="highlight-tool">LinPEAS</span>, <span class="highlight-tool">WinPEAS</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <p class="section-heading">🎯 Projeler:</p>
+                    <ul>
+                        <li class="highlight-project">CTF çöz (çok önemli)</li>
+                        <li class="highlight-project">Root yetkisi al</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="connector-arrow">↓</div>
+
+            <div class="stage-card stage-4 js-scroll">
+                <h2 class="stage-title">🟣 4. PRO SEVİYE <span class="stage-subtitle">“Gerçek dünyada saldırı”</span></h2>
+                
+                <div class="content-section">
+                    <ul>
+                        <li>📌 <strong>Active Directory Attacks</strong>: <span class="highlight-tool">BloodHound</span>, Kerberos attack</li>
+                        <li>📌 <strong>Wireless Attacks</strong>: WiFi cracking, MITM</li>
+                        <li>📌 <strong>Reverse Engineering</strong>: Binary analiz</li>
+                        <li>📌 <strong>Buffer Overflow</strong>: Stack overflow, Exploit yazma</li>
+                        <li>📌 <strong>Social Engineering</strong>: Phishing</li>
+                        <li>📌 <strong>Red Teaming</strong>: Gerçek saldırı simülasyonu</li>
+                    </ul>
+                </div>
+
+                <div class="content-section">
+                    <p class="section-heading">🎯 Projeler:</p>
+                    <ul>
+                        <li class="highlight-project">HackTheBox makine çöz</li>
+                        <li class="highlight-project">TryHackMe lab bitir</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="connector-arrow">↓</div>
+
+            <div class="stage-card stage-5 js-scroll">
+                <h2 class="stage-title">🔴 5. MASTER SEVİYE <span class="stage-subtitle">“Senior Pentester”</span></h2>
+                
+                <div class="content-section">
+                    <ul>
+                        <li>📌 <strong>Bug Bounty</strong>: <span class="highlight-tool">HackerOne</span>, <span class="highlight-tool">Bugcrowd</span></li>
+                        <li>📌 <strong>Gelişmiş Exploit Yazma</strong>: Zero-day mantığı</li>
+                        <li>📌 <strong>Cloud Security</strong>: AWS misconfig, Azure hack</li>
+                        <li>📌 <strong>API Security</strong>: JWT exploit, Rate limit bypass</li>
+                        <li>📌 <strong>Raporlama (<span class="highlight-critical">ÇOK ÖNEMLİ</span>)</strong>: Teknik + anlaşılır rapor yazma</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div> <div class="extra-info">
+            <div class="info-card js-scroll">
+                <h3>🧠 GERÇEKLER (ÖNEMLİ)</h3>
+                <p>👉 Pentest = %30 teknik</p>
+                <p class="highlight-critical">👉 Pentest = %70 PRATİK</p>
+            </div>
+
+            <div class="info-card js-scroll">
+                <h3>⚡ SANA ÖZEL STRATEJİ</h3>
+                <p>Sen backend + sistem istiyordun ya:</p>
+                <p class="highlight-critical">👉 Sana en iyi yol: Web + Network pentest karışık git</p>
+            </div>
+
+            <div class="info-card js-scroll">
+                <h3>🗺️ GÜNLÜK PLAN</h3>
+                <p>🕐 Günlük 4 saat:</p>
+                <ul>
+                    <li>1 saat teori</li>
+                    <li class="highlight-critical">3 saat LAB</li>
+                </ul>
+            </div>
+
+            <div class="info-card js-scroll">
+                <h3>🔥 EN KRİTİK PLATFORM</h3>
+                <p>TryHackMe → başlangıç</p>
+                <p>Hack The Box → ileri</p>
+            </div>
+
+            <div class="info-card js-scroll" style="grid-column: 1 / -1;">
+                <h3>🚀 0 → İŞE GİRİŞ STRATEJİSİ</h3>
+                <p>Yapman gereken:</p>
+                <ul>
+                    <li class="highlight-project">50+ CTF çöz</li>
+                    <li>1 blog aç (öğrendiklerini yaz)</li>
+                    <li>GitHub repo yap</li>
+                    <li>Bug bounty dene</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer class="js-scroll">
+            <h2>🎯 SON HEDEF</h2>
+            <p style="margin-bottom: 20px; color: var(--text-muted);">Şunu yapabiliyorsan olmuşsun:</p>
+            <div class="final-check">
+                <div class="check-item">Web app hackleyebiliyorsan</div>
+                <div class="check-item">Sistem exploit edebiliyorsan</div>
+                <div class="check-item">Rapor yazabiliyorsan</div>
+            </div>
+            <p class="final-status">👉 SEN PENTESTERSIN</p>
+        </footer>
+
+    </div> <script>
+        // === SCROLL ANİMASYONU İÇİN JAVASCRIPT ===
+        const scrollElements = document.querySelectorAll(".js-scroll");
+
+        const elementInView = (el, dividend = 1) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return (
+                elementTop <=
+                (window.innerHeight || document.documentElement.clientHeight) / dividend
+            );
+        };
+
+        const elementOutofView = (el) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return (
+                elementTop > (window.innerHeight || document.documentElement.clientHeight)
+            );
+        };
+
+        const displayScrollElement = (element) => {
+            element.classList.add("visible");
+        };
+
+        const hideScrollElement = (element) => {
+            element.classList.remove("visible");
+        };
+
+        const handleScrollAnimation = () => {
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 1.1)) { // Biraz daha geç tetiklenmesi için 1.1
+                    displayScrollElement(el);
+                } else if (elementOutofView(el)) {
+                    // İstersen yukarı çıkarken tekrar gizleyebilirsin:
+                    // hideScrollElement(el);
+                }
+            })
+        }
+
+        // Sayfa yüklendiğinde ve kaydırıldığında kontrol et
+        window.addEventListener("load", handleScrollAnimation);
+        window.addEventListener("scroll", () => { 
+            handleScrollAnimation();
+        });
+    </script>
+</body>
+</html>

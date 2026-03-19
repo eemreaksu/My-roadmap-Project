@@ -1,0 +1,284 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1rem 1rem 2rem;max-width:860px;margin:0 auto}
+.phase{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin:1.75rem 0 .6rem}
+.phase:first-child{margin-top:0}
+.nodes{display:flex;flex-direction:column;gap:7px}
+.node{border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);background:var(--color-background-primary);cursor:pointer;overflow:hidden;transition:border-color .15s,background .15s}
+.node:hover{border-color:var(--color-border-secondary);background:var(--color-background-secondary)}
+.node.open{border-color:var(--color-border-primary)}
+.hdr{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.lbl{font-size:14px;font-weight:500;color:var(--color-text-primary);flex:1}
+.why{font-size:12px;color:var(--color-text-tertiary)}
+.chv{font-size:10px;color:var(--color-text-tertiary);transition:transform .2s;flex-shrink:0}
+.node.open .chv{transform:rotate(90deg)}
+.body{display:none;padding:0 14px 14px;border-top:.5px solid var(--color-border-tertiary)}
+.node.open .body{display:block}
+.desc{font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin:10px 0}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:99px;border:.5px solid}
+.t-blue{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.t-teal{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.t-amber{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.t-coral{background:#FAECE7;color:#4A1B0C;border-color:#F0997B}
+.t-purple{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.t-green{background:#EAF3DE;color:#173404;border-color:#97C459}
+.t-gray{background:#F1EFE8;color:#2C2C2A;border-color:#B4B2A9}
+@media(prefers-color-scheme:dark){
+.t-blue{background:#042C53;color:#B5D4F4;border-color:#185FA5}
+.t-teal{background:#04342C;color:#9FE1CB;border-color:#0F6E56}
+.t-amber{background:#412402;color:#FAC775;border-color:#BA7517}
+.t-coral{background:#4A1B0C;color:#F5C4B3;border-color:#993C1D}
+.t-purple{background:#26215C;color:#CECBF6;border-color:#534AB7}
+.t-green{background:#173404;color:#C0DD97;border-color:#3B6D11}
+.t-gray{background:#2C2C2A;color:#D3D1C7;border-color:#5F5E5A}
+}
+.subs{display:flex;flex-direction:column;gap:5px;margin-top:8px}
+.sub{border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:7px 10px;background:var(--color-background-secondary)}
+.sub-t{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.sub-d{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.tip{font-size:12px;color:var(--color-text-info);background:var(--color-background-info);border-radius:var(--border-radius-md);padding:6px 10px;margin-top:6px;line-height:1.5}
+.warn{font-size:12px;color:var(--color-text-warning);background:var(--color-background-warning);border-radius:var(--border-radius-md);padding:6px 10px;margin-top:6px;line-height:1.5}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1.25rem;padding:10px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:.5px solid var(--color-border-tertiary)}
+.li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--color-text-secondary)}
+.header-bar{display:flex;align-items:baseline;gap:10px;margin-bottom:1rem}
+.lang-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:99px;background:#E6F1FB;color:#0C447C;border:.5px solid #85B7EB}
+@media(prefers-color-scheme:dark){.lang-badge{background:#042C53;color:#B5D4F4;border-color:#185FA5}}
+</style>
+<div class="wrap">
+<div class="header-bar">
+  <span style="font-size:16px;font-weight:500;color:var(--color-text-primary)">C++ Yol Haritası</span>
+  <span class="lang-badge">Gömülü Sistem odaklı</span>
+</div>
+<div class="legend">
+  <div class="li"><div class="dot" style="background:#378ADD"></div>Temel dil</div>
+  <div class="li"><div class="dot" style="background:#1D9E75"></div>OOP & tasarım</div>
+  <div class="li"><div class="dot" style="background:#EF9F27"></div>Bellek & sistem</div>
+  <div class="li"><div class="dot" style="background:#D85A30"></div>Gömülü sistem</div>
+  <div class="li"><div class="dot" style="background:#7F77DD"></div>Modern C++</div>
+  <div class="li"><div class="dot" style="background:#639922"></div>İleri & araçlar</div>
+</div>
+<div class="nodes" id="root"></div>
+</div>
+<script>
+const D=[
+{phase:"Aşama 1 — Dil temelleri",items:[
+{l:"Derleme & ilk program",w:"Hiçbir şeyin temeli",c:"blue",
+desc:"C++ derlenen (compiled) bir dil. Kaynak kod → nesne kodu → çalıştırılabilir dosya. Bu pipeline'ı anlamak, hataların derleme mi yoksa çalışma zamanı mı olduğunu kavramak için şart. GCC, Clang, MSVC farkları, Makefile, CMake giriş.",
+tags:["GCC","Clang","CMake","Makefile","g++ -o","#include","namespace"],
+subs:[
+{t:"Derleme aşamaları",d:"Preprocessing → Compilation → Assembling → Linking. Her aşamada ne oluyor bilmeden hata ayıklayamazsın."},
+{t:"Header vs source",d:".h dosyaları declaration, .cpp dosyaları definition içerir. Include guard veya #pragma once şart."},
+{t:"CMake neden?",d:"Büyük projelerde Makefile yazmak yerine CMakeLists.txt. Cross-platform, IDE entegrasyonu kolay."}
+],tip:"Tavsiye: VS Code + CMake Tools extension veya CLion. Başlangıçta compiler flag'lerini öğren: -Wall -Wextra -std=c++17"},
+{l:"Temel veri tipleri & değişkenler",w:"Her şeyin hammaddesi",c:"blue",
+desc:"int, float, double, char, bool — ve bunların unsigned/signed, short/long varyantları. sizeof() ile her tipin byte cinsinden boyutunu öğren. Gömülü sistemlerde bu boyutlar kritik — uint8_t, int32_t gibi fixed-width tipler kullan.",
+tags:["int","float","double","char","uint8_t","int32_t","sizeof","typedef"],
+subs:[
+{t:"Fixed-width integer tipleri",d:"<cstdint> ile uint8_t, int16_t, uint32_t, int64_t. Gömülü sistemde platform bağımsız kod için şart."},
+{t:"Tip dönüşümleri",d:"implicit vs explicit cast. static_cast<int>(3.14) tercih et. C-style cast (int)x tehlikeli."}
+],tip:"Gömülü sistem için: int yerine uint8_t/int32_t kullanma alışkanlığı edin. 'int kaç byte?' sorusunun cevabı platforma göre değişir."},
+{l:"Kontrol akışı & fonksiyonlar",w:"Programın beyni",c:"blue",
+desc:"if/else, switch, for, while, do-while — bunlar her dilde var ama C++'da performans detayları önemli. Range-based for, inline fonksiyonlar, function overloading, default parametreler, pass by value/reference/pointer farkları.",
+tags:["if/else","switch","for","while","inline","overloading","pass-by-ref","constexpr"],
+subs:[
+{t:"Pass by value vs reference vs pointer",d:"void f(int x) kopya alır. void f(int& x) orijinali değiştirir. void f(int* x) adres alır. Farkı içselleştir."},
+{t:"constexpr fonksiyonlar",d:"Derleme zamanında hesaplama. Gömülü sistemde ROM'a yazılan sabitler için ideal."},
+{t:"Inline fonksiyonlar",d:"Küçük, sık çağrılan fonksiyonlar için. Function call overhead'ini ortadan kaldırır."}
+],warn:"⚠️ C'den gelenler dikkat: C++'da default parametreler ve overloading var ama yanlış kullanmak ambiguity hatalarına yol açar."},
+{l:"Array, string & temel I/O",w:"Veri tutma ve gösterme",c:"blue",
+desc:"C-style array, std::array, std::string, std::vector giriş. cin/cout, printf/scanf. Gömülü sistemde dynamic allocation olmadığı için stack-allocated array ve std::array daha yaygın. String handling dikkatli.",
+tags:["std::array","std::string","std::vector","cin","cout","printf","scanf","<iostream>"],
+subs:[
+{t:"C-array vs std::array",d:"int arr[10] vs std::array<int,10>. std::array boyutunu biliyor, sınır kontrolü yapılabilir, STL uyumlu."},
+{t:"Gömülü sistemde string",d:"std::string heap allocation yapar — embedded'da tehlikeli. const char* veya fixed-size karakter dizisi tercih et."}
+],tip:"std::cout çok yavaş gömülü sistemde. UART, printf veya özel debug macro kullan."}
+]},
+{phase:"Aşama 2 — Nesne yönelimli programlama",items:[
+{l:"Struct & class temelleri",w:"Veriyi organize et",c:"teal",
+desc:"struct ve class arasındaki fark (sadece default erişim: public vs private). Constructor, destructor, member function, this pointer. Gömülü sistemde basit struct'lar çok yaygın — register mapping için ideal.",
+tags:["struct","class","constructor","destructor","this","access specifiers","member function"],
+subs:[
+{t:"Constructor çeşitleri",d:"Default, parameterized, copy, move constructor. Gömülü sistemde move semantics bazen gereksiz ama bilmek lazım."},
+{t:"Register mapping ile struct",d:"Mikrodenetleyici register'larını struct ile map edebilirsin. Bit-field kullanımı burada devreye girer."},
+{t:"Destructor önemi",d:"Nesne scope'dan çıkınca otomatik çağrılır. RAII (Resource Acquisition Is Initialization) prensibinin temeli."}
+],tip:"struct vs class: Yalnızca veri tutacaksan struct, davranış ekleyeceksen class kullan. Bu convention'a uy."},
+{l:"Kalıtım & polimorfizm",w:"Kod tekrarını engelle",c:"teal",
+desc:"Inheritance, virtual fonksiyonlar, abstract class, override, final. Gömülü sistemde virtual fonksiyon kullanımı vtable nedeniyle dikkatli yapılmalı — bazı kritik sistemlerde performans etkisi var.",
+tags:["inheritance","virtual","override","abstract","vtable","dynamic_cast","interface"],
+subs:[
+{t:"vtable maliyeti",d:"Virtual fonksiyon her çağrıda indirection yapar. Real-time gömülü sistemde kritik path'te kullanma."},
+{t:"Abstract class vs interface",d:"Pure virtual fonksiyon = interface. Somut implementasyon yazmadan contract tanımla."},
+{t:"CRTP",d:"Curiously Recurring Template Pattern — static polymorphism. Virtual olmadan polimorfizm, sıfır runtime overhead."}
+],warn:"⚠️ Gömülü sistemde derin kalıtım hiyerarşisi kurmaktan kaçın. MISRA C++ kuralları bunu zaten sınırlar."},
+{l:"Operator overloading & copy/move semantics",w:"Sınıfları doğal hissettir",c:"teal",
+desc:"Operatörler (+, -, ==, <<) sınıflara özgü anlam kazanabilir. Copy constructor, copy assignment, move constructor, move assignment — Rule of Three/Five/Zero. Smart pointer'ların temeli burada.",
+tags:["operator+","operator==","copy ctor","move ctor","Rule of Five","std::move","noexcept"],
+subs:[
+{t:"Rule of Five",d:"Destructor yazdıysan muhtemelen copy ctor, copy assignment, move ctor, move assignment da yazmalısın."},
+{t:"std::move nedir?",d:"Kopyalamak yerine kaynağı 'çalmak'. Heap allocation'ı azaltır. Gömülü sistemde büyük veri kopyalamaktan kaçınmak için."}
+],tip:"Rule of Zero: Eğer kaynak yönetimi gerektirmiyorsa hiçbir şey yazma. Compiler en iyi kararı verir."}
+]},
+{phase:"Aşama 3 — Bellek yönetimi & sistem programlama",items:[
+{l:"Pointer & referans derinlemesi",w:"C++ gücünün kaynağı",c:"amber",
+desc:"Pointer arithmetic, pointer to function, pointer to member, multi-level pointer, const correctness. Gömülü sistem için bu bölüm altın değerinde — donanım adreslerine doğrudan erişim, DMA buffer, memory-mapped I/O hepsi pointer ile.",
+tags:["pointer","reference","pointer arithmetic","const ptr","function ptr","void*","nullptr"],
+subs:[
+{t:"Memory-mapped I/O",d:"volatile uint32_t* reg = (uint32_t*)0x40020C00; — GPIO register'ına doğrudan erişim. volatile şart."},
+{t:"volatile anahtar kelimesi",d:"Derleyiciye 'bu değişkeni optimize etme' der. Donanım register'ları, ISR ile paylaşılan değişkenler için zorunlu."},
+{t:"const correctness",d:"const int* vs int* const vs const int* const. Bu üçü farklı şey. Doğru kullanmak kodunu güvenli kılar."}
+],warn:"⚠️ Null pointer dereference en yaygın crash sebebi. Production kodunda her pointer'ı null check et veya reference kullan."},
+{l:"Stack, heap & bellek modeli",w:"Bellek nasıl çalışır",c:"amber",
+desc:"Stack (otomatik), heap (dinamik), data segment, BSS, text segment — her birinin ne olduğunu, ne kadar alan kapladığını bil. Gömülü sistemde heap kullanımı tehlikelidir (fragmentation), genellikle yasaklıdır.",
+tags:["stack","heap","new/delete","malloc/free","fragmentation","RAII","stack overflow"],
+subs:[
+{t:"Gömülü sistemde heap yasağı",d:"MISRA C++ ve AUTOSAR coding standards genellikle dynamic allocation yasak. Statik veya stack allocation kullan."},
+{t:"Stack overflow",d:"Derin recursion veya büyük local array tehlikeli. Linker script'te stack boyutuna dikkat et."},
+{t:"Memory layout",d:".text (kod), .data (init global), .bss (uninit global), stack (aşağı büyür), heap (yukarı büyür)."}
+],tip:"Valgrind (Linux) veya AddressSanitizer ile bellek leak'lerini bul. Gömülü sistemde static analyzer (cppcheck, PC-lint) kullan."},
+{l:"Smart pointers & RAII",w:"Güvenli bellek yönetimi",c:"amber",
+desc:"unique_ptr, shared_ptr, weak_ptr — raw pointer'ın yerini alan modern araçlar. RAII: kaynağı constructor'da al, destructor'da bırak. Mutex, dosya, soket — hepsi RAII ile yönet.",
+tags:["unique_ptr","shared_ptr","weak_ptr","make_unique","RAII","lock_guard","scoped_ptr"],
+subs:[
+{t:"unique_ptr ne zaman?",d:"Tek sahiplik. Heap allocation gerektiren ama scope'dan çıkınca silinmesi gereken her şey için."},
+{t:"shared_ptr dikkat",d:"Reference counting overhead var. Real-time gömülü sistemde dikkatli kullan. Thread-safe ama maliyetli."},
+{t:"Gömülü sistemde smart ptr",d:"Bazı embedded projeler no-heap kuralı yüzünden smart ptr kullanmaz. Platform kısıtlamasını bil."}
+],tip:"Raw pointer new/delete kullanıyorsan dur ve unique_ptr ile değiştirmeyi düşün. Modern C++'da neredeyse hiç raw pointer olmaz."},
+{l:"Concurrency & multithreading",w:"Paralel düşünmek",c:"amber",
+desc:"std::thread, std::mutex, std::atomic, std::condition_variable, std::future. Gömülü sistemde ise RTOS (FreeRTOS, Zephyr) task/semaphore/queue kavramları. Race condition, deadlock nasıl oluşur ve nasıl önlenir.",
+tags:["std::thread","std::mutex","std::atomic","FreeRTOS","task","semaphore","ISR","race condition"],
+subs:[
+{t:"ISR (Interrupt Service Routine)",d:"Donanım interrupt'ı gelince çalışan fonksiyon. Çok kısa olmalı, blocking işlem yapmamalı. volatile + atomic kullan."},
+{t:"FreeRTOS temel kavramlar",d:"Task (thread), Queue (veri iletimi), Semaphore/Mutex (senkronizasyon), Timer. Gömülü RTOS standartı."},
+{t:"Lock-free programlama",d:"std::atomic ile mutex olmadan thread-safe işlem. Compare-and-swap (CAS) mekanizması."}
+],warn:"⚠️ ISR içinde malloc, printf, mutex bekleme yapma. Real-time sistemlerde bu hatalar ölümcül olabilir."}
+]},
+{phase:"Aşama 4 — Modern C++ (C++11/14/17/20)",items:[
+{l:"C++11 temel yenilikler",w:"2011'de dil yeniden doğdu",c:"purple",
+desc:"auto, range-based for, lambda, initializer list, nullptr, enum class, constexpr, static_assert. Bu özellikler C++'ı hem daha güvenli hem daha okunabilir yaptı. Gömülü dünyada da C++11 artık standart.",
+tags:["auto","lambda","nullptr","enum class","constexpr","static_assert","initializer_list","override"],
+subs:[
+{t:"Lambda fonksiyonlar",d:"[capture](params) -> ret { body }. Callback, algoritma customization için mükemmel. Gömülü sistemde capture dikkatli."},
+{t:"enum class",d:"Scoped enum. OLD: enum Color{RED=0}; — RED global scope'da. NEW: enum class Color{Red}; Color::Red — güvenli."},
+{t:"constexpr",d:"Derleme zamanı sabit veya hesaplama. ROM'a gider, RAM kullanmaz. Gömülü sistemde çok değerli."}
+],tip:"nullptr kullan, NULL değil. 0 değil. nullptr type-safe, NULL sadece macro."},
+{l:"Template & generic programlama",w:"Sıfır maliyetli soyutlama",c:"purple",
+desc:"Function template, class template, template specialization, variadic template, SFINAE, concepts (C++20). Gömülü sistemde template'ler virtual function'ın overhead'siz alternatifi. STL'nin tamamı template üzerine kurulu.",
+tags:["template","typename","specialization","variadic","SFINAE","concepts","type_traits","<algorithm>"],
+subs:[
+{t:"Neden template?",d:"Aynı kodu farklı tipler için tekrar yazmamak. int için list, double için list ayrı class değil — tek template."},
+{t:"Template metaprogramming",d:"if_constexpr, type_traits — derleme zamanında tip bazlı karar verme. Sıfır runtime maliyet."},
+{t:"Concepts (C++20)",d:"Template constraint'leri daha okunabilir. requires anahtar kelimesi. SFINAE'nin yerini alıyor."}
+],warn:"⚠️ Template hata mesajları ilk başta çok karmaşık görünür. Concepts ile C++20'de çok daha anlaşılır hale geldi."},
+{l:"STL & standart kütüphane",w:"Tekerleği yeniden icat etme",c:"purple",
+desc:"vector, list, map, unordered_map, set, queue, stack, deque. Algoritma kütüphanesi: sort, find, transform, accumulate, for_each. Gömülü sistemde STL kullanımı platformu bilmek gerektirir — bazı STL container'ları heap kullanır.",
+tags:["vector","map","set","queue","sort","find","transform","<algorithm>","<numeric>","<functional>"],
+subs:[
+{t:"Konteyner seçimi",d:"Sık insert/delete: list. Sık erişim: vector. Key-value: map/unordered_map. Küçük, sabit boyut: array."},
+{t:"Gömülü sistemde STL",d:"Freestanding STL implementasyonları var (ETL - Embedded Template Library). Heap-free STL alternatifleri."},
+{t:"Algoritma kütüphanesi",d:"std::sort, std::find, std::transform — bunları elle yazmak yerine kullan. Daha hızlı ve test edilmiş."}
+],tip:"ETL (Embedded Template Library) — gömülü sistemler için heap-free, exception-free STL alternatifi. Mutlaka incele."},
+{l:"Exception handling & error yönetimi",w:"Hatayı yakala veya döndür",c:"purple",
+desc:"try/catch/throw, noexcept, exception hierarchy. Gömülü sistemde exception'lar genellikle YASAK — kod boyutu ve determinizm. Alternatif: error code döndür, std::expected (C++23), outcome::result.",
+tags:["try","catch","throw","noexcept","std::expected","error_code","errno","RTTI"],
+subs:[
+{t:"Gömülü sistemde exception yasağı",d:"Exception handling tabloları büyük kod boyutu gerektirir. -fno-exceptions flag ile derleme standardı."},
+{t:"Error code pattern",d:"enum class Error{Ok, Timeout, HardFault}; — fonksiyon Error döndürür. Caller kontrol eder."},
+{t:"[[nodiscard]]",d:"Dönüş değerini görmezden gelince warning verir. Error code'ların unutulmaması için kullan."}
+],warn:"⚠️ Gömülü sistemde exception kullanıyorsan platformun exception destekleyip desteklemediğini kontrol et."}
+]},
+{phase:"Aşama 5 — Gömülü sistem özeli",items:[
+{l:"Mikrodenetleyici temelleri",w:"Donanımı tanı",c:"coral",
+desc:"GPIO, UART, SPI, I2C, ADC, DAC, PWM, Timer, DMA, Interrupt. Her birinin ne işe yaradığını ve C++ ile nasıl kontrol edileceğini öğren. ARM Cortex-M (STM32, nRF52) veya AVR (Arduino) ile başla.",
+tags:["GPIO","UART","SPI","I2C","ADC","PWM","Timer","DMA","Interrupt","STM32","ARM Cortex-M"],
+subs:[
+{t:"Register-level programlama",d:"HAL yerine direkt register. volatile uint32_t* GPIOA_ODR = (uint32_t*)0x40020014; — bit manipulation."},
+{t:"HAL vs bare-metal",d:"STM32 HAL kolay ama yavaş. Bare-metal hızlı ama zor. HAL ile başla, kritik kısımları bare-metal yap."},
+{t:"DMA neden?",d:"CPU olmadan bellek-bellek veya bellek-donanım transferi. Yüksek hızlı ADC, UART, SPI için şart."}
+],tip:"STM32F4 Discovery veya Nucleo board ile başla. STM32CubeIDE + STM32CubeMX kombinasyonu başlangıç için ideal."},
+{l:"Linker script & startup kodu",w:"Program başlamadan önce",c:"coral",
+desc:".ld dosyaları — ROM/RAM layout, section tanımları. Startup kodu: stack pointer ayarla, BSS sıfırla, data kopyala, main() çağır. Bu bilgi olmadan linker hatalarını ve memory overflow'u anlayamazsın.",
+tags:["linker script",".ld","SECTIONS","startup.s","__attribute__","section","weak symbol","map file"],
+subs:[
+{t:"Memory sections",d:".text (flash'ta kod), .rodata (flash'ta const), .data (RAM'de init), .bss (RAM'de sıfır init). Her birinin nerede olduğunu bil."},
+{t:"__attribute__((section))",d:"Değişkeni veya fonksiyonu belirli bir section'a koy. Bootloader veya özel RAM bölgesi için."},
+{t:"Map file analizi",d:"Linker'ın ürettiği .map dosyası hangi sembolün kaç byte kapladığını gösterir. RAM/ROM taşmasında ilk bakılacak yer."}
+],warn:"⚠️ 'undefined reference to main' veya 'section overlap' hataları linker script'te. Map dosyasını oku."},
+{l:"RTOS (FreeRTOS / Zephyr)",w:"Gerçek zamanlı görev yönetimi",c:"coral",
+desc:"Task oluşturma, priority, stack boyutu, scheduler. Queue ile task arası haberleşme. Semaphore/Mutex ile senkronizasyon. Timer. Event group. Watchdog. Real-time deadline kavramı.",
+tags:["FreeRTOS","Zephyr","xTaskCreate","xQueueSend","xSemaphore","vTaskDelay","Watchdog","WCET"],
+subs:[
+{t:"Task stack boyutu",d:"Her task'ın kendi stack'i var. Çok küçük stack = stack overflow = crash. configCHECK_FOR_STACK_OVERFLOW açık tut."},
+{t:"Priority inversion",d:"Düşük öncelikli task kaynak tuttuğunda yüksek öncelikli task bekler. Priority inheritance ile çöz."},
+{t:"Worst-Case Execution Time",d:"Real-time sistemde her task'ın en kötü çalışma süresi bilinmeli. Deadline kaçırılmamalı."}
+],tip:"FreeRTOS ile başla — dokümantasyonu mükemmel, topluluğu büyük. Zephyr daha modern ama öğrenmesi daha uzun."},
+{l:"Debugging & testing gömülü",w:"Donanımı test etmek farklı",c:"coral",
+desc:"JTAG/SWD ile debug, GDB, OpenOCD, Segger J-Link. Unit test on-target vs off-target. CppUTest, Google Test ile host'ta test. Hardware-in-the-loop (HIL) testing. Static analysis: cppcheck, clang-tidy.",
+tags:["JTAG","SWD","GDB","OpenOCD","J-Link","CppUTest","Google Test","HIL","cppcheck","MISRA C++"],
+subs:[
+{t:"Off-target testing",d:"Donanım bağımsız birim testi. HAL'ı mock'la, iş mantığını PC'de test et. Çok daha hızlı geliştirme döngüsü."},
+{t:"MISRA C++",d:"Güvenlik kritik sistemler için coding standard. Automotive (ISO 26262), aerospace (DO-178C). Kuralları bilmek işe yarar."},
+{t:"ITM/SWO trace",d:"Printf yerine ARM Cortex-M'in trace arayüzü. Zaman damgalı, düşük overhead debug çıktısı."}
+],tip:"printf debugging gömülü sistemde yavaş. SWO trace veya RTT (Real-Time Transfer) kullan — çok daha hızlı."}
+]},
+{phase:"Aşama 6 — İleri seviye & araçlar",items:[
+{l:"Design patterns gömülü için",w:"Kanıtlanmış çözümler",c:"green",
+desc:"State machine (FSM), Observer, Command, Singleton (dikkatli!), Factory, Strategy. Gömülü sistemde en sık kullanılan: State Machine ve Observer. Event-driven mimari.",
+tags:["State Machine","Observer","Command","Singleton","Factory","Strategy","event-driven"],
+subs:[
+{t:"Finite State Machine",d:"Gömülü sistemin kalbi. Her durum bir state, geçiş koşulları tanımlı. Tablo bazlı veya class bazlı implemente et."},
+{t:"Observer pattern",d:"Event/callback sistemi. Button press → birden fazla handler tetikle. Interrupt ile mükemmel uyum."}
+],tip:"'Embedded C++ ile State Machine' araması yap — pratik örnek çok var."},
+{l:"Build sistemi & CI/CD",w:"Profesyonel geliştirme akışı",c:"green",
+desc:"CMake ileri seviye, cross-compilation toolchain dosyaları, arm-none-eabi-gcc. GitHub Actions ile otomatik build ve test. Docker ile reproducible build environment. Firmware güncelleme (OTA/FOTA).",
+tags:["CMake toolchain","arm-none-eabi","cross-compile","GitHub Actions","Docker","OTA","FOTA","firmware"],
+subs:[
+{t:"Cross-compilation",d:"PC'de ARM için derleme. Toolchain dosyası: CMAKE_SYSTEM_NAME, CMAKE_C_COMPILER=arm-none-eabi-gcc."},
+{t:"Firmware güncelleme",d:"Bootloader + application bölünmüş flash. OTA update için CRC/hash doğrulama. Güvenli rollback."}
+],tip:"GitHub Actions veya GitLab CI ile her commit'te otomatik derleme + birim test çalıştır. Erken hata yakalama."},
+{l:"Performans & optimizasyon",w:"Her clock cycle önemli",c:"green",
+desc:"Compiler optimization flag'leri (-O2, -Os, -O3, LTO), profiling (gprof, perf, hardware counter), cache behavior, branch prediction, SIMD (Cortex-M DSP). Power consumption optimizasyonu — sleep mode, clock gating.",
+tags:["O2/O3/Os","LTO","profiling","cache","SIMD","DSP","sleep mode","clock gating","power"],
+subs:[
+{t:"Compiler optimization seviyeleri",d:"-O0 debug, -O1 temel, -O2 standard, -O3 agresif, -Os boyut optimize, -Og debug-friendly optimize."},
+{t:"Power optimizasyonu",d:"IoT cihazlarda pil ömrü kritik. Sleep mode seviyeleri (WFI, WFE, STOP, STANDBY). Aktif süreyi minimuma indir."}
+],warn:"⚠️ -O3 ile bazı kodlar yanlış çalışabilir (undefined behavior). -O2 ile başla, test et, sonra yükselt."}
+]}
+];
+
+const root=document.getElementById('root');
+D.forEach(phase=>{
+  const pDiv=document.createElement('div');
+  pDiv.innerHTML=`<div class="phase">${phase.phase}</div>`;
+  const nDiv=document.createElement('div');
+  nDiv.className='nodes';
+  phase.items.forEach(item=>{
+    const colors={blue:'#378ADD',teal:'#1D9E75',amber:'#BA7517',coral:'#D85A30',purple:'#7F77DD',green:'#639922',gray:'#888780'};
+    const n=document.createElement('div');
+    n.className='node';
+    const tagsHtml=item.tags.map(t=>`<span class="tag t-${item.c}">${t}</span>`).join('');
+    const subsHtml=(item.subs||[]).map(s=>`<div class="sub"><div class="sub-t">${s.t}</div><div class="sub-d">${s.d}</div></div>`).join('');
+    const tipHtml=item.tip?`<div class="tip">${item.tip}</div>`:'';
+    const warnHtml=item.warn?`<div class="warn">${item.warn}</div>`:'';
+    n.innerHTML=`
+      <div class="hdr">
+        <div class="dot" style="background:${colors[item.c]}"></div>
+        <div class="lbl">${item.l}</div>
+        <div class="why">${item.w}</div>
+        <div class="chv">▶</div>
+      </div>
+      <div class="body">
+        <div class="desc">${item.desc}</div>
+        <div class="tags">${tagsHtml}</div>
+        ${subsHtml?`<div class="subs">${subsHtml}</div>`:''}
+        ${tipHtml}${warnHtml}
+      </div>`;
+    n.querySelector('.hdr').addEventListener('click',()=>n.classList.toggle('open'));
+    nDiv.appendChild(n);
+  });
+  pDiv.appendChild(nDiv);
+  root.appendChild(pDiv);
+});
+</script>

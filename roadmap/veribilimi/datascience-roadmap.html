@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veri Bilimi 0→Pro Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #080f0c;
+  --bg2:   #0d1a14;
+  --bg3:   #122018;
+  --panel: rgba(255,255,255,.03);
+  --glass: rgba(255,255,255,.055);
+
+  --ink:   #e8f5ec;
+  --ink2:  #8ab89a;
+  --ink3:  #4d7a5e;
+
+  --em:  #00c278;   /* emerald       */
+  --em2: #00e88e;   /* light emerald */
+  --em3: rgba(0,194,120,.12);
+  --gd:  #d4a843;   /* gold          */
+  --gd2: #f0c866;   /* light gold    */
+  --gd3: rgba(212,168,67,.1);
+  --aq:  #00b4d8;   /* aqua          */
+  --rs:  #ff6b6b;   /* rose          */
+  --lv:  #a78bfa;   /* lavender      */
+
+  --bord:  rgba(0,194,120,.15);
+  --bord2: rgba(0,194,120,.07);
+  --bord3: rgba(212,168,67,.2);
+
+  --fh: 'Cormorant Garamond', serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'JetBrains Mono', monospace;
+  --r:  8px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur {position:fixed;width:8px;height:8px;background:var(--em);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .12s,height .12s;}
+#cur2{position:fixed;width:28px;height:28px;border:1px solid rgba(0,194,120,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* ── ART DECO LINES ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0,transparent 119px,
+      rgba(0,194,120,.03) 119px,rgba(0,194,120,.03) 120px
+    ),
+    repeating-linear-gradient(0deg,
+      transparent 0,transparent 59px,
+      rgba(0,194,120,.025) 59px,rgba(0,194,120,.025) 60px
+    );
+}
+
+/* ── MESH ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 15%, rgba(0,194,120,.08) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 80%, rgba(212,168,67,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 60% 40%, rgba(0,180,216,.04) 0%,transparent 70%);
+}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{
+  padding:64px 0 52px;
+  border-bottom:1px solid var(--bord);
+  position:relative;
+}
+
+/* Art Deco corner ornaments */
+.hero::before,.hero::after{
+  content:'';position:absolute;
+  width:60px;height:60px;
+  border-color:var(--gd);
+  border-style:solid;
+  opacity:.4;
+}
+.hero::before{top:24px;left:0;border-width:1px 0 0 1px;}
+.hero::after {top:24px;right:0;border-width:1px 1px 0 0;}
+
+.hero-sub-label{
+  font-family:var(--fm);font-size:.62rem;letter-spacing:.28em;
+  color:var(--em);display:flex;align-items:center;gap:10px;
+  margin-bottom:22px;animation:up .6s ease both;
+}
+.hero-sub-label span{width:32px;height:1px;background:var(--em);}
+
+.hero-layout{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;}
+
+.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(4.5rem,11vw,9.5rem);
+  font-weight:600;line-height:.88;
+  letter-spacing:-.02em;
+  animation:up .6s .08s ease both;
+}
+.hero-h .em{color:var(--em2);font-style:italic;}
+.hero-h .gold{color:var(--gd);}
+.hero-h .outline{color:transparent;-webkit-text-stroke:1px rgba(232,245,236,.2);}
+
+.hero-right{
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid var(--bord3);flex-shrink:0;
+  animation:up .6s .16s ease both;
+}
+.hstat{
+  padding:14px 22px;border-bottom:1px solid var(--bord3);
+  text-align:center;
+}
+.hstat:last-child{border-bottom:none;}
+.hstat-n{font-family:var(--fh);font-size:2.6rem;color:var(--gd);line-height:1;}
+.hstat-l{font-family:var(--fm);font-size:.52rem;letter-spacing:.15em;color:var(--ink3);margin-top:3px;}
+
+.hero-desc{
+  margin-top:24px;font-size:.92rem;color:var(--ink2);
+  max-width:580px;line-height:1.75;
+  animation:up .6s .24s ease both;
+}
+.hero-desc strong{color:var(--ink);}
+
+/* ══════════ MINDSET BAR ══════════ */
+.mindset{
+  display:grid;grid-template-columns:auto 1fr;
+  border:1px solid var(--bord);border-top:none;
+  animation:up .6s .28s ease both;
+}
+.mindset-title{
+  padding:18px 24px;border-right:1px solid var(--bord);
+  font-family:var(--fh);font-size:1.4rem;font-style:italic;
+  color:var(--em2);white-space:nowrap;display:flex;align-items:center;
+}
+.mindset-pcts{
+  display:flex;align-items:stretch;
+}
+.mpct{
+  flex:1;padding:12px 16px;border-right:1px solid var(--bord);
+  display:flex;align-items:center;gap:12px;
+  transition:background .2s;
+}
+.mpct:last-child{border-right:none;}
+.mpct:hover{background:var(--panel);}
+.mpct-n{
+  font-family:var(--fh);font-size:2.4rem;line-height:1;
+  flex-shrink:0;
+}
+.mpct-t{font-size:.78rem;line-height:1.4;color:var(--ink2);}
+.mpct-t strong{color:var(--ink);display:block;font-size:.82rem;}
+
+/* ══════════ PHASE ROW ══════════ */
+.phases{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  border:1px solid var(--bord);border-top:none;
+  animation:up .6s .32s ease both;
+}
+.ph{
+  padding:12px 8px;border-right:1px solid var(--bord);
+  cursor:pointer;text-align:center;position:relative;
+  overflow:hidden;transition:background .2s;
+}
+.ph:last-child{border-right:none;}
+.ph::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:var(--pc,var(--em));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.ph:hover::before{transform:scaleX(1);}
+.ph-n{
+  font-family:var(--fh);font-size:1.4rem;color:rgba(255,255,255,.1);
+  line-height:1;transition:color .2s;
+}
+.ph:hover .ph-n{color:var(--pc,var(--em));}
+.ph-lbl{font-family:var(--fm);font-size:.52rem;letter-spacing:.1em;color:var(--ink3);margin-top:3px;}
+
+/* ══════════ MAIN GRID ══════════ */
+.main{display:grid;grid-template-columns:1fr 292px;gap:0;border:1px solid var(--bord);border-top:none;}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:1px solid var(--bord);}
+.sec{
+  border-bottom:1px solid var(--bord);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .5s,transform .5s;
+}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{
+  display:grid;grid-template-columns:60px 1fr auto;
+  cursor:pointer;transition:background .2s;align-items:start;
+}
+.sec-hd:hover{background:var(--panel);}
+.sec-hd.open{background:var(--bg2);}
+
+.sec-nc{padding:18px 0 0 16px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;}
+.sec-num{
+  font-family:var(--fh);font-size:2rem;font-weight:600;
+  color:rgba(255,255,255,.07);line-height:1;transition:color .2s;
+}
+.sec-hd.open .sec-num,.sec-hd:hover .sec-num{color:var(--sc,var(--em));}
+.sec-tick{
+  width:20px;height:1px;background:var(--sc,var(--em));
+  transform:scaleX(0);transform-origin:left;transition:transform .3s;
+}
+.sec-hd.open .sec-tick,.sec-hd:hover .sec-tick{transform:scaleX(1);}
+
+.sec-info{padding:18px 12px;}
+.sec-lv{font-family:var(--fm);font-size:.54rem;letter-spacing:.2em;color:var(--sc,var(--em));margin-bottom:5px;}
+.sec-title{font-family:var(--fh);font-size:1.25rem;font-weight:600;line-height:1.15;}
+.sec-sub{font-family:var(--fm);font-size:.64rem;color:var(--ink3);margin-top:4px;line-height:1.4;}
+.sec-arr{padding:18px 14px 0 0;font-size:.58rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--em));}
+
+.sec-body{display:none;border-top:1px solid var(--bord);}
+.sec-body.open{display:block;animation:bIn .25s ease;}
+@keyframes bIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.sec-in{padding:22px 20px 28px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.chip{
+  font-family:var(--fm);font-size:.62rem;padding:3px 10px;
+  border:1px solid var(--bord);color:var(--ink3);background:var(--panel);
+  transition:all .18s;cursor:default;border-radius:2px;
+}
+.chip:hover{border-color:var(--sc,var(--em));color:var(--sc,var(--em));background:var(--em3);}
+
+/* ── CODE ── */
+.code{
+  background:rgba(0,0,0,.55);border:1px solid rgba(0,194,120,.1);
+  border-left:2px solid var(--sc,var(--em));
+  font-family:var(--fm);font-size:.72rem;line-height:1.8;
+  padding:14px 16px;margin:12px 0;overflow-x:auto;border-radius:2px;
+  position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:.52rem;letter-spacing:.12em;color:var(--ink3);}
+.kw{color:#7dd3fc;} .fn{color:#86efac;} .str{color:#fde68a;}
+.cm{color:#374a3e;font-style:italic;} .op{color:#f9a8d4;}
+.num{color:#fdba74;} .cls{color:#c4b5fd;} .hi2{color:var(--em2);}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+
+.card{
+  padding:11px 13px;border:1px solid var(--bord);
+  background:var(--panel);transition:all .2s;
+  border-left:2px solid var(--sc,var(--em));
+}
+.card:hover{border-color:var(--sc,var(--em));background:var(--em3);transform:translateY(-2px);}
+.card-t{font-family:var(--fm);font-size:.7rem;color:var(--ink);margin-bottom:3px;font-weight:500;}
+.card-d{font-size:.69rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{
+  padding:11px 14px;margin:10px 0;
+  font-size:.79rem;line-height:1.65;color:var(--ink2);
+  border-left:2px solid var(--nc,var(--em));
+  background:rgba(0,194,120,.04);border-radius:0 2px 2px 0;
+}
+.note strong{color:var(--nc,var(--em2));}
+.note.gold{--nc:var(--gd);background:var(--gd3);}
+.note.rose{--nc:var(--rs);background:rgba(255,107,107,.05);}
+.note.aq  {--nc:var(--aq);background:rgba(0,180,216,.04);}
+.note.lv  {--nc:var(--lv);background:rgba(167,139,250,.04);}
+
+/* ── TARGET ── */
+.target{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 13px;border:1px solid var(--bord);
+  border-left:2px solid var(--sc,var(--em));
+  font-family:var(--fm);font-size:.69rem;margin-top:12px;color:var(--ink3);
+}
+.target::before{content:'▸';color:var(--sc,var(--em));flex-shrink:0;}
+
+/* ── PROJ BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pb{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 11px;border:1px solid var(--bord);
+  background:var(--panel);font-size:.74rem;font-weight:500;
+  transition:all .18s;cursor:default;border-radius:2px;
+}
+.pb:hover{background:var(--gd3);border-color:var(--gd);color:var(--gd);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.73rem;margin:10px 0;}
+.tbl th{background:var(--bg3);padding:7px 10px;text-align:left;font-family:var(--fm);font-size:.56rem;letter-spacing:.14em;color:var(--ink3);border-bottom:1px solid var(--bord);}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--bord2);color:var(--ink2);}
+.tbl tr:hover td{background:var(--panel);}
+.hi{color:var(--em);font-family:var(--fm);}
+
+/* ── ALGO CARD ── */
+.algo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;}
+.algo{
+  padding:12px 14px;border:1px solid var(--bord);background:var(--panel);
+  position:relative;overflow:hidden;transition:all .2s;
+}
+.algo::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--ac,var(--em)),transparent);
+}
+.algo:hover{background:var(--em3);border-color:var(--em);}
+.algo-type{font-family:var(--fm);font-size:.54rem;letter-spacing:.15em;color:var(--ac,var(--em));margin-bottom:4px;}
+.algo-name{font-family:var(--fh);font-size:1rem;font-weight:600;line-height:1.2;}
+.algo-desc{font-size:.69rem;color:var(--ink3);margin-top:3px;font-family:var(--fm);}
+
+/* ── MATH BOX ── */
+.math-box{
+  background:rgba(0,0,0,.4);border:1px solid var(--bord3);
+  border-radius:2px;padding:14px 16px;margin:12px 0;
+  font-family:var(--fm);font-size:.75rem;line-height:2;
+}
+.math-row{display:flex;align-items:center;gap:12px;padding:3px 0;border-bottom:1px solid var(--bord2);}
+.math-row:last-child{border-bottom:none;}
+.math-sym{color:var(--gd);font-size:.9rem;width:20px;flex-shrink:0;text-align:center;}
+.math-name{color:var(--ink);font-weight:500;}
+.math-desc{color:var(--ink3);font-size:.68rem;margin-left:auto;}
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar{background:var(--bg2);}
+.sb{padding:18px 16px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{font-family:var(--fm);font-size:.55rem;letter-spacing:.22em;color:var(--ink3);margin-bottom:13px;display:flex;align-items:center;gap:6px;text-transform:uppercase;}
+.sb-t::before{content:'//';color:var(--em);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tlr{display:grid;grid-template-columns:44px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid var(--bord2);align-items:center;}
+.tlr:last-child{border-bottom:none;}
+.tld{font-family:var(--fh);font-size:1.5rem;font-weight:600;color:var(--gd);line-height:1;text-align:center;}
+.tlu{font-family:var(--fm);font-size:.44rem;color:var(--ink3);display:block;text-align:center;}
+.tln{font-size:.8rem;font-weight:700;}
+.tls{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;}
+
+/* Skill bars */
+.skills{display:flex;flex-direction:column;gap:8px;}
+.skr{display:flex;align-items:center;gap:7px;}
+.skl{font-family:var(--fm);font-size:.6rem;color:var(--ink2);width:82px;flex-shrink:0;}
+.skt{flex:1;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;}
+.skf{height:100%;background:var(--sc2,var(--em));width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+.skp{font-family:var(--fm);font-size:.56rem;color:var(--ink3);width:26px;text-align:right;flex-shrink:0;}
+
+/* Track */
+.track-list{display:flex;flex-direction:column;gap:6px;}
+.track{
+  padding:10px 12px;border:1px solid var(--bord);background:var(--panel);
+  transition:all .2s;border-left:2px solid var(--tc,var(--em));
+}
+.track:hover{background:var(--em3);border-color:var(--tc,var(--em));}
+.track-n{font-size:.79rem;font-weight:700;}
+.track-libs{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:3px;}
+
+/* Kaggle tips */
+.tip-list{display:flex;flex-direction:column;gap:5px;}
+.tip{
+  display:flex;gap:9px;align-items:flex-start;
+  padding:8px 10px;border:1px solid var(--bord);background:var(--panel);
+  transition:all .18s;
+}
+.tip:hover{background:var(--gd3);border-color:var(--gd);}
+.tip-icon{font-size:.9rem;flex-shrink:0;margin-top:1px;}
+.tip-t{font-size:.76rem;font-weight:700;}
+.tip-d{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{
+  border:1px solid var(--bord);border-top:none;
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;overflow:hidden;
+}
+.bottom::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(0,194,120,.05) 0%,transparent 40%,rgba(212,168,67,.04) 100%);
+}
+/* Bottom corner deco */
+.bottom::after{
+  content:'';position:absolute;bottom:12px;right:12px;
+  width:40px;height:40px;
+  border-right:1px solid rgba(212,168,67,.3);
+  border-bottom:1px solid rgba(212,168,67,.3);
+  pointer-events:none;
+}
+.bot-l,.bot-r{padding:44px 36px;position:relative;z-index:1;}
+.bot-l{border-right:1px solid var(--bord);}
+.bot-h{font-family:var(--fh);font-size:clamp(2rem,4.5vw,3.5rem);font-weight:600;line-height:.95;margin-bottom:14px;}
+.bot-h em{font-style:italic;color:var(--em2);}
+.bot-h .gd{color:var(--gd);}
+.bot-p{font-size:.84rem;color:var(--ink2);line-height:1.75;margin-bottom:22px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;font-family:var(--fb);font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border-radius:2px;}
+.btn-em{background:var(--em);color:var(--bg);border:none;}
+.btn-em:hover{background:var(--em2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,194,120,.25);}
+.btn-gd{background:transparent;border:1px solid var(--bord3);color:var(--gd2);margin-left:8px;}
+.btn-gd:hover{background:var(--gd3);border-color:var(--gd);}
+
+.plan-steps{display:flex;flex-direction:column;gap:0;}
+.pstep{
+  display:flex;gap:14px;padding:10px 0;
+  border-bottom:1px solid var(--bord2);align-items:flex-start;
+}
+.pstep:last-child{border-bottom:none;}
+.pstep-n{
+  font-family:var(--fh);font-size:1.6rem;font-weight:600;
+  color:rgba(212,168,67,.2);line-height:1;flex-shrink:0;width:30px;
+  transition:color .2s;
+}
+.pstep:hover .pstep-n{color:var(--gd);}
+.pstep-t{font-size:.82rem;font-weight:700;color:var(--ink);}
+.pstep-d{font-family:var(--fm);font-size:.61rem;color:var(--ink3);margin-top:2px;line-height:1.4;}
+
+/* FOOTER */
+footer{padding:18px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.58rem;color:var(--ink3);border-top:1px solid var(--bord);}
+footer span:first-child{color:var(--em);}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* RESPONSIVE */
+@media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{border-top:1px solid var(--bord)}.bottom{grid-template-columns:1fr}.bot-l{border-right:none;border-bottom:1px solid var(--bord)}.phases{grid-template-columns:repeat(4,1fr)}.hero-layout{grid-template-columns:1fr}.hero-right{flex-direction:row}}
+@media(max-width:640px){.page{padding:0 14px 60px}.phases{grid-template-columns:repeat(2,1fr)}.g2,.g3,.g4,.algo-grid{grid-template-columns:1fr}.mindset{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-sub-label"><span></span>Veri Bilimi Yol Haritası · 0 → Pro</div>
+  <div class="hero-layout">
+    <div>
+      <h1 class="hero-h">
+        <span class="em">Veri</span><br>
+        <span class="gold">Bilimi</span><br>
+        <span class="outline">Roadmap</span>
+      </h1>
+      <p class="hero-desc">
+        Sadece model kurmak değil — <strong>problem çözme + istatistik + yazılım + iş bilgisi.</strong>
+        Gerçek veri bilimi böyle görünür. %70 temizleme, %20 analiz, %10 model. <strong>Hazır mısın?</strong>
+      </p>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">BÖLÜM</div></div>
+      <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">PROJE</div></div>
+      <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">AY (MIN)</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ MINDSET ══ -->
+<div class="mindset">
+  <div class="mindset-title">Zihniyet</div>
+  <div class="mindset-pcts">
+    <div class="mpct">
+      <div class="mpct-n" style="color:var(--rs)">%70</div>
+      <div class="mpct-t"><strong>Veri Temizleme</strong>Gerçekliğin büyük çoğunluğu burada</div>
+    </div>
+    <div class="mpct">
+      <div class="mpct-n" style="color:var(--gd)">%20</div>
+      <div class="mpct-t"><strong>Analiz & Görselleştirme</strong>Pattern'leri bul, yorumla</div>
+    </div>
+    <div class="mpct">
+      <div class="mpct-n" style="color:var(--em)">%10</div>
+      <div class="mpct-t"><strong>Model Kurma</strong>Evet, sadece %10</div>
+    </div>
+    <div class="mpct" style="background:var(--gd3);border-left:1px solid var(--bord3);">
+      <div class="mpct-n" style="color:var(--gd2)">★</div>
+      <div class="mpct-t"><strong>Problem Çözme Mindset'i</strong>Teknik bilgiden önce gelir</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PHASES ══ -->
+<div class="phases">
+  <div class="ph" style="--pc:var(--em)"><div class="ph-n">0</div><div class="ph-lbl" style="color:var(--em)">ZİHNİYET</div></div>
+  <div class="ph" style="--pc:var(--em)"><div class="ph-n">1</div><div class="ph-lbl" style="color:var(--em)">ALTYAPI</div></div>
+  <div class="ph" style="--pc:var(--gd)"><div class="ph-n">2</div><div class="ph-lbl" style="color:var(--gd)">ANALİZ</div></div>
+  <div class="ph" style="--pc:var(--aq)"><div class="ph-n">3</div><div class="ph-lbl" style="color:var(--aq)">ML</div></div>
+  <div class="ph" style="--pc:var(--lv)"><div class="ph-n">4</div><div class="ph-lbl" style="color:var(--lv)">DERİN ÖĞRENME</div></div>
+  <div class="ph" style="--pc:var(--rs)"><div class="ph-n">5</div><div class="ph-lbl" style="color:var(--rs)">GERÇEK DÜNYA</div></div>
+  <div class="ph" style="--pc:var(--gd2)"><div class="ph-n">6</div><div class="ph-lbl" style="color:var(--gd2)">UZMANLIK</div></div>
+  <div class="ph" style="--pc:var(--em2)"><div class="ph-n">7</div><div class="ph-lbl" style="color:var(--em2)">PROJELER</div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── B1: TEMEL ALTYAPI ──── -->
+<div class="sec">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--em)">
+    <div class="sec-nc"><div class="sec-num">1</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// TEMEL ALTYAPI · BAŞLANGIÇ</div>
+      <div class="sec-title">Python + Kütüphaneler + Matematik</div>
+      <div class="sec-sub">NumPy · Pandas · Matplotlib · Seaborn · İstatistik · Lineer Cebir</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--em)">
+    <div class="sec-in">
+      <div class="chips">
+        <span class="chip">NumPy</span><span class="chip">Pandas</span><span class="chip">Matplotlib</span>
+        <span class="chip">Seaborn</span><span class="chip">List Comprehension</span>
+        <span class="chip">Lambda</span><span class="chip">JSON</span><span class="chip">CSV</span>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># NumPy — sayısal hesaplama temeli</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="fn">dizi</span> = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+<span class="fn">matris</span> = np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])
+np.<span class="fn">mean</span>(<span class="fn">dizi</span>), np.<span class="fn">std</span>(<span class="fn">dizi</span>), np.<span class="fn">dot</span>(<span class="fn">matris</span>, <span class="fn">matris</span>.T)
+
+<span class="cm"># Pandas — veri manipülasyonu kalbi</span>
+<span class="fn">df</span> = pd.<span class="fn">read_csv</span>(<span class="str">"veri.csv"</span>)
+<span class="fn">df</span>.<span class="fn">info</span>()                          <span class="cm"># genel bakış</span>
+<span class="fn">df</span>.<span class="fn">describe</span>()                      <span class="cm"># istatistik özeti</span>
+<span class="fn">df</span>[<span class="str">"yas"</span>].<span class="fn">value_counts</span>()           <span class="cm"># frekans</span>
+<span class="fn">df</span>.<span class="fn">groupby</span>(<span class="str">"sehir"</span>)[<span class="str">"gelir"</span>].<span class="fn">mean</span>() <span class="cm"># groupby</span>
+
+<span class="cm"># Pandas merge — SQL join gibi</span>
+<span class="fn">sonuc</span> = pd.<span class="fn">merge</span>(<span class="fn">df1</span>, <span class="fn">df2</span>, on=<span class="str">"id"</span>, how=<span class="str">"left"</span>)
+<span class="fn">pivot</span> = <span class="fn">df</span>.<span class="fn">pivot_table</span>(values=<span class="str">"satis"</span>, index=<span class="str">"ay"</span>, aggfunc=<span class="str">"sum"</span>)</div>
+
+      <!-- Math section -->
+      <div style="font-family:var(--fm);font-size:.58rem;letter-spacing:.18em;color:var(--gd);margin:16px 0 8px;">// MATEMATİK & İSTATİSTİK — YETERİ KADAR, AKADEMİK DEĞİL</div>
+      <div class="math-box">
+        <div class="math-row"><div class="math-sym">μ</div><div class="math-name">Ortalama (Mean)</div><div class="math-desc">Σx / n — merkezin nerede?</div></div>
+        <div class="math-row"><div class="math-sym">M</div><div class="math-name">Medyan (Median)</div><div class="math-desc">Ortanca değer — outlier'a dayanıklı</div></div>
+        <div class="math-row"><div class="math-sym">σ²</div><div class="math-name">Varyans</div><div class="math-desc">Ortalamadan ortalama sapma karesi</div></div>
+        <div class="math-row"><div class="math-sym">r</div><div class="math-name">Korelasyon</div><div class="math-desc">-1 ile 1 arası — doğrusal ilişki gücü</div></div>
+        <div class="math-row"><div class="math-sym">p</div><div class="math-name">p-value</div><div class="math-desc">&lt;0.05 → sonuç istatistiksel anlamlı</div></div>
+        <div class="math-row"><div class="math-sym">CLT</div><div class="math-name">Central Limit Theorem</div><div class="math-desc">Büyük örneklem → normal dağılım. ML'nin temeli!</div></div>
+      </div>
+
+      <div class="note gold"><strong>💡 Lineer Cebir neden önemli?</strong> ML algoritmalarının %90'ı matris operasyonları üstüne kurulu. Gradient descent, neural network ağırlıkları, PCA — hepsi lineer cebir. Vektör ve matris çarpımını anlayan, "kara kutuyu" anlayan olur.</div>
+
+      <div class="target">Hedef: CSV okuyup analiz yap. Histogram, scatter, heatmap çiz. İstatistiksel özet çıkar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B2: VERİ ANALİZİ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--gd)">
+    <div class="sec-nc"><div class="sec-num">2</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// VERİ ANALİZİ · JUNIOR</div>
+      <div class="sec-title">EDA + Data Cleaning + Görselleştirme</div>
+      <div class="sec-sub">Pandas Mastery · Outlier · Missing Data · Encoding · Scaling · EDA</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--gd)">
+    <div class="sec-in">
+      <div class="note gold"><strong>⭐ En Kritik Skill:</strong> Data Cleaning olmadan model kurulamazsiniz. "Garbage in, garbage out" — temiz veri = iyi model. Sektörde zamanın %70'i burada geçer.</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Exploratory Data Analysis — EDA akışı</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+<span class="cm"># 1. Genel bakış</span>
+<span class="fn">df</span>.<span class="fn">shape</span>, <span class="fn">df</span>.<span class="fn">dtypes</span>, <span class="fn">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>()
+
+<span class="cm"># 2. Missing data analizi</span>
+<span class="fn">eksik_oran</span> = (<span class="fn">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>() / <span class="op">len</span>(<span class="fn">df</span>)) * <span class="num">100</span>
+
+<span class="cm"># 3. Doldurma stratejileri</span>
+<span class="fn">df</span>[<span class="str">"yas"</span>].<span class="fn">fillna</span>(<span class="fn">df</span>[<span class="str">"yas"</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>)  <span class="cm"># sayısal</span>
+<span class="fn">df</span>[<span class="str">"sehir"</span>].<span class="fn">fillna</span>(<span class="fn">df</span>[<span class="str">"sehir"</span>].<span class="fn">mode</span>()[<span class="num">0</span>], inplace=<span class="kw">True</span>) <span class="cm"># kategorik</span>
+
+<span class="cm"># 4. Outlier tespiti — IQR yöntemi</span>
+<span class="fn">Q1</span>, <span class="fn">Q3</span> = <span class="fn">df</span>[<span class="str">"gelir"</span>].<span class="fn">quantile</span>([<span class="num">.25</span>, <span class="num">.75</span>])
+<span class="fn">IQR</span> = <span class="fn">Q3</span> - <span class="fn">Q1</span>
+<span class="fn">alt</span>, <span class="fn">ust</span> = <span class="fn">Q1</span> - <span class="num">1.5</span>*<span class="fn">IQR</span>, <span class="fn">Q3</span> + <span class="num">1.5</span>*<span class="fn">IQR</span>
+<span class="fn">df_temiz</span> = <span class="fn">df</span>[(<span class="fn">df</span>[<span class="str">"gelir"</span>] >= <span class="fn">alt</span>) & (<span class="fn">df</span>[<span class="str">"gelir"</span>] <= <span class="fn">ust</span>)]
+
+<span class="cm"># 5. Encoding</span>
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> LabelEncoder, StandardScaler
+<span class="fn">le</span> = LabelEncoder()
+<span class="fn">df</span>[<span class="str">"cinsiyet_enc"</span>] = <span class="fn">le</span>.<span class="fn">fit_transform</span>(<span class="fn">df</span>[<span class="str">"cinsiyet"</span>])
+<span class="fn">df_dummies</span> = pd.<span class="fn">get_dummies</span>(<span class="fn">df</span>, columns=[<span class="str">"sehir"</span>]) <span class="cm"># one-hot</span>
+
+<span class="cm"># 6. Scaling</span>
+<span class="fn">scaler</span> = StandardScaler()
+<span class="fn">X_scaled</span> = <span class="fn">scaler</span>.<span class="fn">fit_transform</span>(<span class="fn">X_train</span>)  <span class="cm"># fit sadece train'e!</span>
+<span class="fn">X_test_scaled</span> = <span class="fn">scaler</span>.<span class="fn">transform</span>(<span class="fn">X_test</span>)   <span class="cm"># transform test'e</span></div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Görselleştirme — iletişim aracı</span>
+<span class="fn">fig</span>, <span class="fn">axes</span> = plt.<span class="fn">subplots</span>(<span class="num">2</span>, <span class="num">2</span>, figsize=(<span class="num">12</span>, <span class="num">8</span>))
+
+<span class="cm"># Histogram</span>
+<span class="fn">df</span>[<span class="str">"gelir"</span>].<span class="fn">hist</span>(ax=<span class="fn">axes</span>[<span class="num">0</span>,<span class="num">0</span>], bins=<span class="num">30</span>)
+
+<span class="cm"># Scatter — iki değişken ilişkisi</span>
+sns.<span class="fn">scatterplot</span>(data=<span class="fn">df</span>, x=<span class="str">"yas"</span>, y=<span class="str">"gelir"</span>, hue=<span class="str">"cinsiyet"</span>)
+
+<span class="cm"># Heatmap — korelasyon matrisi</span>
+sns.<span class="fn">heatmap</span>(<span class="fn">df</span>.<span class="fn">corr</span>(), annot=<span class="kw">True</span>, fmt=<span class="str">".2f"</span>, cmap=<span class="str">"coolwarm"</span>)
+
+<span class="cm"># Box plot — outlier görselleştirme</span>
+sns.<span class="fn">boxplot</span>(data=<span class="fn">df</span>, x=<span class="str">"sehir"</span>, y=<span class="str">"gelir"</span>)</div>
+
+      <div class="proj-row">
+        <div class="pb">🚢 Titanic Analizi</div>
+        <div class="pb">🎬 Netflix Verisi</div>
+        <div class="pb">📊 EDA Raporu</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B3: ML ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--aq)">
+    <div class="sec-nc"><div class="sec-num">3</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// MACHINE LEARNING · ORTA SEVİYE</div>
+      <div class="sec-title">Algoritmalar + Model Değerlendirme + Scikit-learn</div>
+      <div class="sec-sub">Supervised · Unsupervised · Overfitting · Cross-Val · Metrикler</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--aq)">
+    <div class="sec-in">
+      <div class="algo-grid">
+        <div class="algo" style="--ac:var(--aq)">
+          <div class="algo-type">SUPERVISED · REG.</div>
+          <div class="algo-name">Linear Regression</div>
+          <div class="algo-desc">Sürekli tahmin · house price · y = mx+b</div>
+        </div>
+        <div class="algo" style="--ac:var(--aq)">
+          <div class="algo-type">SUPERVISED · CLF.</div>
+          <div class="algo-name">Logistic Regression</div>
+          <div class="algo-desc">İkili sınıflandırma · sigmoid fonksiyon</div>
+        </div>
+        <div class="algo" style="--ac:var(--aq)">
+          <div class="algo-type">SUPERVISED · TREE</div>
+          <div class="algo-name">Decision Tree</div>
+          <div class="algo-desc">Kural ağacı · yorumlanabilir · overfitting riski</div>
+        </div>
+        <div class="algo" style="--ac:var(--em)">
+          <div class="algo-type">ENSEMBLE · 🔥</div>
+          <div class="algo-name">Random Forest</div>
+          <div class="algo-desc">N ağaç → oylama · güçlü baseline · feature importance</div>
+        </div>
+        <div class="algo" style="--ac:var(--aq)">
+          <div class="algo-type">SUPERVISED · DIST.</div>
+          <div class="algo-name">KNN</div>
+          <div class="algo-desc">K en yakın komşu · mesafe bazlı · scaling şart</div>
+        </div>
+        <div class="algo" style="--ac:var(--gd)">
+          <div class="algo-type">UNSUPERVISED</div>
+          <div class="algo-name">K-Means + PCA</div>
+          <div class="algo-desc">Kümeleme · boyut azaltma · müşteri segmentasyonu</div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Scikit-learn — standart ML workflow</span>
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split, cross_val_score
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report, roc_auc_score
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+
+<span class="cm"># Pipeline — preprocessing + model birleştir</span>
+<span class="fn">pipe</span> = Pipeline([
+    (<span class="str">"scaler"</span>, StandardScaler()),
+    (<span class="str">"model"</span>,  RandomForestClassifier(n_estimators=<span class="num">100</span>, random_state=<span class="num">42</span>))
+])
+
+<span class="fn">X_train</span>, <span class="fn">X_test</span>, <span class="fn">y_train</span>, <span class="fn">y_test</span> = train_test_split(
+    <span class="fn">X</span>, <span class="fn">y</span>, test_size=<span class="num">0.2</span>, stratify=<span class="fn">y</span>, random_state=<span class="num">42</span>
+)
+
+<span class="fn">pipe</span>.<span class="fn">fit</span>(<span class="fn">X_train</span>, <span class="fn">y_train</span>)
+
+<span class="cm"># Cross validation — güvenilir değerlendirme</span>
+<span class="fn">cv_scores</span> = cross_val_score(<span class="fn">pipe</span>, <span class="fn">X</span>, <span class="fn">y</span>, cv=<span class="num">5</span>, scoring=<span class="str">"f1"</span>)
+<span class="op">print</span>(<span class="str">f"CV F1: {cv_scores.mean():.3f} ± {cv_scores.std():.3f}"</span>)
+
+<span class="cm"># Model değerlendirme</span>
+<span class="fn">y_pred</span> = <span class="fn">pipe</span>.<span class="fn">predict</span>(<span class="fn">X_test</span>)
+<span class="op">print</span>(classification_report(<span class="fn">y_test</span>, <span class="fn">y_pred</span>))
+<span class="op">print</span>(<span class="str">f"ROC-AUC: {roc_auc_score(y_test, pipe.predict_proba(X_test)[:,1]):.3f}"</span>)
+
+<span class="cm"># Hyperparameter tuning</span>
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV
+<span class="fn">params</span> = {<span class="str">"model__n_estimators"</span>: [<span class="num">50</span>,<span class="num">100</span>], <span class="str">"model__max_depth"</span>: [<span class="kw">None</span>,<span class="num">5</span>,<span class="num">10</span>]}
+<span class="fn">grid</span> = GridSearchCV(<span class="fn">pipe</span>, <span class="fn">params</span>, cv=<span class="num">5</span>, n_jobs=-<span class="num">1</span>)
+<span class="fn">grid</span>.<span class="fn">fit</span>(<span class="fn">X_train</span>, <span class="fn">y_train</span>)</div>
+
+      <div class="g2">
+        <div class="card" style="--sc:var(--aq)"><div class="card-t">Overfitting / Underfitting</div><div class="card-d">Overfitting: train↑ test↓ → regularization, daha az feature. Underfitting: her ikisi↓ → daha karmaşık model.</div></div>
+        <div class="card" style="--sc:var(--aq)"><div class="card-t">Bias-Variance Tradeoff</div><div class="card-d">Yüksek bias = underfitting. Yüksek variance = overfitting. Cross-val ile dengeyi bul.</div></div>
+      </div>
+
+      <table class="tbl">
+        <tr><th>METRİK</th><th>FORMÜL</th><th>NE ZAMAN?</th></tr>
+        <tr><td><span class="hi">Accuracy</span></td><td>doğru / toplam</td><td>Dengeli sınıf dağılımı</td></tr>
+        <tr><td><span class="hi">Precision</span></td><td>TP/(TP+FP)</td><td>False positive maliyetliyse (spam)</td></tr>
+        <tr><td><span class="hi">Recall</span></td><td>TP/(TP+FN)</td><td>False negative kritikse (hastalık)</td></tr>
+        <tr><td><span class="hi">F1 Score</span></td><td>2×(P×R)/(P+R)</td><td>Dengesiz sınıf dağılımı</td></tr>
+        <tr><td><span class="hi">ROC-AUC</span></td><td>eğri altı alan</td><td>İkili sınıflandırma genel değerlendirme</td></tr>
+      </table>
+
+      <div class="proj-row">
+        <div class="pb">🏠 House Price Prediction</div>
+        <div class="pb">📉 Customer Churn</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B4: İLERİ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--lv)">
+    <div class="sec-nc"><div class="sec-num">4</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// İLERİ SEVİYE · SENIOR YOL</div>
+      <div class="sec-title">Advanced ML + Deep Learning + NLP + Zaman Serisi</div>
+      <div class="sec-sub">XGBoost · LightGBM · Neural Networks · CNN · LSTM · Transformer · ARIMA</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--lv)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># XGBoost — Kaggle'ın favorisi</span>
+<span class="kw">import</span> xgboost <span class="kw">as</span> xgb
+<span class="kw">from</span> lightgbm <span class="kw">import</span> LGBMClassifier
+
+<span class="fn">xgb_model</span> = xgb.XGBClassifier(
+    n_estimators=<span class="num">500</span>, learning_rate=<span class="num">0.05</span>,
+    max_depth=<span class="num">6</span>,  subsample=<span class="num">0.8</span>,
+    use_label_encoder=<span class="kw">False</span>, eval_metric=<span class="str">"logloss"</span>,
+    early_stopping_rounds=<span class="num">50</span>
+)
+<span class="fn">xgb_model</span>.<span class="fn">fit</span>(<span class="fn">X_train</span>, <span class="fn">y_train</span>,
+    eval_set=[(<span class="fn">X_val</span>, <span class="fn">y_val</span>)], verbose=<span class="kw">False</span>)
+
+<span class="cm"># LightGBM — daha hızlı, büyük veri için</span>
+<span class="fn">lgb_model</span> = LGBMClassifier(n_estimators=<span class="num">1000</span>, learning_rate=<span class="num">0.01</span>)
+
+<span class="cm"># Stacking ensemble</span>
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> StackingClassifier
+<span class="fn">stack</span> = StackingClassifier(
+    estimators=[(<span class="str">"xgb"</span>, <span class="fn">xgb_model</span>), (<span class="str">"lgb"</span>, <span class="fn">lgb_model</span>)],
+    final_estimator=LogisticRegression()
+)</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># PyTorch — Neural Network</span>
+<span class="kw">import</span> torch, torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="cls">TabularNet</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_features: int, n_classes: int):
+        <span class="fn">super</span>().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(in_features, <span class="num">256</span>), nn.BatchNorm1d(<span class="num">256</span>), nn.ReLU(), nn.Dropout(<span class="num">0.3</span>),
+            nn.Linear(<span class="num">256</span>, <span class="num">128</span>),          nn.BatchNorm1d(<span class="num">128</span>), nn.ReLU(), nn.Dropout(<span class="num">0.2</span>),
+            nn.Linear(<span class="num">128</span>, n_classes)
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.net(x)
+
+<span class="cm"># Zaman Serisi — Prophet</span>
+<span class="kw">from</span> prophet <span class="kw">import</span> Prophet
+<span class="fn">model</span> = Prophet(seasonality_mode=<span class="str">"multiplicative"</span>, yearly_seasonality=<span class="kw">True</span>)
+<span class="fn">model</span>.<span class="fn">fit</span>(<span class="fn">df</span>)  <span class="cm"># df: ds (tarih), y (değer) kolonları</span>
+<span class="fn">gelecek</span> = <span class="fn">model</span>.<span class="fn">make_future_dataframe</span>(periods=<span class="num">90</span>)
+<span class="fn">tahmin</span>  = <span class="fn">model</span>.<span class="fn">predict</span>(<span class="fn">gelecek</span>)</div>
+
+      <div class="g2">
+        <div class="card" style="--sc:var(--lv)"><div class="card-t">NLP Pipeline</div><div class="card-d">Text → temizleme → tokenizasyon → TF-IDF / Word2Vec → model. HuggingFace Transformers ile BERT fine-tuning.</div></div>
+        <div class="card" style="--sc:var(--lv)"><div class="card-t">CNN (Görüntü)</div><div class="card-d">Konvolüsyon → pooling → flatten → dense. Transfer learning: ResNet/EfficientNet ile fine-tune.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">🎬 Recommendation System</div>
+        <div class="pb">💳 Fraud Detection</div>
+        <div class="pb">🤖 NLP Chatbot</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B5: GERÇEK DÜNYA ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--rs)">
+    <div class="sec-nc"><div class="sec-num">5</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// GERÇEK DÜNYA · ÇOK ÖNEMLİ</div>
+      <div class="sec-title">SQL + ETL + Model Deployment + Dashboard</div>
+      <div class="sec-sub">Window Functions · Airflow · Spark · FastAPI · Docker · Power BI</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--rs)">
+    <div class="sec-in">
+      <div class="code" data-lang="SQL">
+<span class="cm">-- SQL Window Functions — güçlü analitik araç</span>
+<span class="kw">SELECT</span>
+    musteri_id,
+    satis_tarihi,
+    tutar,
+    <span class="cm">-- Kümülatif toplam</span>
+    <span class="fn">SUM</span>(tutar) <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> musteri_id <span class="kw">ORDER BY</span> satis_tarihi) <span class="kw">AS</span> kumulatif,
+    <span class="cm">-- Önceki satışa fark</span>
+    tutar - <span class="fn">LAG</span>(tutar) <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> musteri_id <span class="kw">ORDER BY</span> satis_tarihi) <span class="kw">AS</span> fark,
+    <span class="cm">-- Sıralama</span>
+    <span class="fn">RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> ay <span class="kw">ORDER BY</span> tutar <span class="kw">DESC</span>) <span class="kw">AS</span> sira,
+    <span class="cm">-- Yüzdelik dilim</span>
+    <span class="fn">PERCENTILE_CONT</span>(<span class="num">0.5</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> tutar) <span class="kw">OVER</span> () <span class="kw">AS</span> medyan
+<span class="kw">FROM</span> satislar;</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Model Deployment — FastAPI</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">import</span> joblib, numpy <span class="kw">as</span> np
+
+<span class="fn">app</span> = FastAPI(title=<span class="str">"Churn Prediction API"</span>)
+<span class="fn">model</span> = joblib.<span class="fn">load</span>(<span class="str">"models/churn_model.pkl"</span>)
+<span class="fn">scaler</span> = joblib.<span class="fn">load</span>(<span class="str">"models/scaler.pkl"</span>)
+
+<span class="kw">class</span> <span class="cls">MusteriVerisi</span>(BaseModel):
+    yas: int; tenure: int; aylik_ucret: float
+    urun_sayisi: int; aktif_kart: bool
+
+<span class="fn">@app.post</span>(<span class="str">"/tahmin"</span>)
+<span class="kw">async def</span> <span class="fn">tahmin_et</span>(veri: <span class="cls">MusteriVerisi</span>):
+    <span class="fn">X</span> = np.<span class="fn">array</span>([[veri.yas, veri.tenure, veri.aylik_ucret,
+                     veri.urun_sayisi, <span class="op">int</span>(veri.aktif_kart)]])
+    <span class="fn">X_s</span> = <span class="fn">scaler</span>.<span class="fn">transform</span>(<span class="fn">X</span>)
+    <span class="fn">olasılik</span> = <span class="fn">model</span>.<span class="fn">predict_proba</span>(<span class="fn">X_s</span>)[<span class="num">0</span>,<span class="num">1</span>]
+    <span class="kw">return</span> {<span class="str">"churn_olasiligi"</span>: <span class="op">round</span>(<span class="op">float</span>(<span class="fn">olasılik</span>),<span class="num">4</span>),
+            <span class="str">"yuksek_risk"</span>: <span class="op">bool</span>(<span class="fn">olasılik</span> > <span class="num">0.7</span>)}</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--rs)"><div class="card-t">ETL Pipeline</div><div class="card-d">Extract → Transform → Load. Apache Airflow ile DAG (Directed Acyclic Graph) tanımla. Spark ile büyük veri.</div></div>
+        <div class="card" style="--sc:var(--rs)"><div class="card-t">Docker</div><div class="card-d">Model + dependencies → container. "Bende çalışıyor" problemi biter. Kubernetes ile ölçeklendir.</div></div>
+        <div class="card" style="--sc:var(--rs)"><div class="card-t">MLflow</div><div class="card-d">Deney takibi, model versiyonlama, artifact store. Hangi parametre hangi sonucu verdi?</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B6: UZMANLIK ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--gd2)">
+    <div class="sec-nc"><div class="sec-num">6</div><div class="sec-tick"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// UZMANLAŞMA ALANLARI · BİR SEÇMEK LAZIM</div>
+      <div class="sec-title">İş Analitiği · ML Engineer · AI/Deep Learning</div>
+      <div class="sec-sub">KPI · Dashboard · Deployment · Görüntü işleme · NLP · Transformer</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--gd2)">
+    <div class="sec-in">
+      <div class="note gold"><strong>⚠️ Karar Ver:</strong> Her şeyi öğrenmek = hiçbirini bilmemek. 6 aylık odaklanmış çalışma, 2 yıllık dağınık çalışmadan değerlidir. Güçlü yönünü bul.</div>
+      <div class="g3">
+        <div class="card" style="--sc:var(--gd)">
+          <div class="card-t">1️⃣ İş Analitiği</div>
+          <div class="card-d">KPI tanımlama · Power BI/Tableau · SQL mastery · A/B testing · İş kararlarını veriye dökmek. Şirketlerde en fazla açık bu profil.</div>
+        </div>
+        <div class="card" style="--sc:var(--aq)">
+          <div class="card-t">2️⃣ ML Engineer</div>
+          <div class="card-d">Model deployment · API · Docker · Kubernetes · MLOps · CI/CD pipeline. Backend bilgisi kritik. En yüksek maaş bu alanda.</div>
+        </div>
+        <div class="card" style="--sc:var(--lv)">
+          <div class="card-t">3️⃣ AI / Deep Learning</div>
+          <div class="card-d">PyTorch/TF · Görüntü işleme (YOLO, SAM) · NLP (BERT, GPT fine-tune) · Akademik yayın. En uzun süre gerektiren yol.</div>
+        </div>
+      </div>
+      <div class="note aq"><strong>💡 Tavsiye:</strong> Yeni başlıyorsan → İş Analitiği ile başla. İlk iş en çabuk bu yolla gelir. Deneyim kazanınca ML Engineer veya AI'a geç. Sektörde iş fırsatları en fazla bu sıralamada.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Gerçekçi Süre</div>
+    <div class="tl">
+      <div class="tlr"><div class="tld">2<span class="tlu">AY</span></div><div><div class="tln">Temel</div><div class="tls">Python · NumPy · Pandas · Görsel</div></div></div>
+      <div class="tlr"><div class="tld">3<span class="tlu">AY</span></div><div><div class="tln">Orta</div><div class="tls">EDA · Cleaning · ML</div></div></div>
+      <div class="tlr"><div class="tld">6<span class="tlu">AY</span></div><div><div class="tln">İleri</div><div class="tls">Deep Learning · NLP · Deploy</div></div></div>
+      <div class="tlr"><div class="tld">12<span class="tlu">AY</span></div><div><div class="tln">İş Hazır</div><div class="tls">Ciddi çalışmayla</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Konu Öncelikleri</div>
+    <div class="skills" id="skills">
+      <div class="skr"><div class="skl">Data Cleaning</div><div class="skt"><div class="skf" style="--sc2:var(--em)"></div></div><div class="skp">95%</div></div>
+      <div class="skr"><div class="skl">Pandas/NumPy</div><div class="skt"><div class="skf" style="--sc2:var(--gd)"></div></div><div class="skp">90%</div></div>
+      <div class="skr"><div class="skl">ML Algorithms</div><div class="skt"><div class="skf" style="--sc2:var(--aq)"></div></div><div class="skp">80%</div></div>
+      <div class="skr"><div class="skl">SQL</div><div class="skt"><div class="skf" style="--sc2:var(--rs)"></div></div><div class="skp">75%</div></div>
+      <div class="skr"><div class="skl">Deep Learning</div><div class="skt"><div class="skf" style="--sc2:var(--lv)"></div></div><div class="skp">60%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Proje Yolu</div>
+    <div class="track-list">
+      <div class="track" style="--tc:var(--em)"><div class="track-n">🟢 Başlangıç</div><div class="track-libs">Titanic · Netflix EDA · Basit regresyon</div></div>
+      <div class="track" style="--tc:var(--gd)"><div class="track-n">🟡 Orta</div><div class="track-libs">House price · Churn prediction · Customer segmentation</div></div>
+      <div class="track" style="--tc:var(--rs)"><div class="track-n">🔴 İleri</div><div class="track-libs">Recommendation · Fraud detection · NLP chatbot</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Kaggle Stratejisi</div>
+    <div class="tip-list">
+      <div class="tip"><div class="tip-icon">🏆</div><div><div class="tip-t">Yarışmalara gir</div><div class="tip-d">Fark yaratan tek şey budur</div></div></div>
+      <div class="tip"><div class="tip-icon">🔍</div><div><div class="tip-t">Notebook oku</div><div class="tip-d">Top kernel'ları analiz et</div></div></div>
+      <div class="tip"><div class="tip-icon">💬</div><div><div class="tip-t">Discussion takip et</div><div class="tip-d">Feature ideas, leakage uyarıları</div></div></div>
+      <div class="tip"><div class="tip-icon">🥇</div><div><div class="tip-t">Bronze madalya hedef</div><div class="tip-d">İlk 10% → CV'ye ekle</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Bonus Araçlar</div>
+    <div class="track-list">
+      <div class="track" style="--tc:var(--em)"><div class="track-n">🐙 Git & GitHub</div><div class="track-libs">Her projeyi repo yap · Portfolio · README yaz</div></div>
+      <div class="track" style="--tc:var(--gd)"><div class="track-n">🐧 Linux Terminal</div><div class="track-libs">grep · awk · cron · SSH · Sunucu yönetimi</div></div>
+      <div class="track" style="--tc:var(--aq)"><div class="track-n">🔌 API Kullanımı</div><div class="track-libs">requests · REST · JSON · OpenAI/HuggingFace API</div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">Net Yol <em>Haritası</em><br><span class="gd">6 Adım.</span></h2>
+    <p class="bot-p">Karmaşık görünüyor ama sistematik gidersen 6–12 ayda işe girilebilir seviyeye gelirsin. Sırayı bozma. Her adımı bitirmeden geçme.</p>
+    <a class="btn btn-em" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-gd" href="https://kaggle.com" target="_blank">Kaggle →</a>
+  </div>
+  <div class="bot-r">
+    <div class="plan-steps">
+      <div class="pstep"><div class="pstep-n">1</div><div><div class="pstep-t">Python + Pandas (1–2 ay)</div><div class="pstep-d">Temel syntax, NumPy, CSV analizi, görselleştirme</div></div></div>
+      <div class="pstep"><div class="pstep-n">2</div><div><div class="pstep-t">EDA + Data Cleaning (1 ay)</div><div class="pstep-d">Outlier, missing data, encoding, scaling — bu kısmı atlamak öldürür</div></div></div>
+      <div class="pstep"><div class="pstep-n">3</div><div><div class="pstep-t">ML Algoritmaları (2 ay)</div><div class="pstep-d">Scikit-learn, cross-val, metrикler, XGBoost</div></div></div>
+      <div class="pstep"><div class="pstep-n">4</div><div><div class="pstep-t">Proje yap (paralel git)</div><div class="pstep-d">Her öğrendiğini Titanic/Kaggle'da uygula</div></div></div>
+      <div class="pstep"><div class="pstep-n">5</div><div><div class="pstep-t">SQL öğren</div><div class="pstep-d">Sektörde her veri bilimciden beklenir — SELECT to Window Functions</div></div></div>
+      <div class="pstep"><div class="pstep-n">6</div><div><div class="pstep-t">3–5 güçlü proje → GitHub + Kaggle</div><div class="pstep-d">Deployment dahil projeler. README'li. Kendi yorumunu ekle.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Veri Bilimi 0→Pro Roadmap</span>
+  <span>8 Bölüm · 10+ Proje · 6–12 Ay · %70 Veri Temizleme, kabul et.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// CURSOR
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.ph,.track,.tip,.pb,.mpct').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='14px';c1.style.height='14px';c2.style.width='44px';c2.style.height='44px';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='8px';c1.style.height='8px';c2.style.width='28px';c2.style.height='28px';});
+});
+
+// ACCORDION
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// COUNTERS
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),8,900);cnt(document.getElementById('s2'),10,800);cnt(document.getElementById('s3'),6,700);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-right'));
+
+// SKILL BARS
+const widths=['95%','90%','80%','75%','60%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skf').forEach((f,i)=>{setTimeout(()=>{f.style.width=widths[i];},i*100);});
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+</script>
+</body>
+</html>

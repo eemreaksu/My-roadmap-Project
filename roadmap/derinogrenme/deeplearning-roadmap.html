@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Derin Öğrenme 0→100 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Syne+Mono&family=Anton&display=swap" rel="stylesheet">
+<!-- NOTE: Intentionally using Space Grotesk + Anton combo as a distinctive pairing for the lab aesthetic -->
+<style>
+:root{
+  --bg:    #f7f8fc;
+  --bg2:   #eef0f8;
+  --bg3:   #e4e7f5;
+  --white: #ffffff;
+  --ink:   #080a1a;
+  --ink2:  #353850;
+  --ink3:  #8a8fae;
+
+  --el:  #1a3fff;   /* electric blue   */
+  --el2: #4d6bff;   /* light blue      */
+  --el3: rgba(26,63,255,.08);
+  --vt:  #8b21ff;   /* violet          */
+  --vt2: rgba(139,33,255,.08);
+  --cy:  #00c8ff;   /* cyan            */
+  --gn:  #00cc66;   /* green           */
+  --rd:  #ff2d55;   /* red             */
+  --am:  #ff9500;   /* amber           */
+
+  --bord:  rgba(26,63,255,.15);
+  --bord2: rgba(26,63,255,.07);
+  --bord3: rgba(139,33,255,.15);
+
+  --fh: 'Anton', sans-serif;
+  --fb: 'Space Grotesk', sans-serif;
+  --fm: 'Syne Mono', monospace;
+  --r: 6px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur {position:fixed;width:10px;height:10px;background:var(--el);border-radius:2px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .12s,height .12s;}
+#cur2{position:fixed;width:28px;height:28px;border:1.5px solid rgba(26,63,255,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* ── GRID DOTS ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,rgba(26,63,255,.12) 1px,transparent 1px);
+  background-size:28px 28px;
+  opacity:.5;
+}
+
+/* ── TOP BAR ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(247,248,252,.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--bord);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:48px;
+}
+.tb-brand{font-family:var(--fm);font-size:.65rem;letter-spacing:.18em;color:var(--el);}
+.tb-phases{display:flex;gap:0;}
+.tb-ph{
+  padding:0 12px;height:48px;display:flex;align-items:center;
+  font-family:var(--fm);font-size:.56rem;letter-spacing:.1em;color:var(--ink3);
+  border-left:1px solid var(--bord2);cursor:pointer;transition:all .2s;
+}
+.tb-ph:hover{color:var(--el);background:var(--el3);}
+.tb-ph.hi{color:var(--el);font-weight:600;}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{
+  padding:60px 0 48px;
+  border-bottom:2px solid var(--ink);
+  position:relative;
+}
+.hero-grid{display:grid;grid-template-columns:1fr 260px;gap:32px;align-items:end;}
+
+.hero-left{}
+.hero-flag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.2em;
+  color:var(--el);margin-bottom:16px;
+  animation:up .5s ease both;
+}
+.hero-flag-bar{width:24px;height:2px;background:var(--el);}
+
+.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(4rem,11vw,9rem);
+  letter-spacing:-.01em;line-height:.9;
+  animation:up .5s .06s ease both;
+}
+.hero-h .row1{display:block;color:var(--ink);}
+.hero-h .row2{display:block;color:var(--el);}
+.hero-h .row3{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(8,10,26,.18);}
+
+.hero-desc{
+  margin-top:20px;font-size:.92rem;color:var(--ink2);
+  max-width:520px;line-height:1.75;
+  animation:up .5s .12s ease both;
+}
+.hero-desc strong{color:var(--ink);}
+
+.hero-stats-col{
+  display:grid;grid-template-rows:repeat(3,1fr);
+  border:2px solid var(--ink);gap:0;
+  animation:up .5s .18s ease both;
+}
+.hstat{padding:14px 18px;border-bottom:1px solid var(--bord);text-align:center;}
+.hstat:last-child{border-bottom:none;}
+.hstat-n{font-family:var(--fh);font-size:2.6rem;color:var(--el);line-height:1;}
+.hstat-l{font-family:var(--fm);font-size:.5rem;color:var(--ink3);margin-top:3px;letter-spacing:.1em;}
+
+/* ══════════ PHASE PATH ══════════ */
+.phase-path{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  border:1px solid var(--bord);border-top:2px solid var(--ink);
+  background:var(--white);
+  animation:up .5s .22s ease both;
+}
+.pp{
+  padding:14px 8px;border-right:1px solid var(--bord);
+  cursor:pointer;text-align:center;position:relative;overflow:hidden;
+  transition:background .2s;
+}
+.pp:last-child{border-right:none;}
+.pp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--pc,var(--el));transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.pp:hover{background:var(--el3);}
+.pp:hover::after{transform:scaleX(1);}
+.pp-n{font-family:var(--fh);font-size:1.5rem;color:rgba(8,10,26,.08);transition:color .2s;line-height:1;}
+.pp:hover .pp-n{color:var(--pc,var(--el));}
+.pp-lbl{font-family:var(--fm);font-size:.5rem;letter-spacing:.1em;color:var(--ink3);margin-top:4px;}
+
+/* ══════════ MAIN ══════════ */
+.main{display:grid;grid-template-columns:1fr 282px;gap:0;border:1px solid var(--bord);border-top:none;background:var(--white);}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:1px solid var(--bord);}
+.sec{border-bottom:1px solid var(--bord);opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{display:grid;grid-template-columns:56px 1fr auto;cursor:pointer;transition:background .2s;align-items:start;}
+.sec-hd:hover{background:var(--el3);}
+.sec-hd.open{background:var(--bg2);}
+
+.sec-nc{padding:16px 0 0 14px;display:flex;flex-direction:column;gap:4px;}
+.sec-num{font-family:var(--fh);font-size:1.8rem;color:rgba(8,10,26,.08);line-height:1;transition:color .2s;}
+.sec-hd.open .sec-num,.sec-hd:hover .sec-num{color:var(--sc,var(--el));}
+.sec-ln{width:16px;height:2px;background:var(--sc,var(--el));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.sec-hd.open .sec-ln,.sec-hd:hover .sec-ln{transform:scaleX(1);}
+
+.sec-info{padding:16px 10px;}
+.sec-lv{font-family:var(--fm);font-size:.52rem;letter-spacing:.2em;color:var(--sc,var(--el));margin-bottom:4px;}
+.sec-title{font-family:var(--fb);font-size:1.05rem;font-weight:700;line-height:1.2;}
+.sec-sub{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:3px;line-height:1.4;}
+.sec-arr{padding:16px 12px 0 0;font-size:.58rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--el));}
+
+.sec-body{display:none;border-top:1px solid var(--bord);background:var(--bg);}
+.sec-body.open{display:block;animation:bIn .25s ease;}
+@keyframes bIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.sec-in{padding:20px 20px 24px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.chip{font-family:var(--fm);font-size:.6rem;padding:3px 9px;border:1px solid var(--bord);color:var(--ink3);background:var(--bg);transition:all .18s;cursor:default;border-radius:3px;}
+.chip:hover{background:var(--el);color:var(--white);border-color:var(--el);}
+
+/* ── CODE ── */
+.code{
+  background:var(--ink);color:#dde8ff;
+  font-family:var(--fm);font-size:.7rem;line-height:1.85;
+  padding:14px 16px;margin:11px 0;overflow-x:auto;border-radius:var(--r);position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:.5rem;letter-spacing:.12em;color:rgba(255,255,255,.25);}
+.kw{color:#93c5fd;} .fn{color:#86efac;} .str{color:#fde68a;}
+.cm{color:#374151;font-style:italic;} .op{color:#f9a8d4;}
+.num{color:#fdba74;} .cls{color:#c4b5fd;} .hi2{color:var(--cy);}
+.de{color:#67e8f9;}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0;}
+
+.card{padding:11px 12px;border:1px solid var(--bord);background:var(--white);transition:all .2s;border-left:3px solid var(--sc,var(--el));}
+.card:hover{background:var(--el3);border-color:var(--sc,var(--el));transform:translateY(-2px);box-shadow:0 4px 12px rgba(26,63,255,.1);}
+.card-t{font-family:var(--fm);font-size:.7rem;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.card-d{font-size:.69rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{padding:10px 13px;margin:10px 0;font-size:.78rem;line-height:1.65;color:var(--ink2);border-left:3px solid var(--nc,var(--el));background:var(--el3);border-radius:0 var(--r) var(--r) 0;}
+.note strong{color:var(--nc,var(--el));}
+.note.vt{--nc:var(--vt);background:var(--vt2);}
+.note.gn{--nc:var(--gn);background:rgba(0,204,102,.07);}
+.note.rd{--nc:var(--rd);background:rgba(255,45,85,.06);}
+.note.am{--nc:var(--am);background:rgba(255,149,0,.06);}
+
+/* ── TARGET ── */
+.target{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--bord);border-left:3px solid var(--sc,var(--el));font-family:var(--fm);font-size:.67rem;margin-top:10px;color:var(--ink3);background:var(--white);}
+.target::before{content:'▸';color:var(--sc,var(--el));flex-shrink:0;}
+
+/* ── PROJ BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pb{display:flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--bord);background:var(--white);font-size:.73rem;font-weight:600;transition:all .18s;cursor:default;border-radius:3px;}
+.pb:hover{background:var(--el);color:var(--white);border-color:var(--el);}
+
+/* ── MATH VISUAL ── */
+.math-section{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0;}
+.math-card{
+  padding:14px;border:1px solid var(--bord);background:var(--white);
+  position:relative;overflow:hidden;transition:all .2s;
+}
+.math-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--mc,var(--el));}
+.math-card:hover{background:var(--el3);border-color:var(--el);}
+.math-icon{font-family:var(--fh);font-size:2rem;color:var(--mc,var(--el));line-height:1;margin-bottom:6px;opacity:.5;}
+.math-title{font-size:.82rem;font-weight:700;margin-bottom:4px;}
+.math-items{display:flex;flex-direction:column;gap:2px;}
+.math-item{font-family:var(--fm);font-size:.62rem;color:var(--ink3);padding:2px 0;border-bottom:1px solid var(--bord2);}
+.math-item:last-child{border-bottom:none;}
+.math-why{display:inline-block;margin-top:7px;font-family:var(--fm);font-size:.55rem;padding:2px 7px;background:var(--mc,var(--el));color:var(--white);border-radius:2px;letter-spacing:.08em;}
+
+/* ── NN ARCH DIAGRAM ── */
+.arch-diagram{
+  margin:12px 0;padding:16px;background:var(--ink);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;gap:0;overflow:hidden;
+}
+.layer{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.layer-nodes{display:flex;flex-direction:column;gap:4px;}
+.nn-node{width:16px;height:16px;border-radius:50%;border:1.5px solid;transition:all .3s;}
+.nn-edge{width:32px;height:1px;background:rgba(255,255,255,.1);align-self:center;flex-shrink:0;}
+.layer-lbl{font-family:var(--fm);font-size:.46rem;color:rgba(255,255,255,.4);margin-top:4px;letter-spacing:.1em;text-align:center;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.72rem;margin:10px 0;}
+.tbl th{background:var(--ink);color:var(--white);padding:7px 10px;text-align:left;font-family:var(--fm);font-size:.55rem;letter-spacing:.12em;}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--bord2);color:var(--ink2);}
+.tbl tr:hover td{background:var(--el3);}
+.hi{color:var(--el);font-family:var(--fm);}
+.hi3{color:var(--vt);font-family:var(--fm);}
+.hi4{color:var(--gn);font-family:var(--fm);}
+
+/* ── ACTIVATION DEMO ── */
+.act-demo{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:11px 0;}
+.act-card{padding:12px;border:1px solid var(--bord);background:var(--white);text-align:center;transition:all .2s;}
+.act-card:hover{background:var(--el3);border-color:var(--el);}
+.act-name{font-family:var(--fm);font-size:.7rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.act-formula{font-family:var(--fm);font-size:.8rem;color:var(--el);margin:4px 0;}
+.act-use{font-size:.63rem;color:var(--ink3);}
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar{background:var(--bg2);}
+.sb{padding:16px 14px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{font-family:var(--fm);font-size:.54rem;letter-spacing:.2em;color:var(--ink3);margin-bottom:12px;display:flex;align-items:center;gap:5px;text-transform:uppercase;}
+.sb-t::before{content:'//';color:var(--el);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tlr{display:grid;grid-template-columns:46px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid var(--bord2);align-items:center;}
+.tlr:last-child{border-bottom:none;}
+.tld{font-family:var(--fh);font-size:1.5rem;color:var(--el);line-height:1;text-align:center;}
+.tlu{font-family:var(--fm);font-size:.43rem;color:var(--ink3);display:block;text-align:center;}
+.tln{font-size:.8rem;font-weight:700;}
+.tls{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* Skill bars */
+.skills{display:flex;flex-direction:column;gap:7px;}
+.skr{display:flex;align-items:center;gap:7px;}
+.skl{font-family:var(--fm);font-size:.58rem;color:var(--ink2);width:84px;flex-shrink:0;}
+.skt{flex:1;height:3px;background:var(--bord);border-radius:2px;overflow:hidden;}
+.skf{height:100%;background:var(--sc2,var(--el));width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+.skp{font-family:var(--fm);font-size:.55rem;color:var(--ink3);width:26px;text-align:right;flex-shrink:0;}
+
+/* Tracks */
+.track-list{display:flex;flex-direction:column;gap:5px;}
+.track{padding:9px 10px;border:1px solid var(--bord);background:var(--white);transition:all .2s;border-left:3px solid var(--tc,var(--el));}
+.track:hover{background:var(--el3);border-color:var(--tc,var(--el));}
+.track-n{font-size:.78rem;font-weight:700;}
+.track-libs{font-family:var(--fm);font-size:.57rem;color:var(--ink3);margin-top:2px;}
+
+/* Papers */
+.paper-list{display:flex;flex-direction:column;gap:5px;}
+.paper{padding:8px 10px;border:1px solid var(--bord);background:var(--white);font-size:.73rem;transition:all .18s;}
+.paper:hover{background:var(--vt2);border-color:var(--vt);}
+.paper-year{font-family:var(--fm);font-size:.54rem;color:var(--vt);margin-bottom:2px;}
+.paper-title{font-weight:700;line-height:1.3;}
+.paper-why{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:3px;}
+
+/* Tools */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.tool{padding:8px 10px;border:1px solid var(--bord);background:var(--white);transition:all .18s;}
+.tool:hover{background:var(--el3);border-color:var(--el);}
+.tool-n{font-size:.76rem;font-weight:700;}
+.tool-d{font-family:var(--fm);font-size:.57rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{border:1px solid var(--bord);border-top:2px solid var(--ink);display:grid;grid-template-columns:1fr 1fr;background:var(--white);}
+.bot-l{padding:40px 34px;border-right:1px solid var(--bord);background:var(--ink);}
+.bot-r{padding:40px 34px;}
+.bot-h{font-family:var(--fh);font-size:clamp(2.2rem,4.5vw,3.5rem);line-height:.9;margin-bottom:14px;color:var(--white);}
+.bot-h em{font-style:normal;color:var(--cy);}
+.bot-p{font-size:.84rem;color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:20px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:var(--fb);font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border-radius:var(--r);}
+.btn-cy{background:var(--cy);color:var(--ink);border:none;}
+.btn-cy:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-wh{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);margin-left:8px;}
+.btn-wh:hover{border-color:var(--white);color:var(--white);}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--bord2);align-items:flex-start;}
+.step:last-child{border-bottom:none;}
+.step-n{font-family:var(--fh);font-size:1.5rem;color:rgba(26,63,255,.15);line-height:1;flex-shrink:0;width:28px;transition:color .2s;}
+.step:hover .step-n{color:var(--el);}
+.step-t{font-size:.82rem;font-weight:700;color:var(--ink);}
+.step-d{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;line-height:1.4;}
+
+/* FOOTER */
+footer{padding:16px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.57rem;color:var(--ink3);border-top:1px solid var(--bord);}
+footer span:first-child{color:var(--el);}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* RESPONSIVE */
+@media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{border-top:1px solid var(--bord)}.bottom{grid-template-columns:1fr}.bot-l{border-right:none;border-bottom:1px solid var(--bord)}.phase-path{grid-template-columns:repeat(4,1fr)}.hero-grid{grid-template-columns:1fr}.hero-stats-col{flex-direction:row;display:flex}}
+@media(max-width:640px){.page{padding:0 14px 60px}.phase-path{grid-template-columns:repeat(2,1fr)}.g2,.g3,.g4,.math-section,.act-demo{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav class="topbar">
+  <div class="tb-brand">DERİN ÖĞRENME · 0→100 ROADMAP</div>
+  <div class="tb-phases">
+    <div class="tb-ph">0. TEMEL</div>
+    <div class="tb-ph hi">1. GİRİŞ</div>
+    <div class="tb-ph">2. ORTA</div>
+    <div class="tb-ph">3. İLERİ</div>
+    <div class="tb-ph">4. UZMAN</div>
+    <div class="tb-ph">5. PROD</div>
+  </div>
+</nav>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-flag"><div class="hero-flag-bar"></div>Derin Öğrenme Yol Haritası · 0 → 100</div>
+      <h1 class="hero-h">
+        <span class="row1">DERİN</span>
+        <span class="row2">ÖĞRENME</span>
+        <span class="row3">ROADMAP</span>
+      </h1>
+      <p class="hero-desc">
+        Perceptron'dan <strong>Transformer</strong>'a — backpropagation'dan <strong>production deployment</strong>'a. Bu alan matematikle başlar, kodla ilerler, <strong>projelerle tamamlanır.</strong>
+      </p>
+    </div>
+    <div class="hero-stats-col">
+      <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">AŞAMA</div></div>
+      <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">MİMARİ</div></div>
+      <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">AY (MIN)</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ PHASE PATH ══ -->
+<div class="phase-path">
+  <div class="pp" style="--pc:var(--gn)"><div class="pp-n">0</div><div class="pp-lbl" style="color:var(--gn)">TEMEL ALTYAPI</div></div>
+  <div class="pp" style="--pc:var(--el)"><div class="pp-n">1</div><div class="pp-lbl" style="color:var(--el)">DL GİRİŞ</div></div>
+  <div class="pp" style="--pc:var(--am)"><div class="pp-n">2</div><div class="pp-lbl" style="color:var(--am)">CNN + RNN</div></div>
+  <div class="pp" style="--pc:var(--vt)"><div class="pp-n">3</div><div class="pp-lbl" style="color:var(--vt)">TRANSFORMER</div></div>
+  <div class="pp" style="--pc:var(--rd)"><div class="pp-n">4</div><div class="pp-lbl" style="color:var(--rd)">UZMANLIK</div></div>
+  <div class="pp" style="--pc:var(--cy)"><div class="pp-n">5</div><div class="pp-lbl" style="color:var(--cy)">PRODUCTION</div></div>
+  <div class="pp" style="--pc:var(--gn)"><div class="pp-n">6</div><div class="pp-lbl" style="color:var(--gn)">PORTFÖY</div></div>
+  <div class="pp" style="--pc:var(--vt)"><div class="pp-n">+</div><div class="pp-lbl" style="color:var(--vt)">PAPERS</div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── B0: TEMEL ALTYAPI ──── -->
+<div class="sec">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--gn)">
+    <div class="sec-nc"><div class="sec-num">0</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 0 — TEMEL ALTYAPI (OLMAZSA OLMAZ)</div>
+      <div class="sec-title">Matematik + Python + ML Temelleri</div>
+      <div class="sec-sub">Lineer Cebir · Calculus · Olasılık · NumPy · Pandas · Scikit-learn</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--gn)">
+    <div class="sec-in">
+      <div class="note gn"><strong>⚠️ DL'ye direkt girme:</strong> Temel olmadan ilerlersen duvar çarparsın. Backpropagation'ı anlayabilmek için zincir kuralı, gradient descent için türev, PCA/Attention için lineer cebir şart.</div>
+
+      <div class="math-section">
+        <div class="math-card" style="--mc:var(--el)">
+          <div class="math-icon">𝐀</div>
+          <div class="math-title">Lineer Cebir</div>
+          <div class="math-items">
+            <div class="math-item">Vektör & matris operasyonları</div>
+            <div class="math-item">Matris çarpımı (dot product)</div>
+            <div class="math-item">Transpoz, determinant</div>
+            <div class="math-item">Eigenvalue / eigenvector</div>
+            <div class="math-item">SVD (tekil değer ayrışımı)</div>
+          </div>
+          <div class="math-why">Attention · PCA · Weights</div>
+        </div>
+        <div class="math-card" style="--mc:var(--vt)">
+          <div class="math-icon">∂</div>
+          <div class="math-title">Calculus</div>
+          <div class="math-items">
+            <div class="math-item">Türev — f'(x) = limit</div>
+            <div class="math-item">Zincir kuralı (🔥 KRİTİK)</div>
+            <div class="math-item">Kısmi türev</div>
+            <div class="math-item">Gradient vektörü</div>
+            <div class="math-item">Jacobian & Hessian (ileri)</div>
+          </div>
+          <div class="math-why" style="background:var(--vt)">Backprop · Optimizer</div>
+        </div>
+        <div class="math-card" style="--mc:var(--am)">
+          <div class="math-icon">P</div>
+          <div class="math-title">Olasılık & İstatistik</div>
+          <div class="math-items">
+            <div class="math-item">Koşullu olasılık, Bayes</div>
+            <div class="math-item">Normal, Bernoulli, Categorical</div>
+            <div class="math-item">Beklenen değer, varyans</div>
+            <div class="math-item">MLE (Max Likelihood)</div>
+            <div class="math-item">KL Divergence (ileri)</div>
+          </div>
+          <div class="math-why" style="background:var(--am)">Loss · VAE · GAN</div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># NumPy — DL'nin altında yatan matris mantığı</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Forward pass — manuel implementasyon</span>
+<span class="fn">W1</span> = np.<span class="fn">random.randn</span>(<span class="num">784</span>, <span class="num">128</span>) * <span class="num">0.01</span>  <span class="cm"># He init için √(2/n)</span>
+<span class="fn">b1</span> = np.<span class="fn">zeros</span>(<span class="num">128</span>)
+<span class="fn">z1</span> = np.<span class="fn">dot</span>(<span class="fn">X</span>, <span class="fn">W1</span>) + <span class="fn">b1</span>               <span class="cm"># z = Wx + b</span>
+<span class="fn">a1</span> = np.<span class="fn">maximum</span>(<span class="num">0</span>, <span class="fn">z1</span>)               <span class="cm"># ReLU aktivasyonu</span>
+
+<span class="cm"># Zincir kuralı — gradient hesabı</span>
+<span class="cm"># dL/dW = dL/da × da/dz × dz/dW</span>
+<span class="fn">dz1</span> = <span class="fn">da1</span> * (<span class="fn">z1</span> > <span class="num">0</span>)                  <span class="cm"># ReLU türevi</span>
+<span class="fn">dW1</span> = np.<span class="fn">dot</span>(<span class="fn">X</span>.T, <span class="fn">dz1</span>) / <span class="fn">m</span>
+<span class="fn">db1</span> = np.<span class="fn">mean</span>(<span class="fn">dz1</span>, axis=<span class="num">0</span>)
+
+<span class="cm"># Gradient descent güncelleme</span>
+<span class="fn">W1</span> -= <span class="fn">lr</span> * <span class="fn">dW1</span>
+<span class="fn">b1</span> -= <span class="fn">lr</span> * <span class="fn">db1</span></div>
+
+      <div class="target">Hedef: NumPy ile sıfırdan 2-katmanlı sinir ağı yaz. Framework olmadan. Bunu yapanlar framework'ü gerçekten anlar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B1: DL GİRİŞ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--el)">
+    <div class="sec-nc"><div class="sec-num">1</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 1 — DERİN ÖĞRENMEYE GİRİŞ</div>
+      <div class="sec-title">Perceptron → Backprop → PyTorch</div>
+      <div class="sec-sub">Aktivasyon · Loss Functions · Optimizer · Backpropagation · Training Loop</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--el)">
+    <div class="sec-in">
+
+      <!-- NN Diagram -->
+      <div class="arch-diagram">
+        <div class="layer">
+          <div class="layer-nodes">
+            <div class="nn-node" style="border-color:rgba(0,200,255,.6);background:rgba(0,200,255,.15)"></div>
+            <div class="nn-node" style="border-color:rgba(0,200,255,.6);background:rgba(0,200,255,.15)"></div>
+            <div class="nn-node" style="border-color:rgba(0,200,255,.6);background:rgba(0,200,255,.15)"></div>
+            <div class="nn-node" style="border-color:rgba(0,200,255,.4);background:transparent"></div>
+          </div>
+          <div class="layer-lbl">INPUT<br>x₁ x₂ x₃</div>
+        </div>
+        <div class="nn-edge"></div>
+        <div class="layer">
+          <div class="layer-nodes">
+            <div class="nn-node" style="border-color:rgba(26,63,255,.8);background:rgba(26,63,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(26,63,255,.8);background:rgba(26,63,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(26,63,255,.8);background:rgba(26,63,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(26,63,255,.8);background:rgba(26,63,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(26,63,255,.5);background:transparent"></div>
+          </div>
+          <div class="layer-lbl">HIDDEN 1<br>z=Wx+b → ReLU</div>
+        </div>
+        <div class="nn-edge"></div>
+        <div class="layer">
+          <div class="layer-nodes">
+            <div class="nn-node" style="border-color:rgba(139,33,255,.8);background:rgba(139,33,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(139,33,255,.8);background:rgba(139,33,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(139,33,255,.8);background:rgba(139,33,255,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(139,33,255,.5);background:transparent"></div>
+          </div>
+          <div class="layer-lbl">HIDDEN 2<br>BatchNorm + Dropout</div>
+        </div>
+        <div class="nn-edge"></div>
+        <div class="layer">
+          <div class="layer-nodes">
+            <div class="nn-node" style="border-color:rgba(0,204,102,.8);background:rgba(0,204,102,.2)"></div>
+            <div class="nn-node" style="border-color:rgba(0,204,102,.8);background:rgba(0,204,102,.2)"></div>
+          </div>
+          <div class="layer-lbl">OUTPUT<br>Softmax → ŷ</div>
+        </div>
+      </div>
+
+      <!-- Activation functions -->
+      <div class="act-demo">
+        <div class="act-card">
+          <div class="act-name">ReLU</div>
+          <div class="act-formula">max(0,x)</div>
+          <div class="act-use">Default. Hızlı, seyrek. Dying ReLU riski var.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-name">GELU</div>
+          <div class="act-formula">x·Φ(x)</div>
+          <div class="act-use">BERT/GPT tercih eder. ReLU'dan yumuşak.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-name">Sigmoid</div>
+          <div class="act-formula">1/(1+e⁻ˣ)</div>
+          <div class="act-use">Output layer (binary). Vanishing gradient!</div>
+        </div>
+        <div class="act-card">
+          <div class="act-name">Softmax</div>
+          <div class="act-formula">eˣᵢ/Σeˣʲ</div>
+          <div class="act-use">Multi-class output. Olasılık dağılımı.</div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># PyTorch — tam training loop</span>
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader, TensorDataset
+
+<span class="kw">class</span> <span class="cls">DeepNet</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_dim: int, hidden: int, n_classes: int):
+        <span class="fn">super</span>().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, hidden),  nn.BatchNorm1d(hidden), nn.GELU(), nn.Dropout(<span class="num">0.3</span>),
+            nn.Linear(hidden, hidden//2), nn.BatchNorm1d(hidden//2), nn.GELU(), nn.Dropout(<span class="num">0.2</span>),
+            nn.Linear(hidden//2, n_classes)
+        )
+        self.<span class="fn">_init_weights</span>()
+
+    <span class="kw">def</span> <span class="fn">_init_weights</span>(self):
+        <span class="kw">for</span> m <span class="kw">in</span> self.<span class="fn">modules</span>():
+            <span class="kw">if</span> <span class="fn">isinstance</span>(m, nn.Linear):
+                nn.init.<span class="fn">kaiming_normal_</span>(m.weight, nonlinearity=<span class="str">"relu"</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.net(x)
+
+<span class="cm"># Training loop — production kalitesi</span>
+<span class="fn">model</span>     = <span class="cls">DeepNet</span>(<span class="num">784</span>, <span class="num">512</span>, <span class="num">10</span>).<span class="fn">to</span>(<span class="fn">device</span>)
+<span class="fn">criterion</span> = nn.<span class="cls">CrossEntropyLoss</span>(label_smoothing=<span class="num">0.1</span>)
+<span class="fn">optimizer</span> = torch.optim.<span class="cls">AdamW</span>(<span class="fn">model</span>.<span class="fn">parameters</span>(), lr=<span class="num">3e-4</span>, weight_decay=<span class="num">1e-4</span>)
+<span class="fn">scheduler</span> = torch.optim.lr_scheduler.<span class="cls">OneCycleLR</span>(<span class="fn">optimizer</span>, max_lr=<span class="num">1e-3</span>, steps_per_epoch=<span class="fn">len</span>(<span class="fn">loader</span>), epochs=<span class="num">50</span>)
+
+<span class="kw">for</span> <span class="fn">epoch</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">50</span>):
+    <span class="fn">model</span>.<span class="fn">train</span>()
+    <span class="kw">for</span> <span class="fn">X_batch</span>, <span class="fn">y_batch</span> <span class="kw">in</span> <span class="fn">loader</span>:
+        <span class="fn">X_batch</span>, <span class="fn">y_batch</span> = <span class="fn">X_batch</span>.<span class="fn">to</span>(<span class="fn">device</span>), <span class="fn">y_batch</span>.<span class="fn">to</span>(<span class="fn">device</span>)
+        <span class="fn">optimizer</span>.<span class="fn">zero_grad</span>()
+        <span class="fn">loss</span> = <span class="fn">criterion</span>(<span class="fn">model</span>(<span class="fn">X_batch</span>), <span class="fn">y_batch</span>)
+        <span class="fn">loss</span>.<span class="fn">backward</span>()
+        nn.utils.<span class="fn">clip_grad_norm_</span>(<span class="fn">model</span>.<span class="fn">parameters</span>(), <span class="num">1.0</span>)  <span class="cm"># gradient clipping</span>
+        <span class="fn">optimizer</span>.<span class="fn">step</span>(); <span class="fn">scheduler</span>.<span class="fn">step</span>()</div>
+
+      <div class="proj-row">
+        <div class="pb">✏️ MNIST Rakam Tanıma</div>
+        <div class="pb">📧 Spam Sınıflandırma</div>
+        <div class="pb">🖼️ Basit Image Classifier</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B2: CNN + RNN ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--am)">
+    <div class="sec-nc"><div class="sec-num">2</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 2 — ORTA SEVİYE</div>
+      <div class="sec-title">CNN (Computer Vision) + RNN/LSTM (Sequence)</div>
+      <div class="sec-sub">Conv2d · Pooling · Feature Maps · Transfer Learning · LSTM · GRU · Sentiment</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--am)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># CNN — görüntü için (ResNet benzeri blok)</span>
+<span class="kw">class</span> <span class="cls">ResidualBlock</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, channels: int):
+        <span class="fn">super</span>().__init__()
+        self.block = nn.Sequential(
+            nn.Conv2d(channels, channels, <span class="num">3</span>, padding=<span class="num">1</span>, bias=<span class="kw">False</span>),
+            nn.BatchNorm2d(channels), nn.ReLU(inplace=<span class="kw">True</span>),
+            nn.Conv2d(channels, channels, <span class="num">3</span>, padding=<span class="num">1</span>, bias=<span class="kw">False</span>),
+            nn.BatchNorm2d(channels)
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="kw">return</span> nn.functional.relu(self.block(x) + x)   <span class="cm"># skip connection!</span>
+
+<span class="cm"># Transfer Learning — en verimli yol</span>
+<span class="kw">import</span> torchvision.models <span class="kw">as</span> models
+<span class="kw">from</span>  torchvision <span class="kw">import</span> transforms
+
+<span class="fn">backbone</span> = models.<span class="fn">efficientnet_b0</span>(weights=<span class="str">"DEFAULT"</span>)
+<span class="kw">for</span> param <span class="kw">in</span> <span class="fn">backbone</span>.<span class="fn">features</span>.<span class="fn">parameters</span>():
+    param.requires_grad = <span class="kw">False</span>               <span class="cm"># freeze — sadece classifier train</span>
+<span class="fn">backbone</span>.<span class="fn">classifier</span> = nn.Sequential(
+    nn.Dropout(<span class="num">0.3</span>),
+    nn.Linear(<span class="fn">backbone</span>.<span class="fn">classifier</span>[<span class="num">1</span>].in_features, <span class="num">2</span>)
+)</div>
+
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># LSTM — zaman serisi / NLP</span>
+<span class="kw">class</span> <span class="cls">SentimentLSTM</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_size: int, embed_dim: int, hidden: int):
+        <span class="fn">super</span>().__init__()
+        self.embed   = nn.Embedding(vocab_size, embed_dim, padding_idx=<span class="num">0</span>)
+        self.lstm    = nn.LSTM(embed_dim, hidden, num_layers=<span class="num">2</span>,
+                               batch_first=<span class="kw">True</span>, dropout=<span class="num">0.3</span>, bidirectional=<span class="kw">True</span>)
+        self.head    = nn.Linear(hidden * <span class="num">2</span>, <span class="num">1</span>)  <span class="cm"># bidirectional → ×2</span>
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="fn">e</span> = self.embed(x)
+        <span class="fn">out</span>, (<span class="fn">h</span>, _) = self.lstm(e)
+        <span class="fn">h_cat</span> = torch.<span class="fn">cat</span>([<span class="fn">h</span>[-<span class="num">2</span>], <span class="fn">h</span>[-<span class="num">1</span>]], dim=<span class="num">1</span>)  <span class="cm"># her iki yön</span>
+        <span class="kw">return</span> self.head(<span class="fn">h_cat</span>).</span><span class="fn">squeeze</span>()</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--am)"><div class="card-t">Data Augmentation</div><div class="card-d">RandomHorizontalFlip, RandomCrop, ColorJitter, MixUp, CutMix. Albumentations kütüphanesi ile hızlı pipeline.</div></div>
+        <div class="card" style="--sc:var(--am)"><div class="card-t">Skip Connection (ResNet)</div><div class="card-d">Gradient vanishing problemi çözümü. Derin ağlarda eğitimi mümkün kılar. Modern mimarilerin temeli.</div></div>
+        <div class="card" style="--sc:var(--am)"><div class="card-t">Vanishing Gradient</div><div class="card-d">LSTM/GRU ile RNN sorununu çöz. Gradient clipping ekle. Residual connection en etkili çözüm.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">🐱 Kedi-Köpek Sınıflandırma</div>
+        <div class="pb">😊 Sentiment Analysis</div>
+        <div class="pb">📝 Metin Üretme</div>
+        <div class="pb">🎬 Film Yorumu Analizi</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B3: TRANSFORMER ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--vt)">
+    <div class="sec-nc"><div class="sec-num">3</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 3 — İLERİ SEVİYE (OYUN BURADA BAŞLIYOR)</div>
+      <div class="sec-title">Transformer + Self-Attention + NLP + Adv. CV</div>
+      <div class="sec-sub">Attention · BERT · GPT · HuggingFace · YOLO · Segmentation · ViT</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--vt)">
+    <div class="sec-in">
+      <div class="note vt"><strong>🔥 "Attention Is All You Need" (2017):</strong> Bu paper modern yapay zekanın dönüm noktasıdır. BERT, GPT, T5, LLaMA, Stable Diffusion — hepsi bu mimaride. Okumayı kendinize borçlusunuz.</div>
+
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># Multi-Head Self-Attention — Transformer'ın kalbi</span>
+<span class="kw">class</span> <span class="cls">MultiHeadAttention</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_model: int, n_heads: int):
+        <span class="fn">super</span>().__init__()
+        <span class="fn">assert</span> d_model % n_heads == <span class="num">0</span>
+        self.d_head = d_model // n_heads
+        self.n_heads = n_heads
+        self.Wq = nn.Linear(d_model, d_model)
+        self.Wk = nn.Linear(d_model, d_model)
+        self.Wv = nn.Linear(d_model, d_model)
+        self.Wo = nn.Linear(d_model, d_model)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, q, k, v, mask=<span class="kw">None</span>):
+        B, T, D = q.shape
+        <span class="cm"># Q, K, V'yi head boyutuna böl</span>
+        Q = self.Wq(q).<span class="fn">view</span>(B, T, self.n_heads, self.d_head).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>)
+        K = self.Wk(k).<span class="fn">view</span>(B, T, self.n_heads, self.d_head).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>)
+        V = self.Wv(v).<span class="fn">view</span>(B, T, self.n_heads, self.d_head).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>)
+        <span class="cm"># Scaled dot-product attention</span>
+        <span class="fn">scores</span> = torch.<span class="fn">matmul</span>(Q, K.<span class="fn">transpose</span>(-<span class="num">2</span>,-<span class="num">1</span>)) / (self.d_head ** <span class="num">0.5</span>)
+        <span class="kw">if</span> mask <span class="kw">is not</span> <span class="kw">None</span>: <span class="fn">scores</span> = <span class="fn">scores</span>.<span class="fn">masked_fill</span>(mask==<span class="num">0</span>, <span class="fn">float</span>(<span class="str">"-inf"</span>))
+        <span class="fn">attn</span>   = torch.nn.functional.<span class="fn">softmax</span>(<span class="fn">scores</span>, dim=-<span class="num">1</span>)
+        <span class="kw">return</span> self.Wo(torch.<span class="fn">matmul</span>(<span class="fn">attn</span>, V).<span class="fn">transpose</span>(<span class="num">1</span>,<span class="num">2</span>).<span class="fn">contiguous</span>().<span class="fn">view</span>(B,T,D))</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># HuggingFace — modern NLP pipeline</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> (AutoTokenizer, AutoModelForSequenceClassification,
+                           TrainingArguments, Trainer)
+<span class="kw">from</span> datasets     <span class="kw">import</span> load_dataset
+<span class="kw">import</span> evaluate
+
+<span class="cm"># BERT fine-tuning — sadece birkaç satır</span>
+<span class="fn">model_name</span> = <span class="str">"dbmdz/bert-base-turkish-cased"</span>  <span class="cm"># Türkçe BERT!</span>
+<span class="fn">tokenizer</span>  = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="fn">model_name</span>)
+<span class="fn">model</span>      = AutoModelForSequenceClassification.<span class="fn">from_pretrained</span>(<span class="fn">model_name</span>, num_labels=<span class="num">2</span>)
+
+<span class="fn">training_args</span> = TrainingArguments(
+    output_dir=<span class="str">"./results"</span>,
+    num_train_epochs=<span class="num">3</span>,        learning_rate=<span class="num">2e-5</span>,
+    per_device_train_batch_size=<span class="num">16</span>, weight_decay=<span class="num">0.01</span>,
+    evaluation_strategy=<span class="str">"epoch"</span>, save_strategy=<span class="str">"best"</span>,
+    load_best_model_at_end=<span class="kw">True</span>,  fp16=<span class="kw">True</span>       <span class="cm"># mixed precision</span>
+)
+<span class="fn">trainer</span> = Trainer(model=<span class="fn">model</span>, args=<span class="fn">training_args</span>,
+                   train_dataset=<span class="fn">train_ds</span>, eval_dataset=<span class="fn">val_ds</span>)
+<span class="fn">trainer</span>.<span class="fn">train</span>()</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--vt)"><div class="card-t">Vision Transformer (ViT)</div><div class="card-d">Görüntüyü patch'lere böl → sequence gibi işle. CNN'den daha iyi büyük veride. DeiT, Swin Transformer.</div></div>
+        <div class="card" style="--sc:var(--vt)"><div class="card-t">YOLO v8/v9</div><div class="card-d">Real-time object detection. Ultralytics API ile 5 satır kod. Custom dataset fine-tuning kolay.</div></div>
+        <div class="card" style="--sc:var(--vt)"><div class="card-t">Segment Anything (SAM)</div><div class="card-d">Meta'nın universal segmentation modeli. Zero-shot segmentation. Medical imaging'de devrim.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">🇹🇷 Türkçe Chatbot</div>
+        <div class="pb">📰 Metin Özetleme</div>
+        <div class="pb">❓ Q&A Sistemi</div>
+        <div class="pb">🚦 Trafik Levhası Tanıma</div>
+        <div class="pb">📷 Güvenlik Kamerası</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B4: UZMANLIK ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--rd)">
+    <div class="sec-nc"><div class="sec-num">4</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 4 — UZMANLIK ALANLARI</div>
+      <div class="sec-title">NLP · Computer Vision · Speech · RL · Generative AI</div>
+      <div class="sec-sub">LLM Fine-tuning · Diffusion · RL · RLHF · Voice · Multimodal</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--rd)">
+    <div class="sec-in">
+      <div class="note rd"><strong>Karar ver:</strong> Hepsine birden girme. Bir alanda 1 yıl geçirmek, 5 alanda 2 ay geçirmekten kat kat değerlidir. Sektörde en yüksek talep şu anda LLM + CV alanında.</div>
+
+      <div class="g2">
+        <div class="card" style="--sc:var(--rd)">
+          <div class="card-t">🔵 NLP / LLM</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• LLM fine-tuning (LoRA, QLoRA)</div>
+            <div>• RAG (Retrieval Augmented Generation)</div>
+            <div>• Prompt engineering</div>
+            <div>• LangChain / LlamaIndex</div>
+            <div>• RLHF (ChatGPT nasıl eğitildi?)</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--rd)">
+          <div class="card-t">👁️ Computer Vision</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• Object detection (YOLO, DETR)</div>
+            <div>• Semantic segmentation (Mask R-CNN)</div>
+            <div>• Image generation (Stable Diffusion)</div>
+            <div>• 3D vision (NeRF)</div>
+            <div>• Video understanding (VideoMAE)</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--am)">
+          <div class="card-t">🎮 Reinforcement Learning</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• Markov Decision Process (MDP)</div>
+            <div>• Q-learning → DQN</div>
+            <div>• Policy gradient (PPO, A3C)</div>
+            <div>• AlphaGo / MuZero mimarisi</div>
+            <div>• Gymnasium (eski OpenAI Gym)</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--cy)">
+          <div class="card-t">🎙️ Speech Processing</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div>• Speech-to-text (Whisper)</div>
+            <div>• Text-to-speech (Tortoise, XTTS)</div>
+            <div>• Speaker recognition</div>
+            <div>• Audio classification</div>
+            <div>• Türkçe ASR modelleri</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># LoRA — büyük modeli az parametreyle fine-tune</span>
+<span class="kw">from</span> peft <span class="kw">import</span> LoraConfig, get_peft_model, TaskType
+<span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM
+
+<span class="fn">base_model</span> = AutoModelForCausalLM.<span class="fn">from_pretrained</span>(
+    <span class="str">"meta-llama/Llama-2-7b"</span>, load_in_4bit=<span class="kw">True</span>  <span class="cm"># QLoRA</span>
+)
+<span class="fn">lora_config</span> = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=<span class="num">16</span>, lora_alpha=<span class="num">32</span>, lora_dropout=<span class="num">0.1</span>,
+    target_modules=[<span class="str">"q_proj"</span>, <span class="str">"v_proj"</span>]      <span class="cm"># attention weight'lere LoRA</span>
+)
+<span class="fn">model</span> = get_peft_model(<span class="fn">base_model</span>, <span class="fn">lora_config</span>)
+<span class="fn">model</span>.<span class="fn">print_trainable_parameters</span>()  <span class="cm"># ~0.1% parametre!</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B5: PRODUCTION ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--cy)">
+    <div class="sec-nc"><div class="sec-num">5</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 5 — PRODUCTION + MLOPS</div>
+      <div class="sec-title">Deployment + Docker + Cloud + Model Monitoring</div>
+      <div class="sec-sub">FastAPI · TorchServe · Triton · ONNX · Docker · AWS SageMaker · Wandb</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--cy)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Model → ONNX → Triton Inference Server</span>
+<span class="kw">import</span> torch.onnx
+
+<span class="cm"># 1. ONNX'e dönüştür</span>
+<span class="fn">dummy_input</span> = torch.<span class="fn">randn</span>(<span class="num">1</span>, <span class="num">3</span>, <span class="num">224</span>, <span class="num">224</span>)
+torch.onnx.<span class="fn">export</span>(<span class="fn">model</span>, <span class="fn">dummy_input</span>, <span class="str">"model.onnx"</span>,
+    input_names=[<span class="str">"input"</span>], output_names=[<span class="str">"output"</span>],
+    opset_version=<span class="num">17</span>, dynamic_axes={<span class="str">"input"</span>: {<span class="num">0</span>: <span class="str">"batch"</span>}})
+
+<span class="cm"># 2. FastAPI servisi</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, UploadFile
+<span class="kw">import</span> onnxruntime <span class="kw">as</span> ort
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="fn">app</span>    = FastAPI(title=<span class="str">"DL Inference API"</span>)
+<span class="fn">sess</span>   = ort.<span class="cls">InferenceSession</span>(<span class="str">"model.onnx"</span>, providers=[<span class="str">"CUDAExecutionProvider"</span>])
+
+<span class="de">@app.post</span>(<span class="str">"/predict"</span>)
+<span class="kw">async def</span> <span class="fn">predict</span>(<span class="fn">file</span>: UploadFile):
+    <span class="fn">img</span>  = <span class="fn">preprocess_image</span>(<span class="kw">await</span> <span class="fn">file</span>.<span class="fn">read</span>())
+    <span class="fn">out</span>  = <span class="fn">sess</span>.<span class="fn">run</span>(<span class="kw">None</span>, {<span class="str">"input"</span>: <span class="fn">img</span>})[<span class="num">0</span>]
+    <span class="fn">prob</span> = np.<span class="fn">softmax</span>(<span class="fn">out</span>[<span class="num">0</span>])
+    <span class="kw">return</span> {<span class="str">"class"</span>: int(np.<span class="fn">argmax</span>(<span class="fn">prob</span>)), <span class="str">"confidence"</span>: <span class="op">float</span>(<span class="fn">prob</span>.<span class="fn">max</span>())}</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Model Quantization</div><div class="card-d">INT8/FP16 ile model boyutu ÷4. Inference hızı ×2-4. torch.quantization veya bitsandbytes ile.</div></div>
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Weights & Biases</div><div class="card-d">Deney takibi, hyperparameter sweep, model registry. MLflow alternatifi. Kaggle'da standart.</div></div>
+        <div class="card" style="--sc:var(--cy)"><div class="card-t">Gradient Checkpointing</div><div class="card-d">Büyük model eğitiminde bellek tasarrufu. Aktivasyonları kaydedip yeniden hesapla.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B6: PORTFÖY ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--gn)">
+    <div class="sec-nc"><div class="sec-num">6</div><div class="sec-ln"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// AŞAMA 6 — PROJELERle PORTFÖy</div>
+      <div class="sec-title">GitHub + Kaggle + Paper Reading + Open Source</div>
+      <div class="sec-sub">End-to-end projects · Reproductions · Blog yazma · Conference</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--gn)">
+    <div class="sec-in">
+      <div class="g2">
+        <div class="card" style="--sc:var(--gn)">
+          <div class="card-t">🔥 Yapman Gereken Projeler</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div style="margin-bottom:3px;">📹 Gerçek zamanlı kamera sistemi (CNN+YOLO)</div>
+            <div style="margin-bottom:3px;">🤖 Türkçe destekli NLP chatbot (BERT+RAG)</div>
+            <div style="margin-bottom:3px;">🎬 Recommendation system (collaborative filter)</div>
+            <div style="margin-bottom:3px;">🏗️ End-to-end ML pipeline (Docker+API+Monitor)</div>
+            <div>🎨 Image generation fine-tuning (Stable Diffusion)</div>
+          </div>
+        </div>
+        <div class="card" style="--sc:var(--vt)">
+          <div class="card-t">📄 Okuman Gereken Papers</div>
+          <div class="card-d" style="margin-top:6px;">
+            <div style="margin-bottom:3px;">• Attention Is All You Need (2017)</div>
+            <div style="margin-bottom:3px;">• BERT (2018) + GPT-2 (2019)</div>
+            <div style="margin-bottom:3px;">• ResNet: Deep Residual Learning (2015)</div>
+            <div style="margin-bottom:3px;">• Denoising Diffusion (DDPM 2020)</div>
+            <div>• LoRA: Low-Rank Adaptation (2021)</div>
+          </div>
+        </div>
+      </div>
+      <div class="note gn"><strong>💡 Blog Yaz:</strong> Öğrendiklerini Medium veya kişisel blog'da paylaş. "Transformer'ı sıfırdan implement ettim" yazısı CV'nin en güçlü satırı olabilir. Yazmak öğrenmeyi 2x pekiştirir.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Gerçekçi Zaman</div>
+    <div class="tl">
+      <div class="tlr"><div class="tld">3<span class="tlu">AY</span></div><div><div class="tln">Temel</div><div class="tls">Matematik · Python · ML</div></div></div>
+      <div class="tlr"><div class="tld">6<span class="tlu">AY</span></div><div><div class="tln">Orta</div><div class="tls">NN · CNN · RNN</div></div></div>
+      <div class="tlr"><div class="tld">9<span class="tlu">AY</span></div><div><div class="tln">İleri</div><div class="tls">Transformer · NLP · CV</div></div></div>
+      <div class="tlr"><div class="tld">12<span class="tlu">AY</span></div><div><div class="tln">Pro Level</div><div class="tls">Uzmanlaşma + Production</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Konu Ağırlıkları</div>
+    <div class="skills" id="skills">
+      <div class="skr"><div class="skl">Backprop/Math</div><div class="skt"><div class="skf" style="--sc2:var(--el)"></div></div><div class="skp">95%</div></div>
+      <div class="skr"><div class="skl">PyTorch</div><div class="skt"><div class="skf" style="--sc2:var(--am)"></div></div><div class="skp">90%</div></div>
+      <div class="skr"><div class="skl">Transformer</div><div class="skt"><div class="skf" style="--sc2:var(--vt)"></div></div><div class="skp">80%</div></div>
+      <div class="skr"><div class="skl">Deployment</div><div class="skt"><div class="skf" style="--sc2:var(--cy)"></div></div><div class="skp">65%</div></div>
+      <div class="skr"><div class="skl">LLM/GenAI</div><div class="skt"><div class="skf" style="--sc2:var(--rd)"></div></div><div class="skp">55%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Uzmanlaşma Yolları</div>
+    <div class="track-list">
+      <div class="track" style="--tc:var(--vt)"><div class="track-n">🔵 NLP / LLM</div><div class="track-libs">BERT · GPT · LoRA · RAG · LangChain</div></div>
+      <div class="track" style="--tc:var(--am)"><div class="track-n">👁️ Computer Vision</div><div class="track-libs">YOLO · SAM · ViT · Diffusion · 3D</div></div>
+      <div class="track" style="--tc:var(--rd)"><div class="track-n">🎮 RL / Robotics</div><div class="track-libs">DQN · PPO · Isaac Gym · RoboSuite</div></div>
+      <div class="track" style="--tc:var(--cy)"><div class="track-n">🎙️ Speech/Audio</div><div class="track-libs">Whisper · TTS · Speaker ID</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Kritik Papers</div>
+    <div class="paper-list">
+      <div class="paper"><div class="paper-year">2017 · Vaswani et al.</div><div class="paper-title">Attention Is All You Need</div><div class="paper-why">Transformer mimarisi — modern AI'ın temeli</div></div>
+      <div class="paper"><div class="paper-year">2018 · Devlin et al.</div><div class="paper-title">BERT</div><div class="paper-why">Bidirectional pre-training, fine-tuning paradigması</div></div>
+      <div class="paper"><div class="paper-year">2015 · He et al.</div><div class="paper-title">Deep Residual Learning</div><div class="paper-why">ResNet — skip connection, 1000+ katman</div></div>
+      <div class="paper"><div class="paper-year">2020 · Ho et al.</div><div class="paper-title">DDPM</div><div class="paper-why">Diffusion modeller — image generation temeli</div></div>
+      <div class="paper"><div class="paper-year">2021 · Hu et al.</div><div class="paper-title">LoRA</div><div class="paper-why">Büyük modeli az parametreyle fine-tune et</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Framework Araçları</div>
+    <div class="tool-grid">
+      <div class="tool"><div class="tool-n">PyTorch</div><div class="tool-d">Ana framework</div></div>
+      <div class="tool"><div class="tool-n">HuggingFace</div><div class="tool-d">Pretrained models</div></div>
+      <div class="tool"><div class="tool-n">Weights&Biases</div><div class="tool-d">Experiment tracking</div></div>
+      <div class="tool"><div class="tool-n">Albumentations</div><div class="tool-d">CV augmentation</div></div>
+      <div class="tool"><div class="tool-n">ONNX Runtime</div><div class="tool-d">Fast inference</div></div>
+      <div class="tool"><div class="tool-n">Lightning</div><div class="tool-d">Training wrapper</div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">%80<br><em>Proje.</em><br>%20 Video.</h2>
+    <p class="bot-p">Video izlemek = kamera karşısında yüzmek öğrenmek. Editörü aç, modeli eğit, hatayı gör, düzelt. Bu döngü seni öne taşır.</p>
+    <a class="btn btn-cy" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-wh" href="https://paperswithcode.com" target="_blank">Papers →</a>
+  </div>
+  <div class="bot-r">
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div><div class="step-t">Matematik + Python (1–2 ay)</div><div class="step-d">NumPy ile sıfırdan NN yaz. Gradient'i hesapla. Framework açma.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div><div class="step-t">Machine Learning (1 ay)</div><div class="step-d">Scikit-learn, overfitting/underfitting, cross-val. Temel modeller.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div><div class="step-t">Neural Networks + PyTorch (2 ay)</div><div class="step-d">Training loop, activation, loss, optimizer. MNIST'ten başla.</div></div></div>
+      <div class="step"><div class="step-n">4</div><div><div class="step-t">CNN + RNN (2 ay)</div><div class="step-d">Görüntü ve sekans verisi. Transfer learning ile hızlan.</div></div></div>
+      <div class="step"><div class="step-n">5</div><div><div class="step-t">Transformer (2 ay)</div><div class="step-d">Self-attention implement et. HuggingFace ile fine-tune et.</div></div></div>
+      <div class="step"><div class="step-n">6</div><div><div class="step-t">Alan seç + Deploy (3+ ay)</div><div class="step-d">NLP / CV / RL. Production. GitHub'da 3–5 güçlü proje.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Derin Öğrenme 0→100 Roadmap</span>
+  <span>8 Aşama · 12+ Mimari · 10+ Proje · 9–12 Ay · Projeye dök.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// CURSOR
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.pp,.track,.paper,.tool,.pb,.card,.act-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='14px';c1.style.height='14px';c2.style.width='42px';c2.style.height='42px';c1.style.borderRadius='50%';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='10px';c1.style.height='10px';c2.style.width='28px';c2.style.height='28px';c1.style.borderRadius='2px';});
+});
+
+// ACCORDION
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// COUNTERS
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),8,800);cnt(document.getElementById('s2'),12,1000);cnt(document.getElementById('s3'),12,900);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-stats-col'));
+
+// SKILL BARS
+const widths=['95%','90%','80%','65%','55%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skf').forEach((f,i)=>{setTimeout(()=>{f.style.width=widths[i];},i*100);});
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+
+// NN NODE PULSE
+let hue = 0;
+setInterval(()=>{
+  document.querySelectorAll('.nn-node').forEach((n,i)=>{
+    const v = Math.sin(Date.now()/600 + i*0.8)*.5+.5;
+    n.style.opacity = 0.3 + v*0.7;
+  });
+},50);
+</script>
+</body>
+</html>

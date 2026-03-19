@@ -1,0 +1,842 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Geliştirici Yol Haritası</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #4a5568;
+    --color-text-tertiary: #718096;
+    --color-text-info: #1a472a;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f7fafc;
+    --color-background-info: #dff0e5;
+    --color-background-warning: #fef3c7;
+    --color-text-warning: #92400e;
+    --color-border-primary: #4299e1;
+    --color-border-secondary: #cbd5e0;
+    --color-border-tertiary: #e2e8f0;
+    --border-radius-md: 6px;
+    --border-radius-lg: 8px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html {
+      --color-text-primary: #f0f0f0;
+      --color-text-secondary: #cbd5e0;
+      --color-text-tertiary: #a0aec0;
+      --color-text-info: #a5f3ac;
+      --color-background-primary: #1a202c;
+      --color-background-secondary: #2d3748;
+      --color-background-info: #1e3a3a;
+      --color-background-warning: #3a3100;
+      --color-text-warning: #fef08a;
+      --color-border-primary: #4299e1;
+      --color-border-secondary: #4a5568;
+      --color-border-tertiary: #2d3748;
+    }
+  }
+  
+  body { 
+    font-family: var(--font-sans); 
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+
+  .roadmap { 
+    padding: 2rem; 
+    max-width: 1000px; 
+    margin: 0 auto;
+  }
+
+  .roadmap::before {
+    content: '🎯 Backend Geliştirici Yol Haritası';
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .roadmap::after {
+    content: 'Adım adım backend geliştirme yolculuğunuz. Her başlığa tıklayın.';
+    display: block;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .phase-title {
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    letter-spacing: 0.1em;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    margin: 2.5rem 0 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--color-border-tertiary);
+  }
+  .phase-title:first-child { 
+    margin-top: 0; 
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .nodes { display: flex; flex-direction: column; gap: 10px; }
+
+  .node {
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-background-primary);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .node:hover { 
+    border-color: var(--color-border-primary);
+    background: var(--color-background-secondary);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .node.open { 
+    border-color: var(--color-border-primary);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.15);
+  }
+
+  .node-header {
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--color-background-primary);
+    transition: background 0.15s;
+  }
+
+  .node:hover .node-header {
+    background: var(--color-background-secondary);
+  }
+
+  .dot {
+    width: 12px; 
+    height: 12px; 
+    border-radius: 50%; 
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+    opacity: 0.8;
+  }
+  .dot-purple { background: #7F77DD; }
+  .dot-teal   { background: #1D9E75; }
+  .dot-amber  { background: #BA7517; }
+  .dot-coral  { background: #D85A30; }
+  .dot-blue   { background: #378ADD; }
+  .dot-green  { background: #639922; }
+  .dot-pink   { background: #D4537E; }
+  .dot-gray   { background: #888780; }
+
+  .node-label {
+    font-size: 1rem; 
+    font-weight: 700;
+    color: var(--color-text-primary); 
+    flex: 1;
+    line-height: 1.4;
+  }
+  
+  .node-why {
+    font-size: 0.85rem; 
+    color: var(--color-text-tertiary);
+    font-weight: 500;
+    margin: 0 8px;
+    max-width: 150px;
+  }
+  
+  .chevron {
+    font-size: 12px; 
+    color: var(--color-text-tertiary);
+    transition: transform 0.2s ease; 
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  
+  .node.open .chevron { 
+    transform: rotate(90deg); 
+    color: var(--color-border-primary);
+  }
+
+  .node-body {
+    display: none; 
+    padding: 16px;
+    border-top: 1px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+    animation: slideDown 0.2s ease;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .node.open .node-body { display: block; }
+
+  .node-desc {
+    font-size: 0.95rem; 
+    color: var(--color-text-secondary);
+    line-height: 1.7; 
+    margin: 0 0 12px;
+  }
+
+  .tags { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 8px; 
+    margin-bottom: 12px; 
+  }
+  
+  .tag {
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    padding: 4px 10px;
+    border-radius: 99px; 
+    border: 1px solid;
+    transition: all 0.15s;
+    cursor: default;
+  }
+
+  .tag:hover {
+    transform: scale(1.05);
+  }
+
+  .tag-purple { background: #EEEDFE; color: #4C2F9E; border-color: #AFA9EC; }
+  .tag-teal   { background: #D4F5ED; color: #0D6E52; border-color: #42A793; }
+  .tag-amber  { background: #FCE8D5; color: #7A4500; border-color: #E8A844; }
+  .tag-coral  { background: #FCDDD8; color: #622C1A; border-color: #E8956F; }
+  .tag-blue   { background: #D6E9FB; color: #1A5991; border-color: #5BA5E0; }
+  .tag-green  { background: #E0EDC8; color: #2B5E15; border-color: #7FA941; }
+  .tag-pink   { background: #F8D8E4; color: #6B2845; border-color: #E088A8; }
+  .tag-gray   { background: #E8E5DC; color: #424037; border-color: #A79E90; }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-purple { background: #3A2E7A; color: #E8E0FF; border-color: #6B5CB5; }
+    .tag-teal   { background: #0D5C52; color: #B0F0DD; border-color: #1D916C; }
+    .tag-amber  { background: #664D2C; color: #FFD699; border-color: #B8860D; }
+    .tag-coral  { background: #663A2A; color: #FFC9B0; border-color: #D8724B; }
+    .tag-blue   { background: #1A4680; color: #A8D4FF; border-color: #3A7FD8; }
+    .tag-green  { background: #2D5C20; color: #C8E09A; border-color: #5FA630; }
+    .tag-pink   { background: #6B2F52; color: #F5A8D4; border-color: #B83E6C; }
+    .tag-gray   { background: #424037; color: #E8E5DC; border-color: #6B6460; }
+  }
+
+  .tip {
+    font-size: 0.9rem; 
+    color: var(--color-text-info);
+    background: var(--color-background-info);
+    border-left: 3px solid #22863a;
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px; 
+    margin-top: 12px; 
+    line-height: 1.6;
+  }
+
+  .pro-tip {
+    font-size: 0.9rem; 
+    color: var(--color-text-warning);
+    background: var(--color-background-warning);
+    border-left: 3px solid #b8860b;
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px; 
+    margin-top: 12px; 
+    line-height: 1.6;
+  }
+
+  .subnodes { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    margin-top: 12px; 
+  }
+  
+  .subnode {
+    border: 1px solid var(--color-border-tertiary);
+    border-left: 3px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    background: var(--color-background-primary);
+    transition: all 0.15s;
+  }
+
+  .subnode:hover {
+    border-left-color: var(--color-border-primary);
+    background: var(--color-background-secondary);
+  }
+
+  .subnode-title { 
+    font-size: 0.9rem; 
+    font-weight: 700; 
+    color: var(--color-text-primary); 
+    margin-bottom: 4px; 
+  }
+  
+  .subnode-desc  { 
+    font-size: 0.85rem; 
+    color: var(--color-text-secondary); 
+    line-height: 1.6; 
+  }
+
+  .legend {
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 16px;
+    margin-bottom: 2rem; 
+    padding: 16px;
+    background: var(--color-background-primary);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border-secondary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .legend-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    font-size: 0.9rem; 
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .roadmap {
+      padding: 1rem;
+    }
+
+    .roadmap::before {
+      font-size: 1.5rem;
+    }
+
+    .node-why {
+      display: none;
+    }
+
+    .legend {
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .legend-item {
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="roadmap">
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-purple"></div> Temel</div>
+    <div class="legend-item"><div class="dot dot-teal"></div> Veritabanı</div>
+    <div class="legend-item"><div class="dot dot-blue"></div> API & İletişim</div>
+    <div class="legend-item"><div class="dot dot-amber"></div> Güvenlik</div>
+    <div class="legend-item"><div class="dot dot-coral"></div> Altyapı & DevOps</div>
+    <div class="legend-item"><div class="dot dot-green"></div> Performans</div>
+    <div class="legend-item"><div class="dot dot-pink"></div> İleri Seviye</div>
+    <div class="legend-item"><div class="dot dot-gray"></div> Ekstra Tavsiyeler</div>
+  </div>
+
+  <div class="nodes" id="roadmap"></div>
+</div>
+
+<script>
+const data = [
+  {
+    phase: "⬡ Aşama 1 — Temeller",
+    items: [
+      {
+        label: "İnternet & Ağ Temelleri",
+        why: "Her şeyin altyapısı",
+        color: "purple",
+        desc: "Backend geliştirici olarak HTTP/HTTPS'in nasıl çalıştığını, DNS'in ne yaptığını ve veri paketlerinin ağda nasıl gezdiğini bilmen şart. Debugging yaparken veya performans sorunlarını çözerken bunlar olmadan kör uçarsın.",
+        tags: ["HTTP/HTTPS", "DNS", "TCP/IP", "SSL/TLS", "Status Codes", "Headers", "WebSockets"],
+        subs: [
+          { title: "HTTP metotları", desc: "GET, POST, PUT, DELETE, PATCH — her birinin semantik farkını bil. Yanlış kullanmak API'ını kirletir." },
+          { title: "Status kodları", desc: "2xx başarı, 3xx yönlendirme, 4xx client hatası, 5xx server hatası. 404 vs 400 vs 422 farkı çok önemli." },
+          { title: "CORS nedir?", desc: "Browser güvenlik politikası. Frontend-backend ayrı domain'deyse kesinlikle bilmen gerekiyor." }
+        ],
+        tip: "💡 Curl veya Postman ile basit HTTP istekleri yap, header'ları incele. Network tab'ı aç ve siteye gir — ne kadar istek gönderildiğine şaşıracaksın."
+      },
+      {
+        label: "Bir Dil Seç & İyi Öğren",
+        why: "Araçsız ustanın elbet",
+        color: "purple",
+        desc: "Python, Node.js (JavaScript), Go, Java, Rust — hangisi olursa olsun, o dili derinlemesine öğren. Yüzeysel bilgiyle framework öğrenirsen temelsiz bina yaparsın. Değişkenler, veri tipleri, kontrol akışı, OOP, fonksiyonel programlama, concurrency.",
+        tags: ["Python", "Node.js", "Go", "Java", "Rust", "OOP", "Fonksiyonel Prog."],
+        subs: [
+          { title: "Neden tek dile odaklan?", desc: "Birden fazla dili yüzeysel bilmek yerine birini derinlemesine bilmek çok daha değerli. Derin bilgi, diğer dillere geçişi de kolaylaştırır." },
+          { title: "Hangi dili seç?", desc: "Startup & web: Python/Node.js. Yüksek performans: Go/Rust. Kurumsal: Java/Kotlin. Birini seç, 6+ ay o dilde kal." },
+        ],
+        tip: "💡 Tavsiye: Python veya Node.js ile başla. İş ilanlarında en çok bu ikisi var. Temel algoritma soruları çöz — LeetCode Easy seviye 50 soru yeterli başlangıç için.",
+        protip: "⚠️ Framework'ten önce dili öğren. 'Framework öğrenerek dil öğrenirim' diyenler hep proje değiştirince sıfırdan başlar."
+      },
+      {
+        label: "Terminal & Linux Temelleri",
+        why: "Server'lar Linux çalıştırır",
+        color: "purple",
+        desc: "Production server'lar %90+ Linux. Dosya sistemi, process yönetimi, izinler, network komutları bilmeden server'da hiçbir şey yapamazsın. SSH ile bağlanmak, log okumak, servis başlatmak/durdurmak — bunlar temel beceriler.",
+        tags: ["Bash", "SSH", "vim/nano", "grep/awk/sed", "cron", "systemd", "chmod"],
+        subs: [
+          { title: "Dosya sistemi", desc: "/etc (config), /var/log (loglar), /home (kullanıcılar), /tmp (geçici). Bu yapıyı bil." },
+          { title: "Process yönetimi", desc: "ps, top, kill, htop — hangi process ne kadar kaynak yiyor, nasıl durdurursun." },
+          { title: "Pipe & redirect", desc: "cat access.log | grep ERROR | wc -l — bu güç. Log analizi için şart." }
+        ],
+        tip: "💡 WSL (Windows Subsystem for Linux) veya bir Ubuntu VM kur. Günlük kullanıma sok."
+      },
+      {
+        label: "Git & Versiyon Kontrolü",
+        why: "Kod yönetiminin kalbi",
+        color: "purple",
+        desc: "Git olmadan takımda çalışmak mümkün değil. Commit, branch, merge, rebase, conflict çözme — bunları pratikte öğren. GitHub/GitLab workflow'ları (PR, code review) da eklenince profesyonel geliştirme döngüsüne girmiş olursun.",
+        tags: ["Git", "GitHub", "Branching", "Merge/Rebase", "Pull Request", "Code Review"],
+        subs: [
+          { title: "Branch stratejileri", desc: "Git Flow, GitHub Flow, Trunk-Based Development. Takım büyüklüğüne göre hangisinin kullanıldığını bil." },
+          { title: "Commit mesajları", desc: "Conventional Commits formatını öğren: feat:, fix:, docs:, chore: — otomatik changelog için temel." }
+        ],
+        tip: "💡 Her gün git kullan. Kendi projelerinde bile branch aç, PR yaz, merge et. Kas belleği gerekiyor."
+      },
+    ]
+  },
+  {
+    phase: "⬡ Aşama 2 — Veritabanı",
+    items: [
+      {
+        label: "İlişkisel Veritabanları (SQL)",
+        why: "Verinin %80'i hâlâ burada",
+        color: "teal",
+        desc: "PostgreSQL veya MySQL öğren. Tablolar, ilişkiler, JOIN'ler, transaction, index — bunları anlayan biri veritabanını bir araç olarak değil, güçlü bir silah olarak kullanır. Yanlış yazılan bir sorgu tüm uygulamayı çökertebilir.",
+        tags: ["PostgreSQL", "MySQL", "SQL", "JOIN", "Index", "Transaction", "ACID", "Normalizasyon"],
+        subs: [
+          { title: "ACID nedir?", desc: "Atomicity, Consistency, Isolation, Durability. Bank işlemleri neden güvenli? ACID garantisi yüzünden." },
+          { title: "Index mantığı", desc: "Yanlış index = yavaş sorgu. Fazla index = yavaş yazma. Doğru index = performans. Explain Analyze kullan." },
+          { title: "N+1 problemi", desc: "ORM kullanırken en yaygın hata. 100 user için 101 sorgu atmak yerine JOIN veya eager loading kullan." }
+        ],
+        tip: "💡 PostgreSQL'i tercih et — açık kaynak, güçlü, endüstri standardı. SQLZoo veya Mode Analytics üzerinde pratik yap."
+      },
+      {
+        label: "NoSQL Veritabanları",
+        why: "Her problem SQL çivisi değil",
+        color: "teal",
+        desc: "MongoDB (döküman), Redis (key-value/cache), Cassandra (column-family), Elasticsearch (arama) — her birinin ne zaman kullanılacağını bil. SQL/NoSQL savaşı anlamsız; doğru aracı doğru yerde kullan.",
+        tags: ["MongoDB", "Redis", "Cassandra", "Elasticsearch", "DynamoDB", "Neo4j"],
+        subs: [
+          { title: "Redis ne zaman?", desc: "Session store, cache, rate limiting, pub/sub. Disk'e değil RAM'e yazar. Hız kritikse Redis." },
+          { title: "MongoDB ne zaman?", desc: "Şema esnekliği lazımsa, JSON benzeri veri saklıyorsan. Ama JOIN yoktur dikkat." },
+          { title: "Elasticsearch ne zaman?", desc: "Full-text arama, log analizi (ELK Stack). PostgreSQL'in LIKE '%..%' yetersiz kaldığında." }
+        ],
+        tip: "💡 Redis'i mutlaka öğren — neredeyse her production sistemde var. Cache invalidation mantığını kavra."
+      },
+      {
+        label: "ORM & Query Builder",
+        why: "SQL'i soyutla ama anlayarak",
+        color: "teal",
+        desc: "Prisma, SQLAlchemy, Hibernate, Sequelize — ORM'ler geliştirmeyi hızlandırır ama arkasında ne döndüğünü bilmeden kullanırsan performance hell'e girersin. ORM generated SQL'i her zaman logla ve izle.",
+        tags: ["Prisma", "SQLAlchemy", "Sequelize", "TypeORM", "Drizzle", "Knex.js"],
+        subs: [
+          { title: "ORM vs raw SQL", desc: "CRUD için ORM güzel. Karmaşık agregasyon ve raporlama için raw SQL veya query builder daha kontrollü." },
+          { title: "Migration yönetimi", desc: "Veritabanı şema değişikliklerini versiyon kontrol et. Flyway, Liquibase, Alembic, Prisma Migrate." }
+        ],
+        tip: "💡 ORM kullanırken her zaman generated SQL'i gör. Debug mode'da logla veya explain ile analiz et."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Aşama 3 — API & İletişim",
+    items: [
+      {
+        label: "REST API Tasarımı",
+        why: "Sistemlerin konuşma dili",
+        color: "blue",
+        desc: "REST mimarisini doğru anlamak çok önemli. Resource odaklı URL tasarımı, HTTP metotlarının doğru kullanımı, versiyonlama stratejileri, pagination, filtering, hata yönetimi — bunlar API'ının kalitesini belirler.",
+        tags: ["REST", "OpenAPI/Swagger", "HATEOAS", "Versiyonlama", "Pagination", "Rate Limiting"],
+        subs: [
+          { title: "URL tasarımı", desc: "/users/{id}/posts — kaynak odaklı, hiyerarşik. /getUsers veya /fetchUserData gibi verb'li URL'ler yanlış." },
+          { title: "Hata yönetimi", desc: "Her hata için tutarlı format döndür: {error, message, code, details}. Client'ın ne yapacağını anlaması için." },
+          { title: "API versiyonlama", desc: "/v1/users, /v2/users veya header'da. Breaking change = yeni versiyon. Kullanıcıları kırmadan geliştir." }
+        ],
+        tip: "💡 OpenAPI/Swagger ile API'ını belgele. Hem ekip içi iletişimi kolaylaştırır hem de client SDK üretebilirsin."
+      },
+      {
+        label: "GraphQL",
+        why: "Esnek veri sorgulama",
+        color: "blue",
+        desc: "REST'in over-fetching ve under-fetching problemini çözer. Client tam olarak hangi alanları istediğini belirtir. Facebook tarafından geliştirildi. Karmaşık veri ilişkilerinde güçlü, basit CRUD'da overkill olabilir.",
+        tags: ["GraphQL", "Apollo", "Hasura", "Schema", "Resolver", "DataLoader", "Subscriptions"],
+        subs: [
+          { title: "N+1 problemi GraphQL'de", desc: "Her resolver bağımsız sorgu atarsa facetime. DataLoader ile batch & cache uygula." },
+          { title: "Ne zaman kullanmalı?", desc: "Farklı client'lar (web, mobil, IoT) farklı veri ihtiyacı varsa. Büyük takımlarda tip güvenliği için." }
+        ],
+        tip: "💡 GraphQL'i öğren ama her projeye uygulamak zorunda değilsin. REST hâlâ çoğu durumda doğru seçim."
+      },
+      {
+        label: "gRPC & Protocol Buffers",
+        why: "Microservice iletişimi",
+        color: "blue",
+        desc: "Servisler arası yüksek performanslı iletişim için Google'ın geliştirdiği RPC framework. JSON yerine binary format (protobuf) kullanır — çok daha hızlı ve küçük. Microservice mimarisinde servisten servise iletişimde standart haline geliyor.",
+        tags: ["gRPC", "Protocol Buffers", "HTTP/2", "Streaming", "IDL", "Service Mesh"],
+        subs: [
+          { title: "gRPC vs REST", desc: "gRPC: daha hızlı, bi-directional streaming, strong typing. REST: daha basit, browser uyumlu, insan okunabilir." },
+          { title: "Ne zaman gRPC?", desc: "Internal microservice iletişimi, latency kritikse, farklı dillerde servisler varsa." }
+        ],
+        tip: "💡 gRPC'yi job ilanlarında çok göreceksin. Protobuf şema tasarımını ve backward compatibility kurallarını öğren."
+      },
+      {
+        label: "Message Queues & Event-Driven",
+        why: "Async iletişimin gücü",
+        color: "blue",
+        desc: "Kafka, RabbitMQ, AWS SQS — servisler arası async iletişim için şart. Kullanıcı signup yaptığında email gönderme işlemini neden aynı request'te yapmamalısın? Queue. Yüksek load altında nasıl dayanıklı olursun? Queue.",
+        tags: ["Kafka", "RabbitMQ", "AWS SQS", "NATS", "Redis Pub/Sub", "Event Sourcing", "CQRS"],
+        subs: [
+          { title: "Kafka ne zaman?", desc: "Yüksek hacimli event stream, log aggregation, event sourcing. LinkedIn, Uber ölçeği." },
+          { title: "RabbitMQ ne zaman?", desc: "Task queue, work distribution, daha basit setup. Küçük-orta ölçek." },
+          { title: "Dead Letter Queue", desc: "İşlenemeyen mesajların gittiği yer. Mutlaka kur. Sessiz veri kaybını önler." }
+        ],
+        tip: "💡 Kafka'yı öğren — büyük şirket mülakatlarında ve büyük sistemlerde kaçınılmaz. Confluent'in free kursunu bitir."
+      },
+      {
+        label: "WebSockets & Real-time",
+        why: "Canlı veri iletimi",
+        color: "blue",
+        desc: "Chat uygulaması, live dashboard, oyun, collaborative tool — gerçek zamanlı iletişim için HTTP'nin istek-cevap modelinin dışına çıkman gerekiyor. WebSocket: kalıcı bağlantı. SSE: server'dan tek yönlü push. Long polling: eski ama hâlâ var.",
+        tags: ["WebSocket", "Socket.io", "SSE", "Long Polling", "WebRTC"],
+        subs: [
+          { title: "Socket.io vs raw WebSocket", desc: "Socket.io: fallback, rooms, namespace, reconnection. Raw WS: daha az overhead. Basit projede raw, karmaşıkta Socket.io." },
+          { title: "Scale problemi", desc: "WebSocket bağlantıları stateful. Yatay scale için Redis pub/sub veya sticky session gerekir." }
+        ],
+        tip: "💡 Socket.io ile basit bir chat uygulaması yaz. Gerçek zamanlı sistemlerin güzelliğini hissedeceksin."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Aşama 4 — Güvenlik",
+    items: [
+      {
+        label: "Authentication & Authorization",
+        why: "Kim bu kişi? Ne yapabilir?",
+        color: "amber",
+        desc: "Authentication (kimlik doğrulama) ve Authorization (yetkilendirme) farklı kavramlar. JWT, OAuth 2.0, OpenID Connect, session-based auth — bunları yanlış implemente etmek = güvenlik açığı. Şifreleri asla plain text saklamak yok.",
+        tags: ["JWT", "OAuth 2.0", "OpenID Connect", "Session", "bcrypt", "2FA", "SSO", "RBAC"],
+        subs: [
+          { title: "JWT güvenliği", desc: "JWT'yi localStorage'da saklamak güvensiz (XSS). httpOnly cookie kullan. Signature doğrulamayı atla demek imkânsız." },
+          { title: "OAuth 2.0 flow'ları", desc: "Authorization Code (web app), PKCE (SPA/mobil), Client Credentials (M2M). Hangisini nerede kullanacağını bil." },
+          { title: "RBAC vs ABAC", desc: "Role-Based Access Control vs Attribute-Based. Küçük sistemde RBAC, karmaşık izin yapısında ABAC." }
+        ],
+        tip: "💡 Kendi auth sistemi yazmak yerine Keycloak, Auth0, Supabase Auth gibi çözümler kullan. Security yanlış yapmak çok kolay.",
+        protip: "⚠️ Şifreleri MD5 veya SHA-1 ile hashleme. bcrypt, Argon2 veya scrypt kullan. Bu fark hayat kurtarır."
+      },
+      {
+        label: "OWASP Top 10 & Web Güvenliği",
+        why: "Saldırıları bilmeden savunma yok",
+        color: "amber",
+        desc: "SQL Injection, XSS, CSRF, SSRF, XXE, Insecure Deserialization — bunların nasıl çalıştığını ve nasıl önleneceğini bil. Her yıl binlerce şirket bu basit açıklardan hackleniyor.",
+        tags: ["SQL Injection", "XSS", "CSRF", "SSRF", "Rate Limiting", "Input Validation", "OWASP"],
+        subs: [
+          { title: "SQL Injection", desc: "Parameterized query veya ORM kullan. String concatenation ile SQL oluşturmak = davet." },
+          { title: "XSS", desc: "Kullanıcı girdisini HTML'e direkt yazma. Escape et. Content Security Policy (CSP) header ekle." },
+          { title: "CSRF", desc: "State-changing işlemler için CSRF token. SameSite cookie attribute. Modern framework'ler genelde halleder." }
+        ],
+        tip: "💡 OWASP Juice Shop — kasıtlı açıklı web uygulaması. Hackleyerek öğren. Pratik olmadan teori yetmez.",
+        protip: "⚠️ Güvenliği son adıma bırakma. Her feature'da güvenlik açısından düşün. 'Security by design' felsefesini benimse."
+      },
+      {
+        label: "Secret & Config Yönetimi",
+        why: "Sırları sırla sakla",
+        color: "amber",
+        desc: "API key'leri, şifreleri, connection string'leri kaynak koduna yazmak en yaygın hatalardan biri. Environment variable, vault sistemi, encrypted secret management şart.",
+        tags: ["HashiCorp Vault", "AWS Secrets Manager", ".env", "dotenv", "SOPS", "Doppler"],
+        subs: [
+          { title: ".gitignore dikkat", desc: ".env dosyasını asla commit etme. git history'e girince silmen çok zor. Secret tarama tool'ları: truffleHog, gitleaks." },
+          { title: "Production secret yönetimi", desc: "Env variable yetmez büyük sistemde. Vault veya cloud secret manager kullan. Rotation otomasyonu kur." }
+        ],
+        tip: "💡 git-secrets veya gitleaks'i CI pipeline'ına ekle. Commit öncesi otomatik kontrol.",
+        protip: "⚠️ GitHub'da 'accidentally committed API key' araması yap. Kaç kişi bu hatayı yaptığını görünce anlarsın."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Aşama 5 — Altyapı & DevOps",
+    items: [
+      {
+        label: "Docker & Container",
+        why: "'Bende çalışıyor' bahanesi biter",
+        color: "coral",
+        desc: "Docker ile uygulamanı izole, tekrarlanabilir ortamda çalıştır. Dockerfile yaz, image oluştur, container yönet. Docker Compose ile multi-service geliştirme ortamı kur. Bu artık her backend developer'ın bilmesi gereken temel beceri.",
+        tags: ["Docker", "Dockerfile", "Docker Compose", "Container Registry", "Layer caching", "Multi-stage build"],
+        subs: [
+          { title: "Multi-stage build", desc: "Build image büyük, production image küçük olmalı. Multi-stage ile sadece çalışma zamanına gereken dosyaları al." },
+          { title: "Docker Compose", desc: "app + postgres + redis + worker — hepsini tek yaml dosyasında tanımla. docker compose up ile geliştirme ortamı hazır." }
+        ],
+        tip: "💡 Her projeye Dockerfile ekle. Projen Docker'da çalışıyorsa her ortamda çalışır. CI/CD'nin temeli bu."
+      },
+      {
+        label: "Kubernetes (K8s)",
+        why: "Container orkestrasyon",
+        color: "coral",
+        desc: "Docker container'larını ölçekte yönetmek için Kubernetes. Pod, deployment, service, ingress, configmap, secret — temel objeleri anla. Auto-scaling, self-healing, rolling deployment — K8s bunları otomatik yapar.",
+        tags: ["K8s", "Pod", "Deployment", "Service", "Ingress", "Helm", "kubectl", "Namespace"],
+        subs: [
+          { title: "Helm Charts", desc: "K8s manifest'larını paketlemek için. Kendi chart'ını yaz veya topluluk chart'larını kullan." },
+          { title: "Ne zaman K8s?", desc: "Microservice, yüksek kullanılabilirlik, auto-scaling lazımsa. Küçük projede over-engineering olabilir." },
+          { title: "Alternatifler", desc: "K8s öğrenmek zaman alır. AWS ECS, Fly.io, Railway gibi managed alternatifler var." }
+        ],
+        tip: "💡 Minikube veya Kind ile local K8s cluster kur. kubectl komutlarını ezberlemeden önce ne yaptığını anla."
+      },
+      {
+        label: "CI/CD Pipeline",
+        why: "İnsani hataları otomasyona devret",
+        color: "coral",
+        desc: "Kod commit edildiği andan production'a çıkana kadar her adım otomatik olmalı. Test çalıştır, build et, güvenlik tara, deploy et. GitHub Actions, GitLab CI, Jenkins, CircleCI — araçlar farklı, konsept aynı.",
+        tags: ["GitHub Actions", "GitLab CI", "Jenkins", "ArgoCD", "CircleCI", "Blue/Green Deploy", "Canary"],
+        subs: [
+          { title: "Pipeline aşamaları", desc: "Lint → Unit Test → Integration Test → Build → Security Scan → Deploy to Staging → Smoke Test → Deploy to Prod" },
+          { title: "GitOps", desc: "Infrastructure ve uygulama konfigürasyonunu Git'te tut. ArgoCD veya Flux ile K8s'e sync et." }
+        ],
+        tip: "💡 GitHub Actions ile başla. Ücretsiz, kolay, iyi dökümantasyon. Basit bir pipeline yaz ve production'a otomatik deploy et."
+      },
+      {
+        label: "Cloud Provider (AWS/GCP/Azure)",
+        why: "Modern altyapı bulutta",
+        color: "coral",
+        desc: "Bir cloud provider'ı iyi öğren. AWS en yaygın, GCP ML odaklı sistemlerde güçlü, Azure enterprise ve Microsoft eko-sisteminde dominant. Core servisler: compute, storage, database, networking, IAM, monitoring.",
+        tags: ["AWS", "GCP", "Azure", "EC2/GCE", "S3/GCS", "RDS", "Lambda", "IAM", "VPC"],
+        subs: [
+          { title: "Hangi cloud?", desc: "AWS: en fazla iş ilanı ve servis. GCP: Kubernetes'in doğduğu yer, BigQuery güçlü. Azure: kurumsal ortam." },
+          { title: "Serverless", desc: "AWS Lambda, Google Cloud Functions — server yönetimi yok, event tetikle, ölçek otomatik. Ama cold start ve cost dikkat." },
+          { title: "IaC — Terraform", desc: "Altyapıyı kod olarak tanımla. Terraform veya Pulumi. Click-ops değil, kod. Versiyon kontrol et." }
+        ],
+        tip: "💡 AWS'de başlamak için AWS Free Tier yeterli. SAA-C03 (Solutions Architect Associate) sertifikası iş arama sürecinde ciddi fark yaratıyor."
+      },
+      {
+        label: "Monitoring, Logging & Observability",
+        why: "Görmediğini düzeltemezsin",
+        color: "coral",
+        desc: "Production'daki uygulamanın ne yaptığını bilmezsen bir şeyler bozulduğunda kör uçarsın. Metrics, logs ve traces — bu üç pillar observability'nin temelidir. SLA/SLO/SLI kavramlarını da anla.",
+        tags: ["Prometheus", "Grafana", "ELK Stack", "Datadog", "OpenTelemetry", "Jaeger", "PagerDuty"],
+        subs: [
+          { title: "3 pillar of observability", desc: "Metrics (ne oluyor?), Logs (ne oldu?), Traces (nerede oldu?). Bunların üçü birlikte anlam kazanır." },
+          { title: "Structured logging", desc: "Log'ları JSON formatında yaz. timestamp, level, service, traceId, message. grep'ten daha güçlü analiz." },
+          { title: "Alerting", desc: "Error rate > %1 ise alert at. Latency p99 > 500ms ise uyar. Alert yorgunluğundan kaçın — sadece actionable alert." }
+        ],
+        tip: "💡 OpenTelemetry standart haline geliyor. Vendor-agnostic trace ve metric toplama. Öğrenmek uzun vadeli yatırım."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Aşama 6 — Performans & Ölçek",
+    items: [
+      {
+        label: "Caching Stratejileri",
+        why: "Hız = kullanıcı mutluluğu",
+        color: "green",
+        desc: "Cache olmadan yüksek trafik altında hiçbir sistem ayakta kalamaz. Redis, Memcached, CDN, browser cache, database query cache — her seviyede cache uygulanabilir. Cache invalidation ise yazılımın en zor problemlerinden biri.",
+        tags: ["Redis", "Memcached", "CDN", "Browser Cache", "Cache Aside", "Write-through", "TTL", "Cache Stampede"],
+        subs: [
+          { title: "Cache stratejileri", desc: "Cache-aside (Lazy loading), Write-through, Write-behind. Her birinin avantaj ve dezavantajı var." },
+          { title: "Cache invalidation", desc: "En zor problem. TTL bazlı (basit), event bazlı (tutarlı ama karmaşık), versiyon bazlı (URL'de v parametresi)." },
+          { title: "Cache stampede", desc: "Aynı anda birçok istek expire olan cache'i yenilemeye çalışır. Lock veya probabilistic early expiration ile çöz." }
+        ],
+        tip: "💡 'Cache everything' yaklaşımı yanlış. Önce profil çıkar, darboğazı bul, sonra cache ekle. Ölçmeden optimize etme."
+      },
+      {
+        label: "Load Balancing & Yatay Ölçek",
+        why: "Tek sunucu yetmez",
+        color: "green",
+        desc: "Traffic arttığında yatay (daha fazla sunucu) veya dikey (daha güçlü sunucu) ölçeklenebilirsin. Yatay ölçek daha esnek ama stateless mimari gerektirir. Load balancer: Round Robin, Least Connections, IP Hash algoritmaları.",
+        tags: ["Nginx", "HAProxy", "AWS ALB", "Round Robin", "Least Conn", "Health Check", "Session Affinity"],
+        subs: [
+          { title: "Stateless servis", desc: "Sunucu local state tutmamalı. Session Redis'te, upload S3'te. Böylece herhangi bir instance isteği karşılayabilir." },
+          { title: "Health check", desc: "Load balancer hangi instance'ın sağlıklı olduğunu bilmeli. /health endpoint yaz — basit ama kritik." }
+        ],
+        tip: "💡 Nginx veya Caddy ile basit reverse proxy ve load balancer konfigürasyonu yap. Kavramı pratikte anlaman önemli."
+      },
+      {
+        label: "Database Optimizasyonu",
+        why: "Darboğaz genelde burada",
+        color: "green",
+        desc: "Uygulama seviyesinde her şeyi optimize etsen de yanlış bir database sorgusu her şeyi mahvedebilir. Query analizi, index stratejisi, connection pooling, read replica, partitioning — bunları bil.",
+        tags: ["EXPLAIN ANALYZE", "Index", "Connection Pool", "Read Replica", "Partitioning", "Sharding", "Vacuum"],
+        subs: [
+          { title: "Connection pooling", desc: "Her request için yeni DB connection açmak pahalı. PgBouncer, HikariCP — connection havuzu. Zorunlu." },
+          { title: "Read replica", desc: "Read-heavy iş yükünde okuma sorgularını replica'ya gönder, yazma primary'de kalsın." },
+          { title: "Slow query log", desc: "500ms üzeri sorguları logla. Her hafta incele. Bunları optimize etmek en büyük kazanımı sağlar." }
+        ],
+        tip: "💡 EXPLAIN ANALYZE her backend geliştiricinin düzenli kullandığı komut olmalı. Query plan okumayı öğren."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Aşama 7 — İleri Seviye",
+    items: [
+      {
+        label: "Microservices & Distributed Systems",
+        why: "Büyük sistemlerin mimarisi",
+        color: "pink",
+        desc: "Monolith yetersiz kalmaya başladığında microservice. Ama beraberinde distributed systems problemleri geliyor: network partition, consistency, latency, service discovery, circuit breaker. CAP teoremi, eventual consistency — bunları anla.",
+        tags: ["CAP Teoremi", "Service Mesh", "Circuit Breaker", "Saga Pattern", "Service Discovery", "Istio", "Consul"],
+        subs: [
+          { title: "Monolith-first yaklaşım", desc: "Martin Fowler: önce monolith yaz, sonra microservice'e geç. Çoğu startup için microservice premature optimization." },
+          { title: "Saga pattern", desc: "Distributed transaction yönetimi. Choreography vs Orchestration. Her servise kendi local transaction'ı." },
+          { title: "Circuit Breaker", desc: "Bir servis çöktüğünde tüm sistemi çöktürmemek için. Hystrix, Resilience4j. Fail fast prensibi." }
+        ],
+        tip: "💡 Microservice hype'ına kapılma. Netflix, Uber'in microservice mimarisi senin 3 kişilik startup'ın için değil. Önce iyi monolith yaz.",
+        protip: "⚠️ Distributed systems gerçekten zor. Fallacies of Distributed Computing'i oku. Network her zaman güvenilir değil."
+      },
+      {
+        label: "System Design",
+        why: "Senior mülakat ve gerçek dünya",
+        color: "pink",
+        desc: "URL shortener tasarla, Twitter feed tasarla, rate limiter yaz — system design soruları hem mülakatların hem de gerçek işin özü. Scalability, availability, consistency, latency trade-off'larını anlayarak karar ver.",
+        tags: ["CAP Teoremi", "Consistent Hashing", "Rate Limiting", "CDN", "Sharding", "HLD", "LLD"],
+        subs: [
+          { title: "FAANG mülakatları", desc: "Google, Meta, Amazon mülakatlarında system design kaçınılmaz. Grokking System Design kursunu oku." },
+          { title: "Back-of-envelope estimation", desc: "1 million RPS için kaç server? Kaç byte? Kaç GB storage? Bu hesapları hızlı yapabilmek önemli." }
+        ],
+        tip: "💡 ByteByteGo (Alex Xu) ve Grokking System Design — bu iki kaynak system design için en iyi başlangıç noktası."
+      },
+      {
+        label: "Event Sourcing & CQRS",
+        why: "Audit log ve temporal query",
+        color: "pink",
+        desc: "Mevcut state yerine olayları (events) sakla. Tüm geçmiş duruma gidebilirsin, audit log bedava gelir, karmaşık business logic'i event olarak modelle. CQRS: okuma ve yazma modellerini ayır. Güçlü ama karmaşık.",
+        tags: ["Event Store", "CQRS", "Projection", "Aggregate", "Event Replay", "Axon", "EventStoreDB"],
+        subs: [
+          { title: "Ne zaman kullan?", desc: "Audit trail şartsa, temporal query gerekiyorsa, karmaşık domain logic varsa. Simple CRUD için overkill." },
+          { title: "Event versioning", desc: "Event şeması değişirse eski event'lar nasıl handle edilir? Upcasting, versioned events." }
+        ],
+        tip: "💡 DDD (Domain-Driven Design) ile birlikte öğren. Eric Evans'ın kitabı biraz ağır ama değer."
+      }
+    ]
+  },
+  {
+    phase: "⬡ Ekstra Tavsiyeler",
+    items: [
+      {
+        label: "Yazılım Tasarım Prensipleri",
+        why: "Kod yazmak değil, iyi kod yazmak",
+        color: "gray",
+        desc: "SOLID prensipleri, DRY, KISS, YAGNI — bunlar soyut kavramlar gibi görünür ama her gün yazdığın kodun kalitesini belirler. Tasarım kalıpları (Design Patterns) ise tekrarlayan problemlere test edilmiş çözümler.",
+        tags: ["SOLID", "DRY", "KISS", "YAGNI", "Design Patterns", "Clean Code", "Refactoring"],
+        subs: [
+          { title: "Clean Code kitabı", desc: "Robert C. Martin (Uncle Bob). Okunabilir, maintainable kod nasıl yazılır. Tartışmalı yerleri var ama temel iyi." },
+          { title: "Design Patterns", desc: "Singleton, Factory, Observer, Strategy, Repository — kavramsal olarak öğren. Ezberle değil, ne zaman kullanacağını bil." }
+        ],
+        tip: "💡 Code review'ları ciddiye al. Başkasının kodunu okumak ve yazdığın koda geri bildirim almak en hızlı büyüme yolu."
+      },
+      {
+        label: "Testing Kültürü",
+        why: "Güven olmadan değişim olmaz",
+        color: "gray",
+        desc: "Unit test, integration test, e2e test — test piramidini anla. Test olmadan refactor yapamazsın, production'a güvenerek çıkamazsın. TDD'yi dene — önce test yaz, sonra kod.",
+        tags: ["Unit Test", "Integration Test", "E2E", "TDD", "Jest", "pytest", "Testcontainers", "Mocking"],
+        subs: [
+          { title: "Test piramidi", desc: "Çok unit test (hızlı, ucuz), az integration test (yavaş, pahalı), çok az e2e (en yavaş). Piramidi tersine çevirme." },
+          { title: "Testcontainers", desc: "Integration test için gerçek DB, Redis, Kafka başlat. Mock yerine gerçek davranışı test et." }
+        ],
+        tip: "💡 'Test yazmak vakit kaybı' diyenler ileride 'neden hiçbir şeyi değiştiremiyorum' diye şikayet eder.",
+        protip: "⚠️ %100 test coverage hedefine takılma. Doğru test = kritik iş mantığını kapsayan, güveni artıran test."
+      },
+      {
+        label: "Dokümantasyon & İletişim",
+        why: "Kod kadar önemli",
+        color: "gray",
+        desc: "En iyi kod, okunabilir koddur. ADR (Architecture Decision Record), README, API dökümantasyonu, runbook — bunları yazan developer senior karakterine sahiptir. Teknik iletişim soft skill değil, hard skill.",
+        tags: ["ADR", "README", "OpenAPI", "Runbook", "Postmortem", "RFCs", "Tech Debt"],
+        subs: [
+          { title: "ADR nedir?", desc: "Architecture Decision Record. 'Neden bu teknolojiyi seçtik?' sorusunun cevabını gelecek için yaz." },
+          { title: "Postmortem kültürü", desc: "Bir şey bozulduğunda blame değil, öğrenme. Blameless postmortem kültürü psikolojik güvenliği artırır." }
+        ],
+        tip: "💡 README'ini başka birinin bilgisizlikle okuyacağını varsay. Projeyi sıfırdan kurmak için gereken her şeyi yaz."
+      },
+      {
+        label: "Kariyer Tavsiyeleri",
+        why: "Teknik yetkinlik yeterli değil",
+        color: "gray",
+        desc: "Kod yazmak işin sadece bir parçası. Problem çözme yaklaşımın, iletişimin, öğrenme hızın ve sektörü takip etmen fark yaratır. Open source katkı, blog yazma, side project — hepsi portföyüne ekler.",
+        tags: ["Open Source", "Blog", "Networking", "Mentorship", "Side Project", "Conference", "Podcast"],
+        subs: [
+          { title: "Öğrenme kaynakları", desc: "ByteByteGo, Martin Fowler blog, The Pragmatic Programmer kitabı, roadmap.sh, Hussein Nasser YouTube." },
+          { title: "Build in public", desc: "Öğrendiklerini Twitter/X, LinkedIn veya blog'da paylaş. Hem öğrenmen pekişir hem de network kurarsın." },
+          { title: "Mülakat hazırlığı", desc: "LeetCode (Easy-Medium), System Design (Grokking), Behavioral (STAR method). Teknik + soft skill dengesi." }
+        ],
+        tip: "💡 roadmap.sh/backend — bu roadmap'i de mutlaka incele. Community destekli, sürekli güncelleniyor.",
+        protip: "⚠️ Tutorial hell'den kaçın. Video izlemek öğrenmek değil. Mutlaka bir şey inşa et — gerçek problem, gerçek kod."
+      }
+    ]
+  }
+];
+
+const container = document.getElementById('roadmap');
+
+data.forEach(phase => {
+  const phaseEl = document.createElement('div');
+  phaseEl.innerHTML = `<div class="phase-title">${phase.phase}</div>`;
+  
+  const nodesEl = document.createElement('div');
+  nodesEl.className = 'nodes';
+
+  phase.items.forEach(item => {
+    const node = document.createElement('div');
+    node.className = 'node';
+
+    const subsHtml = item.subs ? item.subs.map(s =>
+      `<div class="subnode"><div class="subnode-title">${s.title}</div><div class="subnode-desc">${s.desc}</div></div>`
+    ).join('') : '';
+
+    const tagsHtml = item.tags.map(t =>
+      `<span class="tag tag-${item.color}">${t}</span>`
+    ).join('');
+
+    const tipHtml = item.tip ? `<div class="tip">${item.tip}</div>` : '';
+    const protipHtml = item.protip ? `<div class="pro-tip">${item.protip}</div>` : '';
+
+    node.innerHTML = `
+      <div class="node-header">
+        <div class="dot dot-${item.color}"></div>
+        <div class="node-label">${item.label}</div>
+        <div class="node-why">${item.why}</div>
+        <div class="chevron">▶</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">${item.desc}</div>
+        <div class="tags">${tagsHtml}</div>
+        ${item.subs ? `<div class="subnodes">${subsHtml}</div>` : ''}
+        ${tipHtml}${protipHtml}
+      </div>
+    `;
+
+    node.querySelector('.node-header').addEventListener('click', () => {
+      const wasOpen = node.classList.contains('open');
+      node.classList.toggle('open', !wasOpen);
+    });
+
+    nodesEl.appendChild(node);
+  });
+
+  phaseEl.appendChild(nodesEl);
+  container.appendChild(phaseEl);
+});
+</script>
+
+</body>
+</html>
+</script>

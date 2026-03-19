@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 0→Pro Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@400;500;700;800;900&family+Geist+Mono:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:     #f0f4ff;
+  --bg2:    #e4eaff;
+  --bg3:    #d8e2ff;
+  --white:  #ffffff;
+  --ink:    #0a0e1a;
+  --ink2:   #3d4466;
+  --ink3:   #8890b0;
+  --blue:   #2451ff;
+  --blue2:  #4d6eff;
+  --blue3:  #e8edff;
+  --cobalt: #0033cc;
+  --teal:   #00b4a6;
+  --gold:   #f5a623;
+  --rose:   #ff4466;
+  --green:  #22c55e;
+
+  --c1: var(--green);
+  --c2: var(--gold);
+  --c3: var(--blue);
+  --c4: var(--rose);
+  --c5: var(--cobalt);
+  --c6: var(--teal);
+
+  --bord: rgba(10,14,26,.1);
+  --bord2:rgba(10,14,26,.06);
+
+  --fh: 'Instrument Serif', serif;
+  --fb: 'Epilogue', sans-serif;
+  --fm: 'Geist Mono', 'Fira Code', monospace;
+  --r:  10px;
+  --r2: 6px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur {position:fixed;width:10px;height:10px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .12s,height .12s,background .2s;}
+#cur2{position:fixed;width:34px;height:34px;border:1.5px solid rgba(36,81,255,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* ── DOT GRID BG ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,rgba(36,81,255,.1) 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 40%,transparent 100%);
+}
+
+/* ── ACCENT STRIPE ── */
+.stripe{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue) 0%,var(--teal) 40%,var(--gold) 70%,var(--rose) 100%);z-index:100;}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{
+  padding:64px 0 52px;
+  border-bottom:2px solid var(--ink);
+  display:grid;grid-template-columns:1fr auto;
+  gap:32px;align-items:end;
+  animation:up .6s ease both;
+}
+.hero-left{}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fm);font-size:.65rem;letter-spacing:.2em;
+  color:var(--blue);margin-bottom:18px;
+}
+.hero-eyebrow-bar{width:24px;height:2px;background:var(--blue);}
+.hero-title{
+  font-family:var(--fh);
+  font-size:clamp(4.5rem,12vw,9rem);
+  font-weight:400;line-height:.9;
+  letter-spacing:-.03em;color:var(--ink);
+}
+.hero-title .italic{font-style:italic;color:var(--blue);}
+.hero-title .outline{
+  color:transparent;
+  -webkit-text-stroke:2px var(--ink);
+}
+.hero-desc{
+  margin-top:24px;font-size:1rem;color:var(--ink2);
+  max-width:480px;line-height:1.7;
+}
+.hero-desc strong{color:var(--ink);}
+
+.hero-right{
+  display:flex;flex-direction:column;gap:0;
+  border:2px solid var(--ink);
+  flex-shrink:0;
+}
+.hstat{
+  padding:16px 24px;border-bottom:1px solid var(--bord);
+  display:flex;flex-direction:column;align-items:center;
+}
+.hstat:last-child{border-bottom:none;}
+.hstat-n{font-family:var(--fh);font-size:2.8rem;color:var(--blue);line-height:1;}
+.hstat-l{font-family:var(--fm);font-size:.55rem;letter-spacing:.12em;color:var(--ink3);margin-top:3px;}
+
+/* ══════════ MINDSET BANNER ══════════ */
+.mindset{
+  background:var(--ink);color:var(--white);
+  padding:20px 28px;margin:0;
+  display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+  animation:up .6s .1s ease both;
+}
+.mindset-title{font-family:var(--fh);font-size:1.5rem;font-style:italic;flex-shrink:0;}
+.mindset-items{display:flex;gap:0;flex:1;flex-wrap:wrap;}
+.mindset-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 20px;border-left:1px solid rgba(255,255,255,.15);
+  font-size:.83rem;
+}
+.mindset-item:first-child{border-left:none;}
+.mindset-pct{font-family:var(--fh);font-size:2rem;color:var(--gold);line-height:1;flex-shrink:0;}
+.mindset-txt{color:rgba(255,255,255,.7);line-height:1.3;font-size:.78rem;}
+
+/* ══════════ PHASE TABS ══════════ */
+.phases{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border-bottom:2px solid var(--ink);
+  animation:up .6s .15s ease both;
+}
+.ph{
+  padding:14px 10px;border-right:1px solid var(--bord);
+  cursor:pointer;transition:background .2s;position:relative;
+  overflow:hidden;text-align:center;
+}
+.ph:last-child{border-right:none;}
+.ph::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:3px;background:var(--pc,var(--blue));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.ph:hover::after{transform:scaleX(1);}
+.ph-n{font-family:var(--fh);font-size:1.6rem;color:var(--bord);transition:color .2s;}
+.ph:hover .ph-n{color:var(--pc,var(--blue));}
+.ph-name{font-family:var(--fm);font-size:.6rem;letter-spacing:.12em;color:var(--ink3);margin-top:4px;}
+
+/* ══════════ MAIN ══════════ */
+.main{display:grid;grid-template-columns:1fr 296px;gap:0;border:2px solid var(--ink);border-top:none;}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:2px solid var(--ink);}
+.sec{
+  border-bottom:1px solid var(--bord);
+  opacity:0;transform:translateY(12px);
+  transition:opacity .5s,transform .5s;
+}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{
+  display:grid;grid-template-columns:64px 1fr auto;
+  cursor:pointer;transition:background .18s;align-items:start;
+}
+.sec-hd:hover{background:var(--blue3);}
+.sec-hd.open{background:var(--bg2);}
+
+.sec-nc{padding:18px 0 0 18px;display:flex;flex-direction:column;gap:5px;}
+.sec-num{
+  font-family:var(--fh);font-size:2rem;color:var(--bord);
+  line-height:1;transition:color .2s;
+}
+.sec-hd.open .sec-num,.sec-hd:hover .sec-num{color:var(--sc,var(--blue));}
+.sec-line{width:24px;height:2px;background:var(--sc,var(--blue));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.sec-hd.open .sec-line,.sec-hd:hover .sec-line{transform:scaleX(1);}
+
+.sec-info{padding:18px 12px;}
+.sec-lv{font-family:var(--fm);font-size:.56rem;letter-spacing:.2em;color:var(--sc,var(--blue));margin-bottom:5px;}
+.sec-title{font-family:var(--fb);font-size:1.1rem;font-weight:800;line-height:1.2;}
+.sec-sub{font-family:var(--fm);font-size:.68rem;color:var(--ink3);margin-top:4px;}
+.sec-arr{padding:18px 16px 0 0;font-size:.58rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--blue));}
+
+/* BODY */
+.sec-body{display:none;border-top:1px solid var(--bord);background:var(--white);}
+.sec-body.open{display:block;animation:bIn .25s ease;}
+@keyframes bIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.sec-in{padding:22px 22px 28px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.chip{
+  font-family:var(--fm);font-size:.63rem;padding:3px 10px;
+  border:1px solid var(--bord);color:var(--ink2);
+  background:var(--bg3);transition:all .18s;cursor:default;border-radius:999px;
+}
+.chip:hover{background:var(--sc,var(--blue));color:var(--white);border-color:var(--sc,var(--blue));}
+
+/* ── CODE ── */
+.code{
+  background:var(--ink);color:#e8f0ff;
+  font-family:var(--fm);font-size:.74rem;line-height:1.8;
+  padding:16px 18px;margin:12px 0;overflow-x:auto;
+  border-radius:var(--r2);position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:7px;right:12px;font-size:.54rem;letter-spacing:.12em;color:rgba(255,255,255,.25);}
+.kw{color:#7dd3fc;} .fn{color:#86efac;} .str{color:#fde68a;}
+.cm{color:#475569;font-style:italic;} .op{color:#f9a8d4;}
+.num{color:#fdba74;} .cls{color:#c4b5fd;} .deco{color:#67e8f9;}
+
+/* ── GRID CARDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+.card{
+  padding:12px 14px;border:1px solid var(--bord);
+  background:var(--bg);border-left:3px solid var(--sc,var(--blue));
+  transition:all .2s;
+}
+.card:hover{background:var(--blue3);border-color:var(--sc,var(--blue));transform:translateY(-2px);box-shadow:0 4px 16px rgba(36,81,255,.1);}
+.card-t{font-family:var(--fm);font-size:.72rem;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.card-d{font-size:.7rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{
+  padding:11px 14px;margin:10px 0;
+  font-size:.8rem;line-height:1.65;color:var(--ink2);
+  border-left:3px solid var(--nc,var(--blue));
+  background:var(--blue3);border-radius:0 var(--r2) var(--r2) 0;
+}
+.note strong{color:var(--nc,var(--cobalt));}
+.note.gold{--nc:var(--gold);background:rgba(245,166,35,.08);}
+.note.rose{--nc:var(--rose);background:rgba(255,68,102,.06);}
+.note.teal{--nc:var(--teal);background:rgba(0,180,166,.06);}
+.note.green{--nc:var(--green);background:rgba(34,197,94,.06);}
+
+/* ── TARGET ── */
+.target{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 14px;border:1px solid var(--bord);
+  border-left:3px solid var(--sc,var(--blue));
+  font-family:var(--fm);font-size:.7rem;margin-top:12px;
+  color:var(--ink2);background:var(--bg);
+}
+.target::before{content:'▸';color:var(--sc,var(--blue));flex-shrink:0;}
+
+/* ── PROJ BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.pbadge{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border:1px solid var(--bord);
+  background:var(--bg);font-size:.76rem;font-weight:700;
+  border-radius:var(--r2);transition:all .18s;cursor:default;
+}
+.pbadge:hover{background:var(--blue);color:var(--white);border-color:var(--blue);}
+
+/* ── SPEC TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.74rem;margin:10px 0;}
+.tbl th{background:var(--ink);color:var(--white);padding:7px 11px;text-align:left;font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;}
+.tbl td{padding:8px 11px;border-bottom:1px solid var(--bord);color:var(--ink2);}
+.tbl tr:hover td{background:var(--blue3);}
+.hi{color:var(--blue);font-family:var(--fm);font-size:.72rem;}
+
+/* ── PATH ── */
+.path{display:flex;flex-direction:column;gap:0;margin:12px 0;position:relative;padding-left:28px;}
+.path::before{content:'';position:absolute;left:10px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--sc,var(--blue)),rgba(36,81,255,.1));}
+.pstep{padding:8px 0;position:relative;}
+.pstep::before{content:'';position:absolute;left:-22px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--sc,var(--blue));box-shadow:0 0 0 3px var(--white),0 0 0 4px var(--sc,var(--blue));}
+.pstep-t{font-size:.82rem;font-weight:700;color:var(--ink);}
+.pstep-d{font-family:var(--fm);font-size:.68rem;color:var(--ink3);margin-top:2px;line-height:1.4;}
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar{background:var(--white);}
+.sb{padding:18px 16px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{font-family:var(--fm);font-size:.57rem;letter-spacing:.2em;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;gap:6px;text-transform:uppercase;}
+.sb-t::before{content:'//';color:var(--blue);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tlr{display:grid;grid-template-columns:48px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid var(--bord2);align-items:center;}
+.tlr:last-child{border-bottom:none;}
+.tld{font-family:var(--fh);font-size:1.5rem;color:var(--blue);line-height:1;text-align:center;}
+.tlu{font-family:var(--fm);font-size:.46rem;color:var(--ink3);display:block;text-align:center;}
+.tln{font-size:.82rem;font-weight:800;}
+.tls{font-family:var(--fm);font-size:.62rem;color:var(--ink3);margin-top:2px;}
+
+/* Tracks */
+.track-list{display:flex;flex-direction:column;gap:7px;}
+.track{
+  padding:10px 12px;border:1px solid var(--bord);
+  background:var(--bg);transition:all .2s;position:relative;
+  border-left:3px solid var(--tc,var(--blue));
+}
+.track:hover{background:var(--blue3);border-color:var(--tc,var(--blue));}
+.track-n{font-size:.78rem;font-weight:800;}
+.track-libs{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:3px;}
+
+/* Skill bars */
+.skills{display:flex;flex-direction:column;gap:8px;}
+.skr{display:flex;align-items:center;gap:8px;}
+.skl{font-family:var(--fm);font-size:.62rem;color:var(--ink2);width:86px;flex-shrink:0;}
+.skt{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.skf{height:100%;background:var(--sc2,var(--blue));width:0;border-radius:2px;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+.skp{font-family:var(--fm);font-size:.58rem;color:var(--ink3);width:28px;text-align:right;flex-shrink:0;}
+
+/* Tips */
+.tip-list{display:flex;flex-direction:column;gap:6px;}
+.tip{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:9px 10px;border:1px solid var(--bord);
+  background:var(--bg);transition:all .18s;
+}
+.tip:hover{background:var(--blue3);border-color:var(--blue);}
+.tip-icon{font-size:1rem;flex-shrink:0;}
+.tip-t{font-size:.78rem;font-weight:700;}
+.tip-d{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{
+  border:2px solid var(--ink);border-top:none;
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.bot-l,.bot-r{padding:44px 36px;}
+.bot-l{border-right:2px solid var(--ink);background:var(--ink);color:var(--white);}
+.bot-r{background:var(--white);}
+.bot-h{font-family:var(--fh);font-size:clamp(2rem,4.5vw,3.5rem);line-height:.95;margin-bottom:14px;}
+.bot-h em{font-style:italic;color:var(--gold);}
+.bot-p{font-size:.85rem;line-height:1.75;margin-bottom:22px;color:rgba(255,255,255,.75);}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;font-family:var(--fb);font-size:.78rem;font-weight:800;text-decoration:none;cursor:pointer;transition:all .2s;border-radius:var(--r2);}
+.btn-white{background:var(--white);color:var(--ink);border:none;}
+.btn-white:hover{background:var(--gold);color:var(--ink);transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);margin-left:8px;}
+.btn-outline:hover{border-color:var(--white);color:var(--white);}
+.rules{display:flex;flex-direction:column;gap:10px;}
+.rule{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--bord2);}
+.rule:last-child{border-bottom:none;}
+.rule-no{font-family:var(--fh);font-size:1.6rem;color:var(--blue3-);color:var(--bg2);line-height:1;flex-shrink:0;width:32px;}
+.rule:hover .rule-no{color:var(--blue);}
+.rule-t{font-size:.84rem;font-weight:800;color:var(--ink);}
+.rule-d{font-family:var(--fm);font-size:.62rem;color:var(--ink3);margin-top:2px;}
+
+/* FOOTER */
+footer{padding:18px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.6rem;color:var(--ink3);border-top:1px solid var(--bord);margin-top:0;}
+footer span:first-child{color:var(--blue);}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* RESPONSIVE */
+@media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{border-top:2px solid var(--ink)}.bottom{grid-template-columns:1fr}.bot-l{border-right:none;border-bottom:2px solid var(--ink)}.phases{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr}.hero-right{flex-direction:row;border:none;gap:16px}.hstat{border:1px solid var(--bord);border-radius:var(--r2)}}
+@media(max-width:640px){.page{padding:0 14px 60px}.phases{grid-template-columns:repeat(2,1fr)}.g2,.g3,.g4{grid-template-columns:1fr}.mindset-items{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><div class="hero-eyebrow-bar"></div>Python Öğrenme Yol Haritası · 0 → Pro</div>
+    <h1 class="hero-title">
+      <span class="italic">Python</span><br>
+      <span class="outline">Sıfırdan</span><br>
+      Profesyonele
+    </h1>
+    <p class="hero-desc">
+      Syntax'tan <strong>OOP</strong>'ye, async'ten <strong>uzmanlaşma alanlarına</strong> —
+      Python'un tüm yolculuğu. <strong>%30 teori, %70 pratik.</strong>
+      Her öğrendiğini projeye dök.
+    </p>
+  </div>
+  <div class="hero-right">
+    <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">SEVİYE</div></div>
+    <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">BÖLÜM</div></div>
+    <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">PROJE</div></div>
+  </div>
+</header>
+
+<!-- ══ MINDSET BANNER ══ -->
+<div class="mindset">
+  <div class="mindset-title">Zihniyet</div>
+  <div class="mindset-items">
+    <div class="mindset-item">
+      <div class="mindset-pct">%30</div>
+      <div class="mindset-txt">Teori<br>Syntax, kavram</div>
+    </div>
+    <div class="mindset-item">
+      <div class="mindset-pct">%70</div>
+      <div class="mindset-txt">Pratik + Proje<br>Kod yaz, boz, düzelt</div>
+    </div>
+    <div class="mindset-item">
+      <div class="mindset-pct" style="color:var(--teal)">❌</div>
+      <div class="mindset-txt">10 kurs bitirme<br>Sadece izleme</div>
+    </div>
+    <div class="mindset-item">
+      <div class="mindset-pct" style="color:var(--green)">✅</div>
+      <div class="mindset-txt">3 proje yap<br>Öğrendiklerini dök</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PHASE TABS ══ -->
+<div class="phases">
+  <div class="ph" style="--pc:var(--green)">
+    <div class="ph-n">0</div>
+    <div class="ph-name" style="color:var(--green)">ZİHNİYET</div>
+  </div>
+  <div class="ph" style="--pc:var(--green)">
+    <div class="ph-n">1</div>
+    <div class="ph-name" style="color:var(--green)">TEMEL</div>
+  </div>
+  <div class="ph" style="--pc:var(--gold)">
+    <div class="ph-n">2</div>
+    <div class="ph-name" style="color:var(--gold)">ORTA</div>
+  </div>
+  <div class="ph" style="--pc:var(--blue)">
+    <div class="ph-n">3</div>
+    <div class="ph-name" style="color:var(--blue)">İLERİ</div>
+  </div>
+  <div class="ph" style="--pc:var(--rose)">
+    <div class="ph-n">4</div>
+    <div class="ph-name" style="color:var(--rose)">UZMANLIK</div>
+  </div>
+  <div class="ph" style="--pc:var(--cobalt)">
+    <div class="ph-n">5+</div>
+    <div class="ph-name" style="color:var(--cobalt)">PRO</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── B1: TEMEL ──── -->
+<div class="sec">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--green)">
+    <div class="sec-nc"><div class="sec-num">1</div><div class="sec-line"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// TEMEL SEVİYE · BEGINNER</div>
+      <div class="sec-title">Kurulum · Syntax · Veri Yapıları · Fonksiyonlar</div>
+      <div class="sec-sub">1.1 Ortam · 1.2 Syntax · 1.3 Veri · 1.4 Kontrol · 1.5 Fonksiyon · 1.6 Hata · 1.7 Dosya</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--green)">
+    <div class="sec-in">
+
+      <!-- 1.1 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin-bottom:8px;">// 1.1 — KURULUM & ORTAM</div>
+      <div class="g3">
+        <div class="card"><div class="card-t">Python Kurulumu</div><div class="card-d">python.org → 3.12+ indir. Terminalde: python --version ile kontrol.</div></div>
+        <div class="card"><div class="card-t">VS Code</div><div class="card-d">Python extension kur. Pylance + Black formatter. .venv otomatik tanıma.</div></div>
+        <div class="card"><div class="card-t">Terminal</div><div class="card-d">cd, ls, mkdir, cp, mv komutları. Bash scripting temeli. Python burada çalışır.</div></div>
+      </div>
+
+      <!-- 1.2 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin:14px 0 8px;">// 1.2 — TEMEL SYNTAX</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Değişkenler — type hinting ile (önerilen)</span>
+<span class="fn">isim</span>:   str   = <span class="str">"Emre"</span>
+<span class="fn">yas</span>:    int   = <span class="num">25</span>
+<span class="fn">boy</span>:    float = <span class="num">1.78</span>
+<span class="fn">aktif</span>:  bool  = <span class="kw">True</span>
+
+<span class="cm"># Input / Output</span>
+<span class="fn">ad</span> = <span class="op">input</span>(<span class="str">"Adın: "</span>)
+<span class="op">print</span>(<span class="str">f"Merhaba {ad}!"</span>)           <span class="cm"># f-string</span>
+<span class="op">print</span>(<span class="str">f"{yas = }"</span>)                 <span class="cm"># debug shorthand: yas = 25</span>
+
+<span class="cm"># Type dönüşüm</span>
+<span class="fn">sayi</span> = <span class="op">int</span>(<span class="op">input</span>(<span class="str">"Sayı: "</span>))
+<span class="fn">metin</span> = <span class="op">str</span>(<span class="num">42</span>)
+<span class="op">type</span>(<span class="fn">sayi</span>)                         <span class="cm"># &lt;class 'int'&gt;</span></div>
+
+      <!-- 1.3 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin:14px 0 8px;">// 1.3 — VERİ YAPILARI</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># List — mutable, ordered, indexed</span>
+<span class="fn">renkler</span>: list[str] = [<span class="str">"kırmızı"</span>, <span class="str">"mavi"</span>, <span class="str">"yeşil"</span>]
+<span class="fn">renkler</span>.<span class="op">append</span>(<span class="str">"sarı"</span>)
+<span class="fn">renkler</span>[<span class="num">0</span>]                          <span class="cm"># "kırmızı"</span>
+<span class="fn">renkler</span>[-<span class="num">1</span>]                         <span class="cm"># "yeşil" — sondan</span>
+<span class="fn">renkler</span>[<span class="num">1</span>:<span class="num">3</span>]                        <span class="cm"># ["mavi", "yeşil"] — slice</span>
+
+<span class="cm"># Tuple — immutable, coordinates, RGB vs.</span>
+<span class="fn">nokta</span>: tuple[int, int] = (<span class="num">10</span>, <span class="num">20</span>)
+<span class="fn">x</span>, <span class="fn">y</span> = <span class="fn">nokta</span>                        <span class="cm"># unpacking</span>
+
+<span class="cm"># Dictionary — key:value, mutable, O(1) lookup</span>
+<span class="fn">kullanici</span>: dict = {
+    <span class="str">"isim"</span>: <span class="str">"Ali"</span>, <span class="str">"yas"</span>: <span class="num">22</span>,
+    <span class="str">"aktif"</span>: <span class="kw">True</span>
+}
+<span class="fn">kullanici</span>.<span class="op">get</span>(<span class="str">"sehir"</span>, <span class="str">"bilinmiyor"</span>)  <span class="cm"># KeyError yok</span>
+
+<span class="cm"># Set — unique, unordered</span>
+<span class="fn">tekrarlar</span> = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>}             <span class="cm"># {1, 2, 3}</span></div>
+
+      <div class="note green"><strong>Mutable vs Immutable:</strong> List, Dict, Set → mutable (değişebilir). Tuple, String, Int → immutable. Bu fark fonksiyona argüman geçerken kritik — mutable'lar referans ile geçer!</div>
+
+      <!-- 1.4 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin:14px 0 8px;">// 1.4 — KONTROL YAPILARI</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># if/elif/else — walrus operator ile (Python 3.8+)</span>
+<span class="kw">if</span> (<span class="fn">n</span> := <span class="op">int</span>(<span class="op">input</span>(<span class="str">"Sayı: "</span>))) > <span class="num">0</span>:
+    <span class="op">print</span>(<span class="str">f"{n} pozitif"</span>)
+<span class="kw">elif</span> <span class="fn">n</span> == <span class="num">0</span>:
+    <span class="op">print</span>(<span class="str">"sıfır"</span>)
+<span class="kw">else</span>:
+    <span class="op">print</span>(<span class="str">f"{n} negatif"</span>)
+
+<span class="cm"># for — enumerate, zip, range</span>
+<span class="kw">for</span> <span class="fn">i</span>, <span class="fn">renk</span> <span class="kw">in</span> <span class="op">enumerate</span>(<span class="fn">renkler</span>, start=<span class="num">1</span>):
+    <span class="op">print</span>(<span class="str">f"{i}. {renk}"</span>)
+
+<span class="kw">for</span> <span class="fn">isim</span>, <span class="fn">puan</span> <span class="kw">in</span> <span class="op">zip</span>(<span class="fn">isimler</span>, <span class="fn">puanlar</span>):
+    <span class="op">print</span>(<span class="str">f"{isim}: {puan}"</span>)
+
+<span class="cm"># while — break, continue, else</span>
+<span class="fn">deneme</span> = <span class="num">0</span>
+<span class="kw">while</span> <span class="fn">deneme</span> < <span class="num">3</span>:
+    <span class="fn">sifre</span> = <span class="op">input</span>(<span class="str">"Şifre: "</span>)
+    <span class="kw">if</span> <span class="fn">sifre</span> == <span class="str">"1234"</span>: <span class="kw">break</span>
+    <span class="fn">deneme</span> += <span class="num">1</span>
+<span class="kw">else</span>:
+    <span class="op">print</span>(<span class="str">"Hesap kilitlendi"</span>)         <span class="cm"># break olmadan bittiyse</span></div>
+
+      <!-- 1.5 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin:14px 0 8px;">// 1.5 — FONKSİYONLAR</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Type hint + docstring</span>
+<span class="kw">def</span> <span class="fn">vmi_hesapla</span>(kilo: float, boy: float) -> float:
+    <span class="str">"""
+    BMI hesaplar.
+    Args: kilo (kg), boy (metre)
+    Returns: BMI değeri
+    """</span>
+    <span class="kw">return</span> <span class="fn">kilo</span> / (<span class="fn">boy</span> ** <span class="num">2</span>)
+
+<span class="cm"># *args ve **kwargs</span>
+<span class="kw">def</span> <span class="fn">topla</span>(*<span class="fn">sayilar</span>: int) -> int:
+    <span class="kw">return</span> <span class="op">sum</span>(<span class="fn">sayilar</span>)
+
+<span class="kw">def</span> <span class="fn">kullanici_olustur</span>(**<span class="fn">bilgiler</span>):
+    <span class="kw">return</span> {<span class="str">"id"</span>: <span class="op">id</span>(<span class="fn">bilgiler</span>), **<span class="fn">bilgiler</span>}
+
+<span class="cm"># Lambda — kısa, tek satır</span>
+<span class="fn">kare</span>  = <span class="kw">lambda</span> x: x ** <span class="num">2</span>
+<span class="fn">sirala</span> = <span class="op">sorted</span>(<span class="fn">kullanicilar</span>, key=<span class="kw">lambda</span> u: u[<span class="str">"yas"</span>])</div>
+
+      <!-- 1.6 -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--green);margin:14px 0 8px;">// 1.6 & 1.7 — HATA YÖNETİMİ & DOSYA</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Özel exception sınıfı</span>
+<span class="kw">class</span> <span class="cls">YasHatasi</span>(ValueError):
+    <span class="kw">pass</span>
+
+<span class="kw">try</span>:
+    <span class="fn">yas</span> = <span class="op">int</span>(<span class="op">input</span>(<span class="str">"Yaş: "</span>))
+    <span class="kw">if</span> <span class="fn">yas</span> < <span class="num">0</span>: <span class="kw">raise</span> <span class="cls">YasHatasi</span>(<span class="str">"Negatif yaş olamaz"</span>)
+<span class="kw">except</span> ValueError <span class="kw">as</span> <span class="fn">e</span>:
+    <span class="op">print</span>(<span class="str">f"Geçersiz giriş: {e}"</span>)
+<span class="kw">finally</span>:
+    <span class="op">print</span>(<span class="str">"İşlem tamamlandı"</span>)          <span class="cm"># her durumda çalışır</span>
+
+<span class="cm"># Dosya işlemleri — context manager (en iyi yöntem)</span>
+<span class="kw">with</span> <span class="op">open</span>(<span class="str">"veri.json"</span>, <span class="str">"r"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> <span class="fn">f</span>:
+    <span class="fn">veri</span> = json.<span class="fn">load</span>(<span class="fn">f</span>)                <span class="cm"># otomatik kapatır</span>
+
+<span class="kw">with</span> <span class="op">open</span>(<span class="str">"cikti.txt"</span>, <span class="str">"w"</span>) <span class="kw">as</span> <span class="fn">f</span>:
+    json.<span class="fn">dump</span>(<span class="fn">veri</span>, <span class="fn">f</span>, ensure_ascii=<span class="kw">False</span>, indent=<span class="num">2</span>)</div>
+
+      <div class="proj-row">
+        <div class="pbadge">🧮 Hesap Makinesi</div>
+        <div class="pbadge">✅ To-Do (CLI)</div>
+        <div class="pbadge">📝 Not Uygulaması</div>
+        <div class="pbadge">🔑 Şifre Üretici</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B2: ORTA ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--gold)">
+    <div class="sec-nc"><div class="sec-num">2</div><div class="sec-line"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// ORTA SEVİYE · INTERMEDIATE</div>
+      <div class="sec-title">OOP · Modüller · venv · List Comp · API · SQLite</div>
+      <div class="sec-sub">2.1 OOP · 2.2 Modüller · 2.3 venv · 2.4 İleri Yapılar · 2.5 Stdlib · 2.6 API · 2.7 DB</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--gold)">
+    <div class="sec-in">
+      <!-- OOP -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--gold);margin-bottom:8px;">// 2.1 — OOP</div>
+      <div class="note gold"><strong>⚠️ Kritik:</strong> Bu kısmı öğrenmeden ileri gidemezsin. OOP = büyük projeleri yönetmenin tek yolu.</div>
+      <div class="code" data-lang="PYTHON">
+<span class="kw">from</span> abc <span class="kw">import</span> ABC, abstractmethod
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+
+<span class="deco">@dataclass</span>
+<span class="kw">class</span> <span class="cls">Kullanici</span>:
+    isim:    str
+    yas:     int
+    email:   str
+    roller:  list[str] = field(default_factory=list)
+    _sifre:  str       = field(default=<span class="str">""</span>, repr=<span class="kw">False</span>)
+
+    <span class="kw">def</span> <span class="fn">__post_init__</span>(self):
+        <span class="kw">if</span> self.yas < <span class="num">0</span>:
+            <span class="kw">raise</span> ValueError(<span class="str">"Yaş negatif olamaz"</span>)
+
+    <span class="deco">@property</span>
+    <span class="kw">def</span> <span class="fn">sifre</span>(self) -> str:
+        <span class="kw">return</span> <span class="str">"***"</span>                    <span class="cm"># encapsulation</span>
+
+    <span class="deco">@sifre.setter</span>
+    <span class="kw">def</span> <span class="fn">sifre</span>(self, deger: str):
+        self._sifre = <span class="fn">hash_sifre</span>(deger) <span class="cm"># setter</span>
+
+    <span class="deco">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">json_den_olustur</span>(cls, veri: dict) -> <span class="str">"Kullanici"</span>:
+        <span class="kw">return</span> cls(**veri)              <span class="cm"># factory method</span>
+
+<span class="cm"># Inheritance</span>
+<span class="kw">class</span> <span class="cls">Admin</span>(<span class="cls">Kullanici</span>):
+    yetkiler: list[str] = field(default_factory=list)
+
+    <span class="kw">def</span> <span class="fn">yetki_ver</span>(self, kullanici: <span class="cls">Kullanici</span>, yetki: str):
+        kullanici.roller.append(yetki)
+
+<span class="cm"># Polymorphism + Abstract</span>
+<span class="kw">class</span> <span class="cls">Bildirim</span>(ABC):
+    <span class="deco">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">gonder</span>(self, mesaj: str) -> bool: ...
+
+<span class="kw">class</span> <span class="cls">EmailBildirim</span>(<span class="cls">Bildirim</span>):
+    <span class="kw">def</span> <span class="fn">gonder</span>(self, mesaj: str) -> bool:
+        <span class="cm"># SMTP ile gönder...</span>
+        <span class="kw">return</span> <span class="kw">True</span></div>
+
+      <!-- İleri Veri Yapıları -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--gold);margin:14px 0 8px;">// 2.4 — İLERİ VERİ YAPILARI</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># List Comprehension — Pythonic yol</span>
+<span class="fn">kareler</span>   = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="op">range</span>(<span class="num">10</span>)]
+<span class="fn">ciftler</span>   = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">kareler</span> <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+<span class="fn">dict_comp</span> = {k: v**<span class="num">2</span> <span class="kw">for</span> k, v <span class="kw">in</span> <span class="fn">veriler</span>.items()}
+
+<span class="cm"># Generator — lazy, bellek dostu</span>
+<span class="kw">def</span> <span class="fn">fibonacci</span>(n: int):
+    a, b = <span class="num">0</span>, <span class="num">1</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="op">range</span>(n):
+        <span class="kw">yield</span> a
+        a, b = b, a + b
+
+<span class="cm"># Generator expression</span>
+<span class="fn">toplam</span> = <span class="op">sum</span>(x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="op">range</span>(<span class="num">1_000_000</span>))
+<span class="cm"># list'e çevirmek 8MB ram yer — generator: ~100 byte</span>
+
+<span class="cm"># Iterator protokolü</span>
+<span class="kw">class</span> <span class="cls">GeriSay</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n): self.n = n
+    <span class="kw">def</span> <span class="fn">__iter__</span>(self): <span class="kw">return</span> self
+    <span class="kw">def</span> <span class="fn">__next__</span>(self):
+        <span class="kw">if</span> self.n <= <span class="num">0</span>: <span class="kw">raise</span> StopIteration
+        self.n -= <span class="num">1</span>; <span class="kw">return</span> self.n + <span class="num">1</span></div>
+
+      <!-- API -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--gold);margin:14px 0 8px;">// 2.6 — API & 2.7 — DATABASE</div>
+      <div class="code" data-lang="PYTHON">
+<span class="kw">import</span> requests, sqlite3
+
+<span class="cm"># requests — HTTP client</span>
+<span class="fn">res</span> = requests.<span class="fn">get</span>(
+    <span class="str">"https://api.github.com/users/python"</span>,
+    headers={<span class="str">"Accept"</span>: <span class="str">"application/vnd.github+json"</span>},
+    timeout=<span class="num">10</span>
+)
+res.<span class="fn">raise_for_status</span>()              <span class="cm"># 4xx/5xx → exception</span>
+<span class="fn">data</span> = res.<span class="fn">json</span>()
+
+<span class="cm"># SQLite — CRUD</span>
+<span class="kw">with</span> sqlite3.<span class="fn">connect</span>(<span class="str">"uygulama.db"</span>) <span class="kw">as</span> <span class="fn">con</span>:
+    <span class="fn">con</span>.<span class="fn">execute</span>(<span class="str">"""
+        CREATE TABLE IF NOT EXISTS kullanicilar (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            isim TEXT NOT NULL,
+            email TEXT UNIQUE
+        )"""</span>)
+    <span class="fn">con</span>.<span class="fn">execute</span>(
+        <span class="str">"INSERT INTO kullanicilar (isim, email) VALUES (?, ?)"</span>,
+        (<span class="str">"Ali"</span>, <span class="str">"ali@ornek.com"</span>)         <span class="cm"># ? ile SQL injection engelle</span>
+    )</div>
+
+      <div class="proj-row">
+        <div class="pbadge">🌤️ API Veri Uygulaması</div>
+        <div class="pbadge">📰 Blog Backend</div>
+        <div class="pbadge">🔐 CLI Password Manager</div>
+        <div class="pbadge">📁 Dosya Organizasyon Scripti</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B3: İLERİ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--blue)">
+    <div class="sec-nc"><div class="sec-num">3</div><div class="sec-line"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// İLERİ SEVİYE · ADVANCED</div>
+      <div class="sec-title">Async · Threading · Design Patterns · Testing · Logging</div>
+      <div class="sec-sub">3.1 Async · 3.2 Thread/Process · 3.3 Patterns · 3.4 Test · 3.5 Log · 3.6 Perf · 3.7 Güvenlik</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--blue)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="kw">import</span> asyncio, aiohttp
+<span class="kw">from</span> typing <span class="kw">import</span> AsyncGenerator
+
+<span class="cm"># Async/Await — I/O bound işlemler için</span>
+<span class="kw">async def</span> <span class="fn">veri_getir</span>(session: aiohttp.ClientSession, url: str) -> dict:
+    <span class="kw">async with</span> session.<span class="fn">get</span>(url) <span class="kw">as</span> <span class="fn">res</span>:
+        <span class="kw">return await</span> <span class="fn">res</span>.<span class="fn">json</span>()
+
+<span class="kw">async def</span> <span class="fn">paralel_getir</span>(urls: list[str]) -> list[dict]:
+    <span class="kw">async with</span> aiohttp.<span class="cls">ClientSession</span>() <span class="kw">as</span> <span class="fn">session</span>:
+        <span class="fn">gorevler</span> = [<span class="fn">veri_getir</span>(<span class="fn">session</span>, url) <span class="kw">for</span> url <span class="kw">in</span> urls]
+        <span class="kw">return await</span> asyncio.<span class="fn">gather</span>(*<span class="fn">gorevler</span>)
+        <span class="cm"># 10 istek sıralı: 10s → paralel: ~1s</span>
+
+<span class="cm"># Threading vs Multiprocessing</span>
+<span class="kw">from</span> concurrent.futures <span class="kw">import</span> ThreadPoolExecutor, ProcessPoolExecutor
+
+<span class="cm"># I/O bound → Thread (GIL önemli değil)</span>
+<span class="kw">with</span> <span class="cls">ThreadPoolExecutor</span>(max_workers=<span class="num">10</span>) <span class="kw">as</span> <span class="fn">ex</span>:
+    <span class="fn">sonuclar</span> = list(<span class="fn">ex</span>.<span class="fn">map</span>(<span class="fn">istek_at</span>, <span class="fn">url_listesi</span>))
+
+<span class="cm"># CPU bound → Process (GIL bypass)</span>
+<span class="kw">with</span> <span class="cls">ProcessPoolExecutor</span>() <span class="kw">as</span> <span class="fn">ex</span>:
+    <span class="fn">sonuclar</span> = list(<span class="fn">ex</span>.<span class="fn">map</span>(<span class="fn">hesapla</span>, <span class="fn">veri_listesi</span>))</div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Design Patterns</span>
+
+<span class="cm"># Singleton — tek instance</span>
+<span class="kw">class</span> <span class="cls">Config</span>:
+    _instance: <span class="str">"Config | None"</span> = <span class="kw">None</span>
+    <span class="kw">def</span> <span class="fn">__new__</span>(cls):
+        <span class="kw">if not</span> cls._instance:
+            cls._instance = <span class="op">super</span>().<span class="fn">__new__</span>(cls)
+        <span class="kw">return</span> cls._instance
+
+<span class="cm"># Observer — event sistemi</span>
+<span class="kw">class</span> <span class="cls">EventBus</span>:
+    _dinleyiciler: dict[str, list] = {}
+    <span class="kw">def</span> <span class="fn">abone_ol</span>(self, olay: str, fn): self._dinleyiciler.setdefault(olay, []).append(fn)
+    <span class="kw">def</span> <span class="fn">yayinla</span>(self, olay: str, **veri):
+        <span class="kw">for</span> fn <span class="kw">in</span> self._dinleyiciler.get(olay, []): fn(**veri)
+
+<span class="cm"># pytest ile test</span>
+<span class="kw">import</span> pytest
+
+<span class="kw">def</span> <span class="fn">test_vmi_hesapla</span>():
+    <span class="kw">assert</span> <span class="fn">vmi_hesapla</span>(<span class="num">70</span>, <span class="num">1.75</span>) == pytest.approx(<span class="num">22.86</span>, abs=<span class="num">0.01</span>)
+
+<span class="kw">def</span> <span class="fn">test_negatif_yas</span>():
+    <span class="kw">with</span> pytest.raises(ValueError): <span class="cls">Kullanici</span>(<span class="str">"Ali"</span>, -<span class="num">1</span>, <span class="str">"a@b.com"</span>)
+
+<span class="deco">@pytest.mark.asyncio</span>
+<span class="kw">async def</span> <span class="fn">test_api</span>(httpx_mock):
+    httpx_mock.<span class="fn">add_response</span>(json={<span class="str">"id"</span>: <span class="num">1</span>})
+    <span class="fn">result</span> = <span class="kw">await</span> <span class="fn">veri_getir</span>(<span class="str">"/api/user"</span>)
+    <span class="kw">assert</span> <span class="fn">result</span>[<span class="str">"id"</span>] == <span class="num">1</span></div>
+
+      <div class="g2">
+        <div class="card"><div class="card-t">Logging</div><div class="card-d">logging.getLogger(__name__). DEBUG/INFO/WARNING/ERROR/CRITICAL seviyeleri. JSON formatter ile structured log.</div></div>
+        <div class="card"><div class="card-t">Profiling</div><div class="card-d">cProfile + snakeviz ile görsel analiz. line_profiler ile satır bazlı. memory_profiler ile RAM.</div></div>
+        <div class="card"><div class="card-t">Input Validation</div><div class="card-d">Pydantic ile şema validasyonu. Type coercion. Custom validator. FastAPI ile tam entegrasyon.</div></div>
+        <div class="card"><div class="card-t">Encryption</div><div class="card-d">hashlib ile SHA-256. bcrypt ile şifre hash. cryptography kütüphanesi. Fernet symmetric.</div></div>
+      </div>
+      <div class="proj-row">
+        <div class="pbadge">💬 Chat Server</div>
+        <div class="pbadge">⏰ Task Scheduler</div>
+        <div class="pbadge">🕷️ Web Scraper</div>
+        <div class="pbadge">🚦 API Rate Limiter</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B4: UZMANLIK ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--rose)">
+    <div class="sec-nc"><div class="sec-num">4</div><div class="sec-line"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// UZMANLAŞMA · EN KRİTİK NOKTA</div>
+      <div class="sec-title">Backend · Data Science · Automation · Oyun</div>
+      <div class="sec-sub">Bir alan seç — her şeyi öğrenemezsin. Derinleş.</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--rose)">
+    <div class="sec-in">
+      <div class="note rose"><strong>⚠️ Yol Ayrımı:</strong> Buradan sonra bir alan seçmen lazım. Her şeyi öğrenmeye çalışmak = hiçbirini öğrenememek. Güçlü yönünü bul, oraya yoğunlaş.</div>
+
+      <!-- Backend -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--rose);margin:14px 0 8px;">// 4.1 — BACKEND DEVELOPMENT</div>
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># FastAPI — modern, hızlı, async</span>
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI, Depends, HTTPException, status
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">from</span> sqlalchemy.ext.asyncio <span class="kw">import</span> AsyncSession
+
+<span class="fn">app</span> = <span class="cls">FastAPI</span>(title=<span class="str">"API"</span>, version=<span class="str">"1.0"</span>)
+
+<span class="kw">class</span> <span class="cls">KullaniciOlustur</span>(<span class="cls">BaseModel</span>):
+    isim:  str
+    email: str
+    yas:   int
+
+<span class="deco">@app.post</span>(<span class="str">"/kullanicilar"</span>, status_code=<span class="num">201</span>)
+<span class="kw">async def</span> <span class="fn">kullanici_olustur</span>(
+    veri:  <span class="cls">KullaniciOlustur</span>,
+    db:    <span class="cls">AsyncSession</span> = <span class="cls">Depends</span>(<span class="fn">get_db</span>)
+):
+    <span class="fn">kullanici</span> = <span class="kw">await</span> <span class="fn">kullanici_servisi</span>.<span class="fn">olustur</span>(db, veri)
+    <span class="kw">return</span> <span class="fn">kullanici</span></div>
+
+      <!-- Data Science -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--rose);margin:14px 0 8px;">// 4.2 — VERİ BİLİMİ & AI</div>
+      <div class="code" data-lang="PYTHON">
+<span class="kw">import</span> numpy  <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span>   sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span>   sklearn.ensemble        <span class="kw">import</span> RandomForestClassifier
+
+<span class="cm"># Pandas — veri işleme</span>
+<span class="fn">df</span> = pd.<span class="fn">read_csv</span>(<span class="str">"veri.csv"</span>)
+<span class="fn">df</span>.<span class="fn">dropna</span>().<span class="fn">drop_duplicates</span>()
+<span class="fn">df</span>[<span class="str">"yaslar"</span>].<span class="fn">describe</span>()            <span class="cm"># istatistik</span>
+<span class="fn">df</span>.<span class="fn">groupby</span>(<span class="str">"sehir"</span>)[<span class="str">"gelir"</span>].<span class="fn">mean</span>()
+
+<span class="cm"># Scikit-learn — ML</span>
+<span class="fn">X_train</span>, <span class="fn">X_test</span>, <span class="fn">y_train</span>, <span class="fn">y_test</span> = <span class="fn">train_test_split</span>(
+    <span class="fn">X</span>, <span class="fn">y</span>, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>
+)
+<span class="fn">model</span> = <span class="cls">RandomForestClassifier</span>().<span class="fn">fit</span>(<span class="fn">X_train</span>, <span class="fn">y_train</span>)
+<span class="fn">model</span>.<span class="fn">score</span>(<span class="fn">X_test</span>, <span class="fn">y_test</span>)          <span class="cm"># accuracy</span></div>
+
+      <!-- Automation -->
+      <div style="font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;color:var(--rose);margin:14px 0 8px;">// 4.4 — AUTOMATION & SCRAPING</div>
+      <div class="code" data-lang="PYTHON">
+<span class="kw">from</span> selenium <span class="kw">import</span> webdriver
+<span class="kw">from</span> selenium.webdriver.common.by <span class="kw">import</span> By
+<span class="kw">from</span> playwright.async_api <span class="kw">import</span> async_playwright
+<span class="kw">import</span> httpx, bs4
+
+<span class="cm"># Modern scraping — Playwright (headless)</span>
+<span class="kw">async with</span> async_playwright() <span class="kw">as</span> p:
+    browser = <span class="kw">await</span> p.chromium.<span class="fn">launch</span>(headless=<span class="kw">True</span>)
+    page    = <span class="kw">await</span> browser.<span class="fn">new_page</span>()
+    <span class="kw">await</span> page.<span class="fn">goto</span>(<span class="str">"https://example.com"</span>)
+    <span class="fn">baslik</span>  = <span class="kw">await</span> page.<span class="fn">inner_text</span>(<span class="str">"h1"</span>)
+
+<span class="cm"># httpx + BeautifulSoup — statik sayfa</span>
+<span class="fn">res</span>  = httpx.<span class="fn">get</span>(<span class="str">"https://news.ycombinator.com"</span>)
+<span class="fn">soup</span> = bs4.<span class="cls">BeautifulSoup</span>(<span class="fn">res</span>.text, <span class="str">"html.parser"</span>)
+<span class="fn">basliklar</span> = [a.text <span class="kw">for</span> a <span class="kw">in</span> soup.<span class="fn">select</span>(<span class="str">".titleline a"</span>)]</div>
+
+      <div class="g2">
+        <div class="card" style="--sc:var(--rose)"><div class="card-t">4.3 Siber Güvenlik (Python)</div><div class="card-d">Network programming, socket API, şifreleme kütüphaneleri (cryptography), güvenlik araçları geliştirme. Savunma odaklı: log analizi, anomali tespiti.</div></div>
+        <div class="card" style="--sc:var(--rose)"><div class="card-t">4.5 Oyun Geliştirme</div><div class="card-d">Pygame ile 2D oyun. Sprite, collision, game loop, event handling. Basit platformer veya top oyunu ile başla.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B5: GERÇEK DÜNYA ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--cobalt)">
+    <div class="sec-nc"><div class="sec-num">5</div><div class="sec-line"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// GERÇEK DÜNYA & PROFESYONEL</div>
+      <div class="sec-title">Git · Linux · Algoritmalar · Clean Code · Sistem Tasarımı</div>
+      <div class="sec-sub">5.1 Git/GitHub · 5.2 Linux · 5.3 Algo · 6. Pro Level</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--cobalt)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># Clean Code — Pythonic yazım</span>
+
+<span class="cm"># ❌ Kötü</span>
+<span class="kw">def</span> <span class="fn">f</span>(x, y, z):
+    r = []
+    <span class="kw">for</span> i <span class="kw">in</span> x:
+        <span class="kw">if</span> i[y] > z:
+            r.append(i)
+    <span class="kw">return</span> r
+
+<span class="cm"># ✅ İyi — type hints, anlamlı isimler</span>
+<span class="kw">def</span> <span class="fn">yasa_gore_filtrele</span>(
+    kullanicilar: list[dict],
+    alan: str,
+    esik: int
+) -> list[dict]:
+    <span class="str">"""Belirtilen alana göre kullanıcıları filtreler."""</span>
+    <span class="kw">return</span> [u <span class="kw">for</span> u <span class="kw">in</span> kullanicilar <span class="kw">if</span> u[alan] > esik]
+
+<span class="cm"># Algoritmalar — sorting örneği</span>
+<span class="kw">def</span> <span class="fn">quicksort</span>(dizi: list) -> list:
+    <span class="kw">if</span> <span class="op">len</span>(dizi) <= <span class="num">1</span>: <span class="kw">return</span> dizi
+    <span class="fn">pivot</span> = dizi[<span class="op">len</span>(dizi) // <span class="num">2</span>]
+    <span class="fn">sol</span>   = [x <span class="kw">for</span> x <span class="kw">in</span> dizi <span class="kw">if</span> x < <span class="fn">pivot</span>]
+    <span class="fn">orta</span>  = [x <span class="kw">for</span> x <span class="kw">in</span> dizi <span class="kw">if</span> x == <span class="fn">pivot</span>]
+    <span class="fn">sag</span>   = [x <span class="kw">for</span> x <span class="kw">in</span> dizi <span class="kw">if</span> x > <span class="fn">pivot</span>]
+    <span class="kw">return</span> <span class="fn">quicksort</span>(<span class="fn">sol</span>) + <span class="fn">orta</span> + <span class="fn">quicksort</span>(<span class="fn">sag</span>)</div>
+
+      <div class="g3">
+        <div class="card"><div class="card-t">Git Workflow</div><div class="card-d">Feature branch → PR → Code review → merge. Conventional commits. .gitignore. GitHub Actions CI.</div></div>
+        <div class="card"><div class="card-t">Linux Terminal</div><div class="card-d">grep, awk, sed, find, chmod, cron. Bash scripting. systemd service. Log yönetimi.</div></div>
+        <div class="card"><div class="card-t">Sistem Tasarımı</div><div class="card-d">Cache (Redis), Queue (Celery/RabbitMQ), Load balancer. Scalability pattern'leri. Database sharding.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Zaman Çizelgesi</div>
+    <div class="tl">
+      <div class="tlr"><div class="tld">1<span class="tlu">AY</span></div><div><div class="tln">Temel</div><div class="tls">Syntax · Veri · Fonksiyon</div></div></div>
+      <div class="tlr"><div class="tld">2<span class="tlu">AY</span></div><div><div class="tln">Orta</div><div class="tls">OOP · API · SQLite</div></div></div>
+      <div class="tlr"><div class="tld">3<span class="tlu">AY</span></div><div><div class="tln">İleri</div><div class="tls">Async · Test · Patterns</div></div></div>
+      <div class="tlr"><div class="tld">4+<span class="tlu">AY</span></div><div><div class="tln">Uzmanlaşma</div><div class="tls">Backend / Data / Otomasyon</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Konu Ağırlıkları</div>
+    <div class="skills" id="skills">
+      <div class="skr"><div class="skl">OOP</div><div class="skt"><div class="skf" style="--sc2:var(--gold)"></div></div><div class="skp">95%</div></div>
+      <div class="skr"><div class="skl">Async</div><div class="skt"><div class="skf" style="--sc2:var(--blue)"></div></div><div class="skp">80%</div></div>
+      <div class="skr"><div class="skl">Testing</div><div class="skt"><div class="skf" style="--sc2:var(--teal)"></div></div><div class="skp">75%</div></div>
+      <div class="skr"><div class="skl">Algorithms</div><div class="skt"><div class="skf" style="--sc2:var(--cobalt)"></div></div><div class="skp">65%</div></div>
+      <div class="skr"><div class="skl">Type Hints</div><div class="skt"><div class="skf" style="--sc2:var(--green)"></div></div><div class="skp">90%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Uzmanlaşma Alanları</div>
+    <div class="track-list">
+      <div class="track" style="--tc:var(--cobalt)"><div class="track-n">🧩 Backend</div><div class="track-libs">Django · Flask · FastAPI · PostgreSQL</div></div>
+      <div class="track" style="--tc:var(--blue)"><div class="track-n">🤖 Data/AI</div><div class="track-libs">NumPy · Pandas · Scikit-learn · PyTorch</div></div>
+      <div class="track" style="--tc:var(--teal)"><div class="track-n">🌐 Automation</div><div class="track-libs">Selenium · Playwright · httpx · bs4</div></div>
+      <div class="track" style="--tc:var(--rose)"><div class="track-n">🔐 Security</div><div class="track-libs">socket · cryptography · logging · Pydantic</div></div>
+      <div class="track" style="--tc:var(--gold)"><div class="track-n">🎮 Game Dev</div><div class="track-libs">Pygame · Pyglet · Arcade</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Altın Tavsiyeler</div>
+    <div class="tip-list">
+      <div class="tip"><div class="tip-icon">✅</div><div><div class="tip-t">3 proje yap</div><div class="tip-d">10 kurs değil — 3 gerçek proje</div></div></div>
+      <div class="tip"><div class="tip-icon">📖</div><div><div class="tip-t">PEP 8 oku</div><div class="tip-d">Pythonic kod standartı</div></div></div>
+      <div class="tip"><div class="tip-icon">🧪</div><div><div class="tip-t">Test yaz</div><div class="tip-d">Her fonksiyon için pytest</div></div></div>
+      <div class="tip"><div class="tip-icon">💡</div><div><div class="tip-t">Type hints kullan</div><div class="tip-d">Her fonksiyona ekle</div></div></div>
+      <div class="tip"><div class="tip-icon">🐙</div><div><div class="tip-t">GitHub aktif tut</div><div class="tip-d">Her gün commit — portfolio</div></div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">"Öğrendim"<br>dediğin her<br>şeyi <em>projeye dök.</em></h2>
+    <p class="bot-p">Syntax ezberlemek ≠ Python bilmek. Editörü aç, bir script yaz, bir API çağır, bir test geç. Her satır kod seni öne taşır.</p>
+    <a class="btn btn-white" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-outline" href="https://docs.python.org/3/" target="_blank">Resmi Docs</a>
+  </div>
+  <div class="bot-r">
+    <div class="rules">
+      <div class="rule"><div class="rule-no">01</div><div><div class="rule-t">%30 teori, %70 proje</div><div class="rule-d">Her öğrendiğini aynı gün projeye yaz</div></div></div>
+      <div class="rule"><div class="rule-no">02</div><div><div class="rule-t">Type hints her yerde</div><div class="rule-d">Mypy ile static type check — bug'ları erkenden yakala</div></div></div>
+      <div class="rule"><div class="rule-no">03</div><div><div class="rule-t">Bir alan seç, derinleş</div><div class="rule-d">Backend ya da Data — ikisini aynı anda gitme</div></div></div>
+      <div class="rule"><div class="rule-no">04</div><div><div class="rule-t">GitHub'a her gün commit</div><div class="rule-d">Portfolio + alışkanlık + bellek</div></div></div>
+      <div class="rule"><div class="rule-no">05</div><div><div class="rule-t">Python dokümantasyonu oku</div><div class="rule-d">docs.python.org — en iyi kaynak, ücretsiz</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Python 0→Pro Roadmap</span>
+  <span>5 Seviye · 20+ Bölüm · %70 Pratik · Her şeyi projeye dök</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// CURSOR
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.ph,.track,.tip,.pbadge').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='16px';c1.style.height='16px';c2.style.width='48px';c2.style.height='48px';c1.style.background='var(--cobalt)';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='10px';c1.style.height='10px';c2.style.width='34px';c2.style.height='34px';c1.style.background='var(--blue)';});
+});
+
+// ACCORDION
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// COUNTERS
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),5,800);cnt(document.getElementById('s2'),20,1000);cnt(document.getElementById('s3'),12,900);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-right'));
+
+// SKILL BARS
+const widths=['95%','80%','75%','65%','90%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skf').forEach((f,i)=>{setTimeout(()=>{f.style.width=widths[i];},i*90);});
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+</script>
+</body>
+</html>

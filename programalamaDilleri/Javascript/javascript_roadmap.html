@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript 0→100 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Barlow:ital,wght@0,400;0,600;0,800;1,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #0d0b1a;
+  --bg2:   #13102a;
+  --bg3:   #1a1635;
+  --panel: #100e22;
+  --ink:   #f0ecff;
+  --ink2:  #a89fc8;
+  --ink3:  #6b6085;
+  --neon:  #f5e642;
+  --neon2: #e8c100;
+  --violet:#8b5cf6;
+  --cyan:  #22d3ee;
+  --rose:  #fb7185;
+  --green: #4ade80;
+  --border: rgba(240,236,255,0.08);
+  --glow:  rgba(245,230,66,0.15);
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* === CURSOR === */
+#cur { position:fixed; width:8px; height:8px; background:var(--neon); pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .15s,height .15s; }
+#cur-trail { position:fixed; width:32px; height:32px; border:1.5px solid var(--neon); pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:.4; transition:width .2s,height .2s,opacity .2s; }
+
+/* === NOISE === */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+
+/* === GRID BG === */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 20%, black 30%, transparent 100%);
+}
+
+.wrap { position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 28px 100px; }
+
+/* ===== HERO ===== */
+.hero { padding:56px 0 44px; border-bottom:1px solid var(--border); position:relative; overflow:hidden; }
+
+.hero-glow {
+  position:absolute; top:-80px; left:-60px;
+  width:500px; height:500px; border-radius:50%;
+  background: radial-gradient(circle, rgba(139,92,246,.18) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.hero-eyebrow {
+  font-family:var(--font-mono); font-size:.68rem; letter-spacing:.25em;
+  color:var(--neon); display:flex; align-items:center; gap:10px;
+  margin-bottom:18px;
+  animation: revealUp .5s ease both;
+}
+.hero-eyebrow::before { content:''; width:28px; height:1px; background:var(--neon); }
+
+.hero-top { display:grid; grid-template-columns:1fr auto; align-items:start; gap:24px; }
+
+.hero-title {
+  font-family:var(--font-display);
+  font-size:clamp(5rem,14vw,11rem);
+  line-height:.9;
+  letter-spacing:-.02em;
+  animation: revealUp .5s .08s ease both;
+}
+.hero-title .accent { color:var(--neon); display:block; }
+.hero-title .sub-word { color:var(--violet); -webkit-text-stroke:1px var(--violet); color:transparent; }
+
+.hero-badge-col { padding-top:8px; display:flex; flex-direction:column; gap:8px; align-items:flex-end; animation: revealUp .5s .16s ease both; }
+.hbadge {
+  font-family:var(--font-mono); font-size:.62rem; letter-spacing:.15em;
+  padding:5px 10px; border:1px solid;
+}
+.hbadge-neon  { border-color:var(--neon);   color:var(--neon);   }
+.hbadge-violet{ border-color:var(--violet); color:var(--violet); }
+.hbadge-cyan  { border-color:var(--cyan);   color:var(--cyan);   }
+
+.hero-desc {
+  margin-top:24px; max-width:640px;
+  font-size:.95rem; line-height:1.65; color:var(--ink2);
+  animation: revealUp .5s .24s ease both;
+}
+.hero-desc strong { color:var(--neon); }
+
+/* STATS ROW */
+.hero-stats {
+  display:flex; gap:0; margin-top:32px;
+  border:1px solid var(--border); animation: revealUp .5s .32s ease both;
+}
+.hstat {
+  flex:1; padding:14px 20px; border-right:1px solid var(--border);
+  text-align:center;
+}
+.hstat:last-child { border-right:none; }
+.hstat-n { font-family:var(--font-display); font-size:2.2rem; color:var(--neon); line-height:1; }
+.hstat-l { font-family:var(--font-mono); font-size:.58rem; color:var(--ink3); margin-top:4px; letter-spacing:.1em; }
+
+/* ===== LEVEL TABS ===== */
+.level-nav {
+  display:flex; gap:0; border-bottom:1px solid var(--border); margin-top:0;
+  position:sticky; top:0; z-index:50; background:var(--bg);
+  animation: revealUp .5s .4s ease both;
+}
+.lvl-tab {
+  flex:1; padding:14px 8px; text-align:center;
+  font-family:var(--font-mono); font-size:.65rem; letter-spacing:.15em;
+  cursor:pointer; border-right:1px solid var(--border);
+  transition:background .2s, color .2s;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  color:var(--ink3); border-bottom:2px solid transparent;
+}
+.lvl-tab:last-child { border-right:none; }
+.lvl-tab:hover { background:var(--bg2); color:var(--ink); }
+.lvl-tab.active { color:var(--neon); border-bottom-color:var(--neon); background:var(--bg2); }
+.lvl-dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
+
+/* ===== MAIN LAYOUT ===== */
+.main-layout { display:grid; grid-template-columns:1fr 300px; gap:0; border-left:1px solid var(--border); border-right:1px solid var(--border); }
+
+/* ===== SECTIONS ===== */
+.sections { border-right:1px solid var(--border); }
+
+.sec {
+  border-bottom:1px solid var(--border);
+  opacity:0; transform:translateX(-12px);
+  transition:opacity .5s, transform .5s;
+}
+.sec.in { opacity:1; transform:none; }
+
+.sec-head {
+  display:grid; grid-template-columns:64px 1fr auto;
+  align-items:start; cursor:pointer;
+  padding:0; transition:background .2s;
+  gap:0;
+}
+.sec-head:hover { background:var(--bg2); }
+.sec-head.open  { background:var(--bg3); }
+
+.sec-num-block {
+  padding:20px 0 20px 20px;
+  display:flex; flex-direction:column; align-items:flex-start;
+}
+.sec-num {
+  font-family:var(--font-display);
+  font-size:2rem; line-height:1;
+  color:var(--border2, var(--border));
+  transition:color .2s;
+}
+.sec-head.open .sec-num,
+.sec-head:hover .sec-num { color:var(--sec-color, var(--neon)); }
+.sec-lvl-bar {
+  width:3px; height:20px; margin-top:6px;
+  background:var(--sec-color, var(--neon));
+  opacity:.4;
+  transition:opacity .2s, height .2s;
+}
+.sec-head.open .sec-lvl-bar,
+.sec-head:hover .sec-lvl-bar { opacity:1; height:28px; }
+
+.sec-info { padding:20px 16px; }
+.sec-level-tag {
+  font-family:var(--font-mono); font-size:.58rem; letter-spacing:.2em;
+  color:var(--sec-color, var(--neon)); margin-bottom:6px;
+}
+.sec-title { font-family:var(--font-display); font-size:1.5rem; line-height:1.1; letter-spacing:.02em; }
+.sec-tagline { font-size:.78rem; color:var(--ink3); margin-top:4px; font-family:var(--font-mono); }
+
+.sec-arrow { padding:20px 20px 0 0; font-size:.65rem; color:var(--ink3); transition:transform .3s; align-self:flex-start; }
+.sec-head.open .sec-arrow { transform:rotate(90deg); color:var(--neon); }
+
+/* SECTION BODY */
+.sec-body { display:none; border-top:1px solid var(--border); }
+.sec-body.open { display:block; animation:bodyIn .28s ease; }
+@keyframes bodyIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+
+.sec-inner { padding:24px 24px 28px; }
+
+/* CODE */
+.code {
+  background:#06040f;
+  border:1px solid rgba(139,92,246,.25);
+  border-left:3px solid var(--code-accent, var(--violet));
+  font-family:var(--font-mono); font-size:.77rem; line-height:1.75;
+  padding:16px 18px; margin:14px 0; overflow-x:auto; position:relative;
+}
+.code::after {
+  content:attr(data-lang);
+  position:absolute; top:7px; right:10px;
+  font-size:.58rem; letter-spacing:.15em; color:var(--ink3);
+}
+.kw   { color:#c792ea; }  /* keyword */
+.fn   { color:#82aaff; }  /* function */
+.str  { color:#c3e88d; }  /* string */
+.num  { color:#f78c6c; }  /* number */
+.cm   { color:#546e7a; font-style:italic; } /* comment */
+.op   { color:var(--neon); } /* operator */
+.prop { color:#ffcb6b; } /* property */
+.tag  { color:#f07178; } /* tag/type */
+
+/* CONCEPTS */
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.chip {
+  font-family:var(--font-mono); font-size:.65rem; padding:4px 10px;
+  border:1px solid var(--border); color:var(--ink2);
+  transition:all .2s; cursor:default;
+}
+.chip:hover { border-color:var(--neon); color:var(--neon); background:var(--glow); }
+
+/* INFO CARDS */
+.cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+.card {
+  padding:12px 14px; border:1px solid var(--border); background:var(--panel);
+  transition:all .2s; border-left:2px solid var(--card-color, var(--violet));
+}
+.card:hover { border-color:var(--card-color, var(--violet)); background:var(--bg3); transform:translateY(-2px); }
+.card-t { font-size:.8rem; font-weight:800; color:var(--ink); margin-bottom:4px; font-family:var(--font-mono); }
+.card-d { font-size:.71rem; color:var(--ink3); line-height:1.45; }
+
+/* TABLE */
+.tbl { width:100%; border-collapse:collapse; font-size:.75rem; margin:12px 0; }
+.tbl th { background:var(--bg3); padding:8px 12px; text-align:left; font-family:var(--font-mono); font-size:.6rem; letter-spacing:.15em; color:var(--ink3); border-bottom:1px solid var(--border); }
+.tbl td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--ink2); }
+.tbl tr:hover td { background:var(--bg2); color:var(--ink); }
+.tbl .hi { color:var(--neon); font-family:var(--font-mono); font-size:.75rem; }
+
+/* CALLOUT */
+.note {
+  padding:12px 16px; margin:14px 0;
+  font-size:.8rem; line-height:1.6;
+  border-left:3px solid var(--note-color, var(--cyan));
+  background:rgba(34,211,238,.05);
+  color:var(--ink2);
+}
+.note strong { color:var(--note-color, var(--cyan)); }
+.note.warn { --note-color:var(--rose); background:rgba(251,113,133,.05); }
+.note.tip  { --note-color:var(--green); background:rgba(74,222,128,.05); }
+.note.crit { --note-color:var(--neon); background:rgba(245,230,66,.05); }
+
+/* TARGET */
+.target {
+  display:flex; align-items:center; gap:10px; margin-top:16px;
+  padding:10px 14px; background:var(--bg3);
+  font-family:var(--font-mono); font-size:.75rem;
+  border:1px solid var(--border); border-left:2px solid var(--neon);
+}
+.target::before { content:'▶'; color:var(--neon); flex-shrink:0; }
+
+/* COMPARE */
+.compare { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--border); margin:12px 0; }
+.compare-col { padding:14px 16px; }
+.compare-col:first-child { border-right:1px solid var(--border); }
+.compare-head { font-family:var(--font-mono); font-size:.62rem; letter-spacing:.15em; margin-bottom:8px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar { padding:0; }
+
+.sb-widget { border-bottom:1px solid var(--border); padding:20px 18px; }
+.sb-title {
+  font-family:var(--font-mono); font-size:.6rem; letter-spacing:.2em; color:var(--ink3);
+  margin-bottom:16px; display:flex; align-items:center; gap:8px;
+}
+.sb-title::before { content:'//'; color:var(--violet); }
+
+/* TIMELINE */
+.tl { display:flex; flex-direction:column; }
+.tl-row {
+  display:grid; grid-template-columns:44px 1fr;
+  padding:10px 0; border-bottom:1px solid var(--border); gap:8px; align-items:center;
+}
+.tl-row:last-child { border-bottom:none; }
+.tl-d { font-family:var(--font-display); font-size:1.6rem; color:var(--neon); line-height:1; text-align:center; }
+.tl-unit { font-family:var(--font-mono); font-size:.5rem; color:var(--ink3); display:block; text-align:center; }
+.tl-n { font-size:.82rem; font-weight:800; }
+.tl-s { font-family:var(--font-mono); font-size:.62rem; color:var(--ink3); }
+
+/* SKILL BARS */
+.skills { display:flex; flex-direction:column; gap:10px; }
+.skill-item { }
+.skill-label { display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:.65rem; color:var(--ink2); margin-bottom:5px; }
+.skill-bar { height:3px; background:var(--bg3); position:relative; overflow:hidden; }
+.skill-fill { height:100%; background:var(--skill-c, var(--violet)); width:0; transition:width 1.2s cubic-bezier(.4,0,.2,1); }
+.skill-item.loaded .skill-fill { width:var(--skill-w); }
+
+/* PROJECTS */
+.proj-list { display:flex; flex-direction:column; gap:8px; }
+.proj {
+  padding:10px 12px; border:1px solid var(--border); background:var(--panel);
+  transition:all .2s; cursor:default; position:relative; overflow:hidden;
+}
+.proj::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--proj-c, var(--violet)); }
+.proj:hover { border-color:var(--proj-c, var(--violet)); transform:translateX(4px); }
+.proj-n { font-family:var(--font-mono); font-size:.6rem; color:var(--ink3); letter-spacing:.1em; }
+.proj-name { font-weight:800; font-size:.85rem; margin-top:3px; }
+.proj-tags { display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
+.proj-tag { font-family:var(--font-mono); font-size:.58rem; padding:2px 6px; border:1px solid var(--border); color:var(--ink3); }
+
+/* TRIO */
+.trio { display:flex; flex-direction:column; gap:6px; }
+.trio-item {
+  padding:10px 12px; border:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+  font-size:.82rem; font-weight:800; transition:all .2s;
+}
+.trio-item:hover { border-color:var(--neon); background:var(--glow); }
+.trio-num { font-family:var(--font-display); font-size:1.4rem; color:var(--neon); line-height:1; flex-shrink:0; }
+
+/* CAREER */
+.career-list { display:flex; flex-direction:column; gap:6px; }
+.car {
+  display:flex; align-items:center; gap:10px; padding:8px 0;
+  border-bottom:1px solid var(--border); font-size:.82rem;
+}
+.car:last-child { border-bottom:none; }
+.car-icon { width:28px; height:28px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:.85rem; flex-shrink:0; }
+.car-name { font-weight:800; }
+.car-desc { font-family:var(--font-mono); font-size:.62rem; color:var(--ink3); }
+
+/* ===== BOTTOM ===== */
+.bottom {
+  border:1px solid var(--border); border-top:2px solid var(--neon);
+  margin-top:0; display:grid; grid-template-columns:1fr 1fr;
+  animation:revealUp .5s ease both;
+}
+.bot-left { padding:40px 36px 40px 0; border-right:1px solid var(--border); }
+.bot-right { padding:40px 0 40px 36px; }
+.bot-h {
+  font-family:var(--font-display);
+  font-size:clamp(2rem,5vw,3.8rem); line-height:.95; margin-bottom:16px;
+}
+.bot-h em { font-style:normal; color:var(--neon); }
+.bot-p { font-size:.85rem; color:var(--ink2); line-height:1.7; margin-bottom:24px; }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:11px 22px; font-family:var(--font-mono); font-size:.72rem; letter-spacing:.1em; cursor:pointer; transition:all .2s; text-decoration:none; }
+.btn-solid { background:var(--neon); color:var(--bg); border:none; }
+.btn-solid:hover { background:#fff; }
+.btn-ghost { background:transparent; color:var(--neon); border:1px solid var(--neon); margin-left:10px; }
+.btn-ghost:hover { background:var(--glow); }
+.rule-list { display:flex; flex-direction:column; gap:12px; }
+.rule-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.rule-item:last-child { border-bottom:none; }
+.rule-arrow { color:var(--neon); font-size:1rem; flex-shrink:0; font-family:var(--font-display); }
+.rule-t { font-weight:800; font-size:.88rem; }
+.rule-d { font-family:var(--font-mono); font-size:.65rem; color:var(--ink3); margin-top:2px; }
+
+/* FOOTER */
+footer { padding:20px 0; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); font-family:var(--font-mono); font-size:.62rem; color:var(--ink3); }
+footer span:first-child { color:var(--violet); }
+
+/* ANIMATIONS */
+@keyframes revealUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .main-layout{grid-template-columns:1fr}
+  .sections{border-right:none}
+  .sidebar{border-top:1px solid var(--border)}
+  .hero-top{grid-template-columns:1fr}
+  .bottom{grid-template-columns:1fr}
+  .bot-left{border-right:none;border-bottom:1px solid var(--border);padding:32px 0}
+  .bot-right{padding:32px 0}
+  .cards{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .wrap{padding:0 14px 60px}
+  .hero-stats{flex-wrap:wrap}
+  .level-nav{overflow-x:auto}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-trail"></div>
+
+<div class="wrap">
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">JavaScript Öğrenme Yol Haritası · 0 → 100</div>
+  <div class="hero-top">
+    <h1 class="hero-title">
+      <span class="accent">JAVA</span>
+      <span class="sub-word">SCRIPT</span>
+    </h1>
+    <div class="hero-badge-col">
+      <div class="hbadge hbadge-neon">20 BÖLÜM</div>
+      <div class="hbadge hbadge-violet">5 PROJE</div>
+      <div class="hbadge hbadge-cyan">60 GÜN PLAN</div>
+    </div>
+  </div>
+  <p class="hero-desc">
+    Değişkenlerden <strong>async/await</strong>'e, DOM manipülasyonundan <strong>OOP</strong>'ye — web'i canlandıran dili sıfırdan ustaca öğren. Her bölüm gerçek kod içerir. <strong>Yazmadan öğrenilmez.</strong>
+  </p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">BÖLÜM</div></div>
+    <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">PROJE</div></div>
+    <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">GÜNLÜK KOD (SAAT)</div></div>
+    <div class="hstat"><div class="hstat-n" id="s4">0</div><div class="hstat-l">GÜN İŞ SEVİYESİ</div></div>
+  </div>
+</header>
+
+<!-- LEVEL NAV -->
+<nav class="level-nav">
+  <div class="lvl-tab active" data-lvl="all" onclick="filterLvl(this,'all')">
+    <div class="lvl-dot" style="background:var(--ink2)"></div>TÜMÜ
+  </div>
+  <div class="lvl-tab" data-lvl="green" onclick="filterLvl(this,'green')">
+    <div class="lvl-dot" style="background:var(--green)"></div>BAŞLANGIÇ
+  </div>
+  <div class="lvl-tab" data-lvl="yellow" onclick="filterLvl(this,'yellow')">
+    <div class="lvl-dot" style="background:var(--neon)"></div>ORTA
+  </div>
+  <div class="lvl-tab" data-lvl="blue" onclick="filterLvl(this,'blue')">
+    <div class="lvl-dot" style="background:var(--cyan)"></div>İLERİ
+  </div>
+  <div class="lvl-tab" data-lvl="red" onclick="filterLvl(this,'red')">
+    <div class="lvl-dot" style="background:var(--rose)"></div>UZMAN
+  </div>
+</nav>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+<div class="sections">
+
+<!-- ====== B01 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head open" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">01</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">JavaScript Nedir?</div>
+      <div class="sec-tagline">Tarayıcı, engine, ilk kod</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body open">
+    <div class="sec-inner">
+      <div class="chips">
+        <span class="chip">ECMAScript</span><span class="chip">V8 Engine</span>
+        <span class="chip">Interpreted</span><span class="chip">Single-threaded</span>
+        <span class="chip">Event Loop</span>
+      </div>
+      <p style="font-size:.84rem;color:var(--ink2);line-height:1.7;margin-bottom:14px;">JavaScript, HTML'i <em>canlandıran</em>, CSS'i <em>kontrol eden</em> ve sunucularla <em>konuşan</em> dildir. Tarayıcıda V8 / SpiderMonkey engine'i tarafından çalıştırılır. Node.js ile sunucu tarafında da koşar.</p>
+      <div class="code" data-lang="JS">
+<span class="cm">// 3 farklı bağlama yöntemi</span>
+
+<span class="cm">// 1. Inline (kötü pratik)</span>
+<span class="tag">&lt;button</span> <span class="prop">onclick</span>=<span class="str">"alert('Tıklandı')"</span><span class="tag">&gt;</span>
+
+<span class="cm">// 2. Internal script</span>
+<span class="tag">&lt;script&gt;</span>
+  console.<span class="fn">log</span>(<span class="str">"Hello World"</span>);
+<span class="tag">&lt;/script&gt;</span>
+
+<span class="cm">// 3. External (EN İYİ)</span>
+<span class="tag">&lt;script</span> <span class="prop">src</span>=<span class="str">"app.js"</span> <span class="prop">defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="cm">// defer → HTML parse bitmeden çalıştırma</span></div>
+      <div class="note crit"><strong>💡 defer vs async:</strong> defer = HTML bittikten sonra çalıştır (sıralı). async = HTML'i beklemeden indir, hazır olunca çalıştır (sırasız). Genelde defer tercih et.</div>
+      <div class="target">Hedef: JS'in "canlandıran katman" olduğunu kavra. HTML = iskelet, CSS = deri, JS = kaslar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B02 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">02</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">Değişkenler</div>
+      <div class="sec-tagline">var / let / const — scope farkı</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// var → eski, function scope, hoisting var</span>
+<span class="kw">var</span> <span class="prop">isim</span> = <span class="str">"Emre"</span>;
+
+<span class="cm">// let → block scope, yeniden atanabilir</span>
+<span class="kw">let</span> <span class="prop">sayac</span> = <span class="num">0</span>;
+<span class="prop">sayac</span> <span class="op">=</span> <span class="num">1</span>; <span class="cm">// ✅ OK</span>
+
+<span class="cm">// const → block scope, sabit referans</span>
+<span class="kw">const</span> <span class="prop">PI</span> = <span class="num">3.14</span>;
+<span class="prop">PI</span> <span class="op">=</span> <span class="num">3</span>; <span class="cm">// ❌ TypeError!</span>
+
+<span class="cm">// const object → içi değişebilir!</span>
+<span class="kw">const</span> <span class="prop">user</span> = { <span class="prop">isim</span>: <span class="str">"Ali"</span> };
+<span class="prop">user</span>.<span class="prop">isim</span> = <span class="str">"Veli"</span>; <span class="cm">// ✅ OK (referans sabit)</span></div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head" style="color:var(--rose)">❌ VAR (KULLANMA)</div>
+          <div style="font-size:.75rem;color:var(--ink3);font-family:var(--font-mono);line-height:1.7;">• Function scope<br>• Hoisting (hata kaynağı)<br>• Re-declare edilebilir<br>• Eski ES5 mirası</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head" style="color:var(--green)">✅ LET / CONST</div>
+          <div style="font-size:.75rem;color:var(--ink3);font-family:var(--font-mono);line-height:1.7;">• Block scope<br>• Temporal Dead Zone<br>• Öngörülebilir davranış<br>• Modern standart (ES6+)</div>
+        </div>
+      </div>
+      <div class="note warn"><strong>Kural:</strong> Default olarak <strong>const</strong> kullan. Değer değişecekse <strong>let</strong> kullan. <strong>var</strong> yaz</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B03 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">03</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">Veri Tipleri</div>
+      <div class="sec-tagline">Primitive vs Reference — typeof</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// PRİMİTİF (stack'te saklanır)</span>
+<span class="kw">typeof</span> <span class="str">"merhaba"</span>  <span class="cm">// "string"</span>
+<span class="kw">typeof</span> <span class="num">42</span>         <span class="cm">// "number"</span>
+<span class="kw">typeof</span> <span class="num">3.14</span>       <span class="cm">// "number" (float ayrı değil!)</span>
+<span class="kw">typeof</span> <span class="kw">true</span>       <span class="cm">// "boolean"</span>
+<span class="kw">typeof</span> <span class="kw">undefined</span>  <span class="cm">// "undefined"</span>
+<span class="kw">typeof</span> <span class="kw">null</span>       <span class="cm">// "object" ← JS'in ünlü bug'ı!</span>
+<span class="kw">typeof</span> <span class="num">9n</span>         <span class="cm">// "bigint"</span>
+<span class="kw">typeof</span> <span class="fn">Symbol</span>()   <span class="cm">// "symbol"</span>
+
+<span class="cm">// REFERANS (heap'te saklanır)</span>
+<span class="kw">typeof</span> {}         <span class="cm">// "object"</span>
+<span class="kw">typeof</span> []         <span class="cm">// "object" ← Array de object!</span>
+<span class="kw">typeof</span> <span class="kw">function</span>(){} <span class="cm">// "function"</span></div>
+      <div class="note"><strong>Fark neden önemli?</strong> Primitive'ler kopyalanır (pass by value). Reference tipler referans paylaşır — iki değişken aynı objeyi gösterir. Bu "mutation bug"larının kaynağıdır.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B04 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">04</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">Operatörler</div>
+      <div class="sec-tagline">== vs === · nullish coalescing · optional chaining</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// == (loose) vs === (strict) — KRİTİK FARK</span>
+<span class="num">0</span>  <span class="op">==</span>  <span class="str">""</span>     <span class="cm">// true  ← type coercion!</span>
+<span class="num">0</span>  <span class="op">===</span> <span class="str">""</span>     <span class="cm">// false ← type check</span>
+<span class="kw">null</span> <span class="op">==</span> <span class="kw">undefined</span> <span class="cm">// true</span>
+<span class="kw">null</span> <span class="op">===</span> <span class="kw">undefined</span><span class="cm">// false</span>
+
+<span class="cm">// Nullish coalescing (ES2020)</span>
+<span class="kw">const</span> <span class="prop">ad</span> = <span class="prop">kullanici</span>.<span class="prop">isim</span> <span class="op">??</span> <span class="str">"Misafir"</span>;
+<span class="cm">// null veya undefined ise "Misafir" — 0 veya "" geçer</span>
+
+<span class="cm">// Optional chaining (ES2020)</span>
+<span class="kw">const</span> <span class="prop">sehir</span> = <span class="prop">user</span><span class="op">?.</span><span class="prop">adres</span><span class="op">?.</span><span class="prop">sehir</span>;
+<span class="cm">// TypeError yerine undefined döner</span>
+
+<span class="cm">// Logical assignment</span>
+<span class="prop">x</span> <span class="op">||=</span> <span class="str">"default"</span>; <span class="cm">// falsy ise ata</span>
+<span class="prop">y</span> <span class="op">??=</span> <span class="num">0</span>;        <span class="cm">// null/undefined ise ata</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B05 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">05</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">Koşullar & Switch</div>
+      <div class="sec-tagline">if/else · ternary · switch · guard clause</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// Ternary — kısa if/else</span>
+<span class="kw">const</span> <span class="prop">msg</span> = <span class="prop">yas</span> <span class="op">>=</span> <span class="num">18</span> <span class="op">?</span> <span class="str">"Yetişkin"</span> <span class="op">:</span> <span class="str">"Çocuk"</span>;
+
+<span class="cm">// Guard clause pattern (daha temiz)</span>
+<span class="kw">function</span> <span class="fn">isle</span>(<span class="prop">user</span>) {
+  <span class="kw">if</span> (<span class="op">!</span><span class="prop">user</span>) <span class="kw">return</span> <span class="kw">null</span>;        <span class="cm">// erken çık</span>
+  <span class="kw">if</span> (<span class="op">!</span><span class="prop">user</span>.<span class="prop">email</span>) <span class="kw">return</span> <span class="kw">null</span>;  <span class="cm">// erken çık</span>
+  <span class="cm">// asıl mantık burada, iç içe if yok</span>
+  <span class="fn">gonder</span>(<span class="prop">user</span>.<span class="prop">email</span>);
+}
+
+<span class="cm">// Switch — çoklu eşleşme</span>
+<span class="kw">switch</span> (<span class="prop">gun</span>) {
+  <span class="kw">case</span> <span class="str">"Pazartesi"</span>: <span class="fn">calis</span>(); <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="str">"Cumartesi"</span>:
+  <span class="kw">case</span> <span class="str">"Pazar"</span>: <span class="fn">dinlen</span>(); <span class="kw">break</span>;
+  <span class="kw">default</span>: <span class="fn">devam</span>();
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B06 ====== -->
+<div class="sec" data-lvl="green">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--green)">
+    <div class="sec-num-block"><div class="sec-num">06</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">BAŞLANGIÇ</div>
+      <div class="sec-title">Döngüler</div>
+      <div class="sec-tagline">for · while · for...of · for...in</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// Classic for</span>
+<span class="kw">for</span> (<span class="kw">let</span> <span class="prop">i</span> = <span class="num">0</span>; <span class="prop">i</span> <span class="op">&lt;</span> <span class="num">5</span>; <span class="prop">i</span><span class="op">++</span>) { }
+
+<span class="cm">// for...of → iterable (array, string, Map)</span>
+<span class="kw">for</span> (<span class="kw">const</span> <span class="prop">item</span> <span class="kw">of</span> <span class="prop">dizi</span>) {
+  console.<span class="fn">log</span>(<span class="prop">item</span>); <span class="cm">// değer</span>
+}
+
+<span class="cm">// for...in → object key'leri</span>
+<span class="kw">for</span> (<span class="kw">const</span> <span class="prop">key</span> <span class="kw">in</span> <span class="prop">obj</span>) {
+  console.<span class="fn">log</span>(<span class="prop">key</span>, <span class="prop">obj</span>[<span class="prop">key</span>]);
+}
+
+<span class="cm">// while → koşul bilinmiyorsa</span>
+<span class="kw">while</span> (<span class="prop">kuyruk</span>.<span class="prop">length</span> <span class="op">&gt;</span> <span class="num">0</span>) {
+  <span class="fn">isle</span>(<span class="prop">kuyruk</span>.<span class="fn">shift</span>());
+}</div>
+      <div class="note tip"><strong>İpucu:</strong> Array döngüsü için önce <strong>forEach / map / filter</strong> dene. Daha okunabilir ve fonksiyonel.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B07 ====== -->
+<div class="sec" data-lvl="yellow">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--neon)">
+    <div class="sec-num-block"><div class="sec-num">07</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">ORTA SEVİYE</div>
+      <div class="sec-title">Fonksiyonlar — CRITICAL</div>
+      <div class="sec-tagline">declaration · expression · arrow · higher-order</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// 1. Function Declaration (hoisted)</span>
+<span class="kw">function</span> <span class="fn">topla</span>(<span class="prop">a</span>, <span class="prop">b</span>) { <span class="kw">return</span> <span class="prop">a</span> <span class="op">+</span> <span class="prop">b</span>; }
+
+<span class="cm">// 2. Function Expression</span>
+<span class="kw">const</span> <span class="fn">carp</span> = <span class="kw">function</span>(<span class="prop">a</span>, <span class="prop">b</span>) { <span class="kw">return</span> <span class="prop">a</span> <span class="op">*</span> <span class="prop">b</span>; };
+
+<span class="cm">// 3. Arrow Function — this bağlamaz!</span>
+<span class="kw">const</span> <span class="fn">bol</span> = (<span class="prop">a</span>, <span class="prop">b</span>) <span class="op">=></span> <span class="prop">a</span> <span class="op">/</span> <span class="prop">b</span>;    <span class="cm">// implicit return</span>
+<span class="kw">const</span> <span class="fn">selamla</span> = <span class="prop">isim</span> <span class="op">=></span> (<span class="op">{</span>        <span class="cm">// obje döndür</span>
+  <span class="prop">mesaj</span>: <span class="op">`</span><span class="str">Merhaba ${</span><span class="prop">isim</span><span class="str">}</span><span class="op">`</span>
+<span class="op">}</span>);
+
+<span class="cm">// 4. Default Parameters</span>
+<span class="kw">const</span> <span class="fn">guc</span> = (<span class="prop">taban</span>, <span class="prop">us</span> = <span class="num">2</span>) <span class="op">=></span> <span class="prop">taban</span> <span class="op">**</span> <span class="prop">us</span>;
+
+<span class="cm">// 5. Rest Parameters</span>
+<span class="kw">const</span> <span class="fn">toplamHepsi</span> = (<span class="op">...</span><span class="prop">sayilar</span>) <span class="op">=></span>
+  <span class="prop">sayilar</span>.<span class="fn">reduce</span>((<span class="prop">t</span>,<span class="prop">n</span>) <span class="op">=></span> <span class="prop">t</span><span class="op">+</span><span class="prop">n</span>, <span class="num">0</span>);
+
+<span class="cm">// 6. Higher-Order Function</span>
+<span class="kw">const</span> <span class="fn">uygula</span> = (<span class="prop">fn</span>, <span class="prop">x</span>) <span class="op">=></span> <span class="fn">fn</span>(<span class="prop">x</span>);
+<span class="fn">uygula</span>(<span class="prop">x</span> <span class="op">=></span> <span class="prop">x</span> <span class="op">*</span> <span class="num">2</span>, <span class="num">5</span>); <span class="cm">// → 10</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B08 ====== -->
+<div class="sec" data-lvl="yellow">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--neon)">
+    <div class="sec-num-block"><div class="sec-num">08</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">ORTA SEVİYE</div>
+      <div class="sec-title">Array & Object — EN KRİTİK</div>
+      <div class="sec-tagline">map · filter · reduce · spread · destructuring</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="kw">const</span> <span class="prop">kullanicilar</span> = [
+  { <span class="prop">id</span>: <span class="num">1</span>, <span class="prop">isim</span>: <span class="str">"Ali"</span>, <span class="prop">yas</span>: <span class="num">22</span>, <span class="prop">aktif</span>: <span class="kw">true</span>  },
+  { <span class="prop">id</span>: <span class="num">2</span>, <span class="prop">isim</span>: <span class="str">"Veli"</span>, <span class="prop">yas</span>: <span class="num">17</span>, <span class="prop">aktif</span>: <span class="kw">false</span> },
+  { <span class="prop">id</span>: <span class="num">3</span>, <span class="prop">isim</span>: <span class="str">"Ayşe"</span>, <span class="prop">yas</span>: <span class="num">28</span>, <span class="prop">aktif</span>: <span class="kw">true</span>  },
+];
+
+<span class="cm">// filter → koşula uyanları al</span>
+<span class="kw">const</span> <span class="prop">aktifler</span> = <span class="prop">kullanicilar</span>
+  .<span class="fn">filter</span>(<span class="prop">u</span> <span class="op">=></span> <span class="prop">u</span>.<span class="prop">aktif</span> <span class="op">&&</span> <span class="prop">u</span>.<span class="prop">yas</span> <span class="op">>=</span> <span class="num">18</span>);
+
+<span class="cm">// map → her elemanı dönüştür</span>
+<span class="kw">const</span> <span class="prop">isimler</span> = <span class="prop">aktifler</span>
+  .<span class="fn">map</span>(<span class="prop">u</span> <span class="op">=></span> <span class="prop">u</span>.<span class="prop">isim</span>.<span class="fn">toUpperCase</span>());
+
+<span class="cm">// reduce → tek değere indir</span>
+<span class="kw">const</span> <span class="prop">ortalama</span> = <span class="prop">kullanicilar</span>
+  .<span class="fn">reduce</span>((<span class="prop">sum</span>,<span class="prop">u</span>) <span class="op">=></span> <span class="prop">sum</span> <span class="op">+</span> <span class="prop">u</span>.<span class="prop">yas</span>, <span class="num">0</span>) <span class="op">/</span> <span class="prop">kullanicilar</span>.<span class="prop">length</span>;
+
+<span class="cm">// find / findIndex / some / every</span>
+<span class="kw">const</span> <span class="prop">ayse</span> = <span class="prop">kullanicilar</span>.<span class="fn">find</span>(<span class="prop">u</span> <span class="op">=></span> <span class="prop">u</span>.<span class="prop">id</span> <span class="op">===</span> <span class="num">3</span>);
+
+<span class="cm">// Spread — kopyala / birleştir</span>
+<span class="kw">const</span> <span class="prop">yeniListe</span> = [...<span class="prop">kullanicilar</span>, { <span class="prop">id</span>: <span class="num">4</span>, <span class="prop">isim</span>: <span class="str">"Zeynep"</span> }];
+<span class="kw">const</span> <span class="prop">guncellendi</span> = <span class="prop">kullanicilar</span>.<span class="fn">map</span>(<span class="prop">u</span> <span class="op">=></span>
+  <span class="prop">u</span>.<span class="prop">id</span> <span class="op">===</span> <span class="num">1</span> ? { ...<span class="prop">u</span>, <span class="prop">yas</span>: <span class="num">23</span> } : <span class="prop">u</span>
+);</div>
+      <div class="note crit"><strong>🔥 Altın Kural:</strong> Array metotlarını zincirle (chaining). filter → map → reduce akışını ele geçir. Tüm modern JS kodu bu 3 metodun üstüne inşa edilir.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B09 ====== -->
+<div class="sec" data-lvl="yellow">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--neon)">
+    <div class="sec-num-block"><div class="sec-num">09</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">ORTA SEVİYE</div>
+      <div class="sec-title">DOM Manipulation — WEB'İN KALBİ</div>
+      <div class="sec-tagline">select · modify · create · traverse</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// Seçiciler</span>
+<span class="kw">const</span> <span class="prop">el</span>  = document.<span class="fn">getElementById</span>(<span class="str">"baslik"</span>);
+<span class="kw">const</span> <span class="prop">btn</span> = document.<span class="fn">querySelector</span>(<span class="str">".btn-primary"</span>);
+<span class="kw">const</span> <span class="prop">all</span> = document.<span class="fn">querySelectorAll</span>(<span class="str">"li"</span>); <span class="cm">// NodeList</span>
+
+<span class="cm">// İçerik değiştirme</span>
+<span class="prop">el</span>.<span class="prop">textContent</span> = <span class="str">"Güvenli metin"</span>;     <span class="cm">// XSS yok</span>
+<span class="prop">el</span>.<span class="prop">innerHTML</span>   = <span class="str">"&lt;b&gt;HTML&lt;/b&gt;"</span>;     <span class="cm">// dikkat!</span>
+
+<span class="cm">// Class işlemleri</span>
+<span class="prop">el</span>.<span class="prop">classList</span>.<span class="fn">add</span>(<span class="str">"aktif"</span>);
+<span class="prop">el</span>.<span class="prop">classList</span>.<span class="fn">toggle</span>(<span class="str">"gizli"</span>);
+<span class="prop">el</span>.<span class="prop">classList</span>.<span class="fn">contains</span>(<span class="str">"aktif"</span>); <span class="cm">// boolean</span>
+
+<span class="cm">// Attribute</span>
+<span class="prop">el</span>.<span class="fn">setAttribute</span>(<span class="str">"data-id"</span>, <span class="str">"42"</span>);
+<span class="prop">el</span>.<span class="fn">getAttribute</span>(<span class="str">"data-id"</span>);
+
+<span class="cm">// Element oluştur &amp; ekle</span>
+<span class="kw">const</span> <span class="prop">li</span> = document.<span class="fn">createElement</span>(<span class="str">"li"</span>);
+<span class="prop">li</span>.<span class="prop">textContent</span> = <span class="str">"Yeni madde"</span>;
+<span class="prop">li</span>.<span class="prop">classList</span>.<span class="fn">add</span>(<span class="str">"item"</span>);
+document.<span class="fn">querySelector</span>(<span class="str">"ul"</span>).<span class="fn">append</span>(<span class="prop">li</span>);</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B10 ====== -->
+<div class="sec" data-lvl="yellow">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--neon)">
+    <div class="sec-num-block"><div class="sec-num">10</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">ORTA SEVİYE</div>
+      <div class="sec-title">Event System</div>
+      <div class="sec-tagline">addEventListener · delegation · bubbling</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// Temel event</span>
+<span class="prop">btn</span>.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="prop">e</span>) <span class="op">=></span> {
+  <span class="prop">e</span>.<span class="fn">preventDefault</span>(); <span class="cm">// form submit vs engelle</span>
+  console.<span class="fn">log</span>(<span class="prop">e</span>.<span class="prop">target</span>);  <span class="cm">// tıklanan element</span>
+});
+
+<span class="cm">// Event Delegation — performanslı pattern</span>
+document.<span class="fn">querySelector</span>(<span class="str">"#liste"</span>)
+  .<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="prop">e</span>) <span class="op">=></span> {
+    <span class="kw">if</span> (<span class="prop">e</span>.<span class="prop">target</span>.<span class="fn">matches</span>(<span class="str">".sil-btn"</span>)) {
+      <span class="prop">e</span>.<span class="prop">target</span>.<span class="prop">closest</span>(<span class="str">"li"</span>).<span class="fn">remove</span>();
+    }
+  });
+
+<span class="cm">// Custom Event</span>
+<span class="kw">const</span> <span class="prop">olay</span> = <span class="kw">new</span> <span class="fn">CustomEvent</span>(<span class="str">"veriGuncellendi"</span>, {
+  <span class="prop">detail</span>: { <span class="prop">id</span>: <span class="num">42</span> }, <span class="prop">bubbles</span>: <span class="kw">true</span>
+});
+document.<span class="fn">dispatchEvent</span>(<span class="prop">olay</span>);</div>
+      <div class="cards">
+        <div class="card" style="--card-color:var(--neon)"><div class="card-t">bubbling</div><div class="card-d">Event child'dan root'a yükselir. stopPropagation() ile durdur.</div></div>
+        <div class="card" style="--card-color:var(--cyan)"><div class="card-t">capturing</div><div class="card-d">addEventListener 3. param: true → capturing phase'de tetikle.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B11 ====== -->
+<div class="sec" data-lvl="yellow">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--neon)">
+    <div class="sec-num-block"><div class="sec-num">11</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">ORTA SEVİYE</div>
+      <div class="sec-title">ES6+ Modern JavaScript</div>
+      <div class="sec-tagline">Destructuring · Spread · Template literals · Modules</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS">
+<span class="cm">// Destructuring — Array</span>
+<span class="kw">const</span> [<span class="prop">birinci</span>, <span class="prop">ikinci</span>, ...<span class="prop">geri</span>] = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>];
+
+<span class="cm">// Destructuring — Object (rename + default)</span>
+<span class="kw">const</span> { <span class="prop">isim</span>: <span class="prop">ad</span> = <span class="str">"Misafir"</span>, <span class="prop">yas</span> = <span class="num">18</span> } = <span class="prop">user</span>;
+
+<span class="cm">// Template Literals</span>
+<span class="kw">const</span> <span class="prop">html</span> = <span class="op">`</span>
+  <span class="tag">&lt;div</span> <span class="prop">class</span>=<span class="str">"kart"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;h2&gt;</span>${<span class="prop">ad</span>}<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Yaş: ${<span class="prop">yas</span>}<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="op">`</span>;
+
+<span class="cm">// Shorthand Property / Method</span>
+<span class="kw">const</span> <span class="prop">x</span> = <span class="num">1</span>, <span class="prop">y</span> = <span class="num">2</span>;
+<span class="kw">const</span> <span class="prop">nokta</span> = { <span class="prop">x</span>, <span class="prop">y</span> }; <span class="cm">// {x:1, y:2}</span>
+
+<span class="cm">// Computed property</span>
+<span class="kw">const</span> <span class="prop">alan</span> = <span class="str">"isim"</span>;
+<span class="kw">const</span> <span class="prop">obj</span> = { [<span class="prop">alan</span>]: <span class="str">"değer"</span> }; <span class="cm">// {isim:"değer"}</span>
+
+<span class="cm">// Promise.allSettled / Object.entries</span>
+Object.<span class="fn">entries</span>(<span class="prop">obj</span>).<span class="fn">forEach</span>(([<span class="prop">k</span>,<span class="prop">v</span>]) <span class="op">=></span> {});</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B12 ====== -->
+<div class="sec" data-lvl="blue">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--cyan)">
+    <div class="sec-num-block"><div class="sec-num">12</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">İLERİ SEVİYE</div>
+      <div class="sec-title">Async JavaScript — GAME CHANGER</div>
+      <div class="sec-tagline">Callback hell → Promise → async/await · Event Loop</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--cyan)">
+<span class="cm">// 1. Callback Hell (ESKİ — KÖTÜ)</span>
+<span class="fn">getUser</span>(<span class="prop">id</span>, <span class="prop">user</span> <span class="op">=></span> {
+  <span class="fn">getPosts</span>(<span class="prop">user</span>.<span class="prop">id</span>, <span class="prop">posts</span> <span class="op">=></span> {
+    <span class="fn">getComments</span>(<span class="prop">posts</span>[<span class="num">0</span>].<span class="prop">id</span>, <span class="prop">comments</span> <span class="op">=></span> {
+      <span class="cm">// 3 seviye iç içe... devam eder</span>
+    });
+  });
+});
+
+<span class="cm">// 2. Promise chain</span>
+<span class="fn">getUser</span>(<span class="prop">id</span>)
+  .<span class="fn">then</span>(<span class="prop">user</span>  <span class="op">=></span> <span class="fn">getPosts</span>(<span class="prop">user</span>.<span class="prop">id</span>))
+  .<span class="fn">then</span>(<span class="prop">posts</span> <span class="op">=></span> <span class="fn">getComments</span>(<span class="prop">posts</span>[<span class="num">0</span>].<span class="prop">id</span>))
+  .<span class="fn">catch</span>(<span class="prop">err</span>  <span class="op">=></span> console.<span class="fn">error</span>(<span class="prop">err</span>));
+
+<span class="cm">// 3. async/await (EN OKUNAKLI)</span>
+<span class="kw">async function</span> <span class="fn">yukle</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="prop">user</span>    = <span class="kw">await</span> <span class="fn">getUser</span>(<span class="prop">id</span>);
+    <span class="kw">const</span> <span class="prop">posts</span>   = <span class="kw">await</span> <span class="fn">getPosts</span>(<span class="prop">user</span>.<span class="prop">id</span>);
+
+    <span class="cm">// Paralel çalıştır!</span>
+    <span class="kw">const</span> [<span class="prop">a</span>, <span class="prop">b</span>] = <span class="kw">await</span> Promise.<span class="fn">all</span>([
+      <span class="fn">fetchA</span>(), <span class="fn">fetchB</span>()
+    ]);
+  } <span class="kw">catch</span> (<span class="prop">err</span>) {
+    console.<span class="fn">error</span>(<span class="prop">err</span>);
+  }
+}</div>
+      <div class="note"><strong>Event Loop:</strong> JS single-threaded. Async işlemler Web API'ye gönderilir → callback queue'ya alınır → call stack boşalınca çalışır. Bu yüzden await "bloklamaz".</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B13 ====== -->
+<div class="sec" data-lvl="blue">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--cyan)">
+    <div class="sec-num-block"><div class="sec-num">13</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">İLERİ SEVİYE</div>
+      <div class="sec-title">Fetch API & HTTP</div>
+      <div class="sec-tagline">REST · headers · JSON · interceptor pattern</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--cyan)">
+<span class="cm">// GET request</span>
+<span class="kw">const</span> <span class="prop">res</span>  = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://api.example.com/users"</span>);
+<span class="kw">const</span> <span class="prop">data</span> = <span class="kw">await</span> <span class="prop">res</span>.<span class="fn">json</span>();
+
+<span class="cm">// POST request</span>
+<span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"/api/users"</span>, {
+  <span class="prop">method</span>: <span class="str">"POST"</span>,
+  <span class="prop">headers</span>: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span> },
+  <span class="prop">body</span>: JSON.<span class="fn">stringify</span>({ <span class="prop">isim</span>: <span class="str">"Ali"</span> })
+});
+
+<span class="cm">// Yeniden kullanılabilir API yardımcısı</span>
+<span class="kw">async function</span> <span class="fn">apiFetch</span>(<span class="prop">url</span>, <span class="prop">opts</span> = {}) {
+  <span class="kw">const</span> <span class="prop">token</span> = localStorage.<span class="fn">getItem</span>(<span class="str">"token"</span>);
+  <span class="kw">const</span> <span class="prop">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="prop">url</span>, {
+    ...<span class="prop">opts</span>,
+    <span class="prop">headers</span>: { <span class="str">"Authorization"</span>: <span class="op">`</span>Bearer ${<span class="prop">token</span>}<span class="op">`</span>, ...<span class="prop">opts</span>.<span class="prop">headers</span> }
+  });
+  <span class="kw">if</span> (<span class="op">!</span><span class="prop">res</span>.<span class="prop">ok</span>) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="op">`</span>HTTP ${<span class="prop">res</span>.<span class="prop">status</span>}<span class="op">`</span>);
+  <span class="kw">return</span> <span class="prop">res</span>.<span class="fn">json</span>();
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B14 ====== -->
+<div class="sec" data-lvl="blue">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--cyan)">
+    <div class="sec-num-block"><div class="sec-num">14</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">İLERİ SEVİYE</div>
+      <div class="sec-title">Error Handling</div>
+      <div class="sec-tagline">try/catch · custom errors · global handler</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--cyan)">
+<span class="cm">// Custom Error sınıfı</span>
+<span class="kw">class</span> <span class="fn">APIError</span> <span class="kw">extends</span> <span class="fn">Error</span> {
+  <span class="fn">constructor</span>(<span class="prop">msg</span>, <span class="prop">status</span>) {
+    <span class="kw">super</span>(<span class="prop">msg</span>);
+    <span class="kw">this</span>.<span class="prop">name</span>   = <span class="str">"APIError"</span>;
+    <span class="kw">this</span>.<span class="prop">status</span> = <span class="prop">status</span>;
+  }
+}
+
+<span class="kw">try</span> {
+  <span class="kw">const</span> <span class="prop">data</span> = <span class="kw">await</span> <span class="fn">apiFetch</span>(<span class="str">"/users"</span>);
+} <span class="kw">catch</span> (<span class="prop">err</span>) {
+  <span class="kw">if</span> (<span class="prop">err</span> <span class="kw">instanceof</span> <span class="fn">APIError</span>) {
+    <span class="cm">// bilinen hata → yönet</span>
+  } <span class="kw">else</span> {
+    <span class="cm">// beklenmeyen hata → logla</span>
+  }
+} <span class="kw">finally</span> {
+  <span class="prop">loading</span> = <span class="kw">false</span>; <span class="cm">// her durumda çalışır</span>
+}
+
+<span class="cm">// Global unhandled rejection</span>
+window.<span class="fn">addEventListener</span>(<span class="str">"unhandledrejection"</span>, <span class="prop">e</span> <span class="op">=></span> {
+  console.<span class="fn">error</span>(<span class="str">"Yakalanmayan hata:"</span>, <span class="prop">e</span>.<span class="prop">reason</span>);
+});</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B15 ====== -->
+<div class="sec" data-lvl="blue">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--cyan)">
+    <div class="sec-num-block"><div class="sec-num">15</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">İLERİ SEVİYE</div>
+      <div class="sec-title">Web Storage & State</div>
+      <div class="sec-tagline">localStorage · sessionStorage · IndexedDB</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--cyan)">
+<span class="cm">// localStorage — kalıcı, 5-10MB</span>
+localStorage.<span class="fn">setItem</span>(<span class="str">"tema"</span>, <span class="str">"dark"</span>);
+localStorage.<span class="fn">getItem</span>(<span class="str">"tema"</span>);           <span class="cm">// "dark"</span>
+localStorage.<span class="fn">removeItem</span>(<span class="str">"tema"</span>);
+
+<span class="cm">// Obje kaydet (JSON serialize)</span>
+<span class="kw">const</span> <span class="fn">kaydet</span> = (<span class="prop">key</span>, <span class="prop">val</span>) <span class="op">=></span>
+  localStorage.<span class="fn">setItem</span>(<span class="prop">key</span>, JSON.<span class="fn">stringify</span>(<span class="prop">val</span>));
+<span class="kw">const</span> <span class="fn">oku</span> = (<span class="prop">key</span>) <span class="op">=></span>
+  JSON.<span class="fn">parse</span>(localStorage.<span class="fn">getItem</span>(<span class="prop">key</span>));
+
+<span class="cm">// sessionStorage — sekme kapanınca sil</span>
+sessionStorage.<span class="fn">setItem</span>(<span class="str">"draft"</span>, <span class="prop">icerik</span>);
+
+<span class="cm">// Cookie (domain/expiry kontrolü gerekirse)</span>
+document.<span class="prop">cookie</span> = <span class="str">"token=abc; max-age=3600; secure"</span>;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B16 ====== -->
+<div class="sec" data-lvl="red">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--rose)">
+    <div class="sec-num-block"><div class="sec-num">16</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">UZMAN</div>
+      <div class="sec-title">Advanced JS — İç Mekanizma</div>
+      <div class="sec-tagline">Closure · Scope · Prototype · this · Hoisting</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--rose)">
+<span class="cm">// Closure — dışarı sızmayan state</span>
+<span class="kw">function</span> <span class="fn">sayac</span>() {
+  <span class="kw">let</span> <span class="prop">n</span> = <span class="num">0</span>;
+  <span class="kw">return</span> {
+    <span class="fn">artir</span>: () <span class="op">=></span> ++<span class="prop">n</span>,
+    <span class="fn">deger</span>: () <span class="op">=></span> <span class="prop">n</span>
+  };
+}
+<span class="kw">const</span> <span class="prop">s</span> = <span class="fn">sayac</span>();
+<span class="prop">s</span>.<span class="fn">artir</span>(); <span class="prop">s</span>.<span class="fn">artir</span>(); <span class="prop">s</span>.<span class="fn">deger</span>(); <span class="cm">// 2</span>
+
+<span class="cm">// this — bağlam her çağrıda değişir</span>
+<span class="kw">const</span> <span class="prop">obj</span> = {
+  <span class="prop">isim</span>: <span class="str">"Ali"</span>,
+  <span class="fn">selamla</span>() { <span class="kw">return</span> <span class="op">`</span>Hey ${<span class="kw">this</span>.<span class="prop">isim</span>}<span class="op">`</span>; },
+  <span class="cm">// Arrow'da this yok — lexical bağlar</span>
+  <span class="fn">selamlaArr</span>: () <span class="op">=></span> <span class="op">`</span>Hey ${<span class="kw">this</span>.<span class="prop">isim</span>}<span class="op">`</span> <span class="cm">// undefined!</span>
+};
+
+<span class="cm">// Prototype chain</span>
+<span class="kw">function</span> <span class="fn">Hayvan</span>(<span class="prop">ad</span>) { <span class="kw">this</span>.<span class="prop">ad</span> = <span class="prop">ad</span>; }
+<span class="fn">Hayvan</span>.<span class="prop">prototype</span>.<span class="fn">sesCikar</span> = <span class="kw">function</span>() { };
+<span class="kw">const</span> <span class="prop">kopek</span> = <span class="kw">new</span> <span class="fn">Hayvan</span>(<span class="str">"Rex"</span>);
+<span class="cm">// kopek.sesCikar → prototype'tan miras</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B17 ====== -->
+<div class="sec" data-lvl="red">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--rose)">
+    <div class="sec-num-block"><div class="sec-num">17</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">UZMAN</div>
+      <div class="sec-title">OOP — Class Sistemi</div>
+      <div class="sec-tagline">Class · inheritance · encapsulation · static</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--rose)">
+<span class="kw">class</span> <span class="fn">Kullanici</span> {
+  <span class="prop">#sifre</span>; <span class="cm">// private field (ES2022)</span>
+
+  <span class="fn">constructor</span>(<span class="prop">isim</span>, <span class="prop">sifre</span>) {
+    <span class="kw">this</span>.<span class="prop">isim</span>  = <span class="prop">isim</span>;
+    <span class="kw">this</span>.<span class="prop">#sifre</span> = <span class="prop">sifre</span>;
+  }
+
+  <span class="fn">dogrula</span>(<span class="prop">girilen</span>) {
+    <span class="kw">return</span> <span class="kw">this</span>.<span class="prop">#sifre</span> <span class="op">===</span> <span class="prop">girilen</span>;
+  }
+
+  <span class="kw">static</span> <span class="fn">olustur</span>(<span class="prop">veri</span>) {        <span class="cm">// factory</span>
+    <span class="kw">return new</span> <span class="fn">Kullanici</span>(<span class="prop">veri</span>.<span class="prop">isim</span>, <span class="prop">veri</span>.<span class="prop">sifre</span>);
+  }
+}
+
+<span class="kw">class</span> <span class="fn">Admin</span> <span class="kw">extends</span> <span class="fn">Kullanici</span> {
+  <span class="fn">constructor</span>(<span class="prop">isim</span>, <span class="prop">sifre</span>, <span class="prop">yetki</span>) {
+    <span class="kw">super</span>(<span class="prop">isim</span>, <span class="prop">sifre</span>);     <span class="cm">// parent çağır</span>
+    <span class="kw">this</span>.<span class="prop">yetki</span> = <span class="prop">yetki</span>;
+  }
+
+  <span class="fn">dogrula</span>(<span class="prop">girilen</span>) {        <span class="cm">// override</span>
+    <span class="kw">return super</span>.<span class="fn">dogrula</span>(<span class="prop">girilen</span>) <span class="op">&&</span> <span class="kw">this</span>.<span class="prop">yetki</span>;
+  }
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B18 ====== -->
+<div class="sec" data-lvl="red">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--rose)">
+    <div class="sec-num-block"><div class="sec-num">18</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">UZMAN</div>
+      <div class="sec-title">Modüler JavaScript</div>
+      <div class="sec-tagline">ESM · import/export · bundler · tree shaking</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--rose)">
+<span class="cm">// utils.js — named export</span>
+<span class="kw">export</span> <span class="kw">const</span> <span class="fn">topla</span> = (<span class="prop">a</span>,<span class="prop">b</span>) <span class="op">=></span> <span class="prop">a</span><span class="op">+</span><span class="prop">b</span>;
+<span class="kw">export</span> <span class="kw">function</span> <span class="fn">format</span>(<span class="prop">n</span>) { <span class="kw">return</span> <span class="prop">n</span>.<span class="fn">toFixed</span>(<span class="num">2</span>); }
+
+<span class="cm">// api.js — default export</span>
+<span class="kw">export default class</span> <span class="fn">APIClient</span> { ... }
+
+<span class="cm">// main.js — import</span>
+<span class="kw">import</span> <span class="fn">APIClient</span> <span class="kw">from</span> <span class="str">"./api.js"</span>;
+<span class="kw">import</span> { <span class="fn">topla</span>, <span class="fn">format</span> } <span class="kw">from</span> <span class="str">"./utils.js"</span>;
+<span class="kw">import</span> * <span class="kw">as</span> <span class="prop">Utils</span> <span class="kw">from</span> <span class="str">"./utils.js"</span>;
+
+<span class="cm">// Dynamic import — lazy loading</span>
+<span class="kw">const</span> { <span class="fn">grafik</span> } = <span class="kw">await</span> <span class="kw">import</span>(<span class="str">"./chart.js"</span>);
+
+<span class="cm">// HTML'de module script</span>
+<span class="tag">&lt;script</span> <span class="prop">type</span>=<span class="str">"module"</span> <span class="prop">src</span>=<span class="str">"main.js"</span><span class="tag">&gt;&lt;/script&gt;</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B19 ====== -->
+<div class="sec" data-lvl="red">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--rose)">
+    <div class="sec-num-block"><div class="sec-num">19</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">UZMAN</div>
+      <div class="sec-title">Performance Optimization</div>
+      <div class="sec-tagline">Debounce · Throttle · Memoization · Virtual DOM felsefesi</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--rose)">
+<span class="cm">// Debounce — son çağrıdan ms sonra tetikle</span>
+<span class="kw">function</span> <span class="fn">debounce</span>(<span class="prop">fn</span>, <span class="prop">ms</span>) {
+  <span class="kw">let</span> <span class="prop">timer</span>;
+  <span class="kw">return</span> (<span class="op">...</span><span class="prop">args</span>) <span class="op">=></span> {
+    clearTimeout(<span class="prop">timer</span>);
+    <span class="prop">timer</span> = setTimeout(() <span class="op">=></span> <span class="fn">fn</span>(<span class="op">...</span><span class="prop">args</span>), <span class="prop">ms</span>);
+  };
+}
+<span class="prop">input</span>.<span class="fn">addEventListener</span>(<span class="str">"input"</span>, <span class="fn">debounce</span>(<span class="fn">ara</span>, <span class="num">300</span>));
+
+<span class="cm">// Throttle — max her ms'de bir tetikle</span>
+<span class="kw">function</span> <span class="fn">throttle</span>(<span class="prop">fn</span>, <span class="prop">ms</span>) {
+  <span class="kw">let</span> <span class="prop">son</span> = <span class="num">0</span>;
+  <span class="kw">return</span> (<span class="op">...</span><span class="prop">args</span>) <span class="op">=></span> {
+    <span class="kw">const</span> <span class="prop">simdi</span> = Date.<span class="fn">now</span>();
+    <span class="kw">if</span> (<span class="prop">simdi</span> <span class="op">-</span> <span class="prop">son</span> <span class="op">>=</span> <span class="prop">ms</span>) { <span class="prop">son</span> = <span class="prop">simdi</span>; <span class="fn">fn</span>(<span class="op">...</span><span class="prop">args</span>); }
+  };
+}
+
+<span class="cm">// Memoization — hesaplanmış değeri cache'le</span>
+<span class="kw">function</span> <span class="fn">memoize</span>(<span class="prop">fn</span>) {
+  <span class="kw">const</span> <span class="prop">cache</span> = <span class="kw">new</span> <span class="fn">Map</span>();
+  <span class="kw">return</span> (<span class="prop">key</span>) <span class="op">=></span> {
+    <span class="kw">if</span> (<span class="prop">cache</span>.<span class="fn">has</span>(<span class="prop">key</span>)) <span class="kw">return</span> <span class="prop">cache</span>.<span class="fn">get</span>(<span class="prop">key</span>);
+    <span class="kw">const</span> <span class="prop">result</span> = <span class="fn">fn</span>(<span class="prop">key</span>);
+    <span class="prop">cache</span>.<span class="fn">set</span>(<span class="prop">key</span>, <span class="prop">result</span>);
+    <span class="kw">return</span> <span class="prop">result</span>;
+  };
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== B20 ====== -->
+<div class="sec" data-lvl="red">
+  <div class="sec-head" onclick="tog(this)" style="--sec-color:var(--rose)">
+    <div class="sec-num-block"><div class="sec-num">20</div><div class="sec-lvl-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-level-tag">UZMAN</div>
+      <div class="sec-title">Testing</div>
+      <div class="sec-tagline">Unit · Integration · Jest · TDD</div>
+    </div>
+    <div class="sec-arrow">▶</div>
+  </div>
+  <div class="sec-body">
+    <div class="sec-inner">
+      <div class="code" data-lang="JS" style="--code-accent:var(--rose)">
+<span class="cm">// Jest — unit test</span>
+<span class="fn">describe</span>(<span class="str">"topla fonksiyonu"</span>, () <span class="op">=></span> {
+  <span class="fn">it</span>(<span class="str">"iki sayıyı toplar"</span>, () <span class="op">=></span> {
+    <span class="fn">expect</span>(<span class="fn">topla</span>(<span class="num">2</span>,<span class="num">3</span>)).<span class="fn">toBe</span>(<span class="num">5</span>);
+  });
+
+  <span class="fn">it</span>(<span class="str">"negatif sayı döner"</span>, () <span class="op">=></span> {
+    <span class="fn">expect</span>(<span class="fn">topla</span>(<span class="op">-</span><span class="num">1</span>,<span class="op">-</span><span class="num">1</span>)).<span class="fn">toBe</span>(<span class="op">-</span><span class="num">2</span>);
+  });
+});
+
+<span class="cm">// Async test</span>
+<span class="fn">it</span>(<span class="str">"API verisi çeker"</span>, <span class="kw">async</span> () <span class="op">=></span> {
+  <span class="kw">const</span> <span class="prop">data</span> = <span class="kw">await</span> <span class="fn">fetchUser</span>(<span class="num">1</span>);
+  <span class="fn">expect</span>(<span class="prop">data</span>).<span class="fn">toHaveProperty</span>(<span class="str">"isim"</span>);
+});
+
+<span class="cm">// Mock</span>
+jest.<span class="fn">spyOn</span>(global, <span class="str">"fetch"</span>).<span class="fn">mockResolvedValue</span>({
+  <span class="fn">json</span>: () <span class="op">=></span> Promise.<span class="fn">resolve</span>({ <span class="prop">isim</span>: <span class="str">"Ali"</span> })
+});</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /sections -->
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+
+  <div class="sb-widget">
+    <div class="sb-title">Zaman Çizelgesi</div>
+    <div class="tl">
+      <div class="tl-row"><div class="tl-d">7<span>GÜN</span></div><div><div class="tl-n">Temel JS</div><div class="tl-s">Bölüm 1–6</div></div></div>
+      <div class="tl-row"><div class="tl-d">14<span>GÜN</span></div><div><div class="tl-n">Orta Seviye</div><div class="tl-s">Bölüm 7–11 · DOM · ES6</div></div></div>
+      <div class="tl-row"><div class="tl-d">30<span>GÜN</span></div><div><div class="tl-n">Proje Aşaması</div><div class="tl-s">5 proje · API · Async</div></div></div>
+      <div class="tl-row"><div class="tl-d">60<span>GÜN</span></div><div><div class="tl-n">İş Seviyesi</div><div class="tl-s">OOP · Modül · Test</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb-widget">
+    <div class="sb-title">Core Skill Ağırlıkları</div>
+    <div class="skills">
+      <div class="skill-item" style="--skill-w:95%;--skill-c:var(--neon)">
+        <div class="skill-label"><span>Array & Object İşlemleri</span><span>95%</span></div>
+        <div class="skill-bar"><div class="skill-fill"></div></div>
+      </div>
+      <div class="skill-item" style="--skill-w:90%;--skill-c:var(--cyan)">
+        <div class="skill-label"><span>DOM Manipulation</span><span>90%</span></div>
+        <div class="skill-bar"><div class="skill-fill"></div></div>
+      </div>
+      <div class="skill-item" style="--skill-w:85%;--skill-c:var(--violet)">
+        <div class="skill-label"><span>Async / Fetch</span><span>85%</span></div>
+        <div class="skill-bar"><div class="skill-fill"></div></div>
+      </div>
+      <div class="skill-item" style="--skill-w:75%;--skill-c:var(--rose)">
+        <div class="skill-label"><span>Closure & Scope</span><span>75%</span></div>
+        <div class="skill-bar"><div class="skill-fill"></div></div>
+      </div>
+      <div class="skill-item" style="--skill-w:60%;--skill-c:var(--green)">
+        <div class="skill-label"><span>OOP & Class</span><span>60%</span></div>
+        <div class="skill-bar"><div class="skill-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-widget">
+    <div class="sb-title">3 Süper Güç</div>
+    <div class="trio">
+      <div class="trio-item"><div class="trio-num">01</div><div>DOM Mastery</div></div>
+      <div class="trio-item"><div class="trio-num">02</div><div>Async JS</div></div>
+      <div class="trio-item"><div class="trio-num">03</div><div>Array/Object İşlemleri</div></div>
+    </div>
+  </div>
+
+  <div class="sb-widget">
+    <div class="sb-title">5 Proje Yolu</div>
+    <div class="proj-list">
+      <div class="proj" style="--proj-c:var(--green)"><div class="proj-n">PROJE 01</div><div class="proj-name">To-Do App</div><div class="proj-tags"><span class="proj-tag">DOM</span><span class="proj-tag">CRUD</span><span class="proj-tag">Storage</span></div></div>
+      <div class="proj" style="--proj-c:var(--neon)"><div class="proj-n">PROJE 02</div><div class="proj-name">Calculator</div><div class="proj-tags"><span class="proj-tag">Event</span><span class="proj-tag">Logic</span></div></div>
+      <div class="proj" style="--proj-c:var(--cyan)"><div class="proj-n">PROJE 03</div><div class="proj-name">Weather App</div><div class="proj-tags"><span class="proj-tag">Fetch</span><span class="proj-tag">Async</span><span class="proj-tag">API</span></div></div>
+      <div class="proj" style="--proj-c:var(--violet)"><div class="proj-n">PROJE 04</div><div class="proj-name">Blog UI</div><div class="proj-tags"><span class="proj-tag">DOM</span><span class="proj-tag">Template</span></div></div>
+      <div class="proj" style="--proj-c:var(--rose)"><div class="proj-n">PROJE 05</div><div class="proj-name">Dashboard</div><div class="proj-tags"><span class="proj-tag">Chart</span><span class="proj-tag">Data</span><span class="proj-tag">OOP</span></div></div>
+    </div>
+  </div>
+
+  <div class="sb-widget">
+    <div class="sb-title">Kariyer Kapıları</div>
+    <div class="career-list">
+      <div class="car"><div class="car-icon">⚛</div><div><div class="car-name">Frontend</div><div class="car-desc">React / Vue / Svelte</div></div></div>
+      <div class="car"><div class="car-icon">⬡</div><div><div class="car-name">Backend</div><div class="car-desc">Node.js / Express / NestJS</div></div></div>
+      <div class="car"><div class="car-icon">◈</div><div><div class="car-name">Fullstack</div><div class="car-desc">Next.js / Remix / SvelteKit</div></div></div>
+      <div class="car"><div class="car-icon">📱</div><div><div class="car-name">Mobile</div><div class="car-desc">React Native / Expo</div></div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main-layout -->
+
+<!-- BOTTOM -->
+<div class="bottom">
+  <div class="bot-left">
+    <h2 class="bot-h">Yazmadan<br><em>öğrenilmez.</em><br>Noktası.</h2>
+    <p class="bot-p">İzlemek ≠ öğrenmek. Copy-paste ≠ öğrenmek. Editörü aç, klavyeye bas, hatayla yüzleş. Her syntax error seni bir adım öne taşır.</p>
+    <a class="btn btn-solid" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-ghost" href="https://developer.mozilla.org/tr/docs/Web/JavaScript" target="_blank">MDN Docs</a>
+  </div>
+  <div class="bot-right">
+    <div class="rule-list">
+      <div class="rule-item"><div class="rule-arrow">→</div><div><div class="rule-t">HTML + CSS + JS → Birlikte Öğren</div><div class="rule-d">Tek başına JS = eksik öğrenmek</div></div></div>
+      <div class="rule-item"><div class="rule-arrow">→</div><div><div class="rule-t">Console'u dost edin</div><div class="rule-d">Her şeyi console.log ile doğrula</div></div></div>
+      <div class="rule-item"><div class="rule-arrow">→</div><div><div class="rule-t">Küçük projeler yap, büyüt</div><div class="rule-d">To-do → Weather App → Dashboard</div></div></div>
+      <div class="rule-item"><div class="rule-arrow">→</div><div><div class="rule-t">MDN Web Docs'u ezberle</div><div class="rule-d">Resmi kaynak, her zaman güncel</div></div></div>
+      <div class="rule-item"><div class="rule-arrow">→</div><div><div class="rule-t">Günde 3 saat kod yaz</div><div class="rule-d">1 saat teori · 2 saat pratik minimum</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>// JavaScript 0→100 Roadmap</span>
+  <span>20 Bölüm · 5 Proje · Sonsuz Pratik</span>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-trail');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+(function tick(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+const interactables=document.querySelectorAll('.sec-head,.proj,.trio-item,.btn,.lvl-tab,.car');
+interactables.forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='48px';ring.style.height='48px';ring.style.opacity='.7';cur.style.width='4px';cur.style.height='4px';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.opacity='.4';cur.style.width='8px';cur.style.height='8px';});
+});
+
+// ACCORDION
+function tog(h){
+  const wasOpen=h.classList.contains('open');
+  document.querySelectorAll('.sec-head.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!wasOpen){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// LEVEL FILTER
+function filterLvl(tab,lvl){
+  document.querySelectorAll('.lvl-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.sec').forEach(s=>{
+    s.style.display=(lvl==='all'||s.dataset.lvl===lvl)?'block':'none';
+  });
+}
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// SKILL BARS
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('loaded');sio.unobserve(e.target);}});},{threshold:.5});
+document.querySelectorAll('.skill-item').forEach(s=>sio.observe(s));
+
+// STAT COUNTERS
+function count(el,to,ms){
+  let s=0;
+  const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);if(p<1)requestAnimationFrame(step);else el.textContent=to;};
+  requestAnimationFrame(step);
+}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){count(document.getElementById('s1'),20,1200);count(document.getElementById('s2'),5,1000);count(document.getElementById('s3'),3,900);count(document.getElementById('s4'),60,1400);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-stats'));
+</script>
+</body>
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML 0→100 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede8df;
+  --ink: #1a1209;
+  --ink2: #3d3426;
+  --ink3: #7a6e5f;
+  --accent: #e85d04;
+  --accent2: #f4a261;
+  --green: #2d6a4f;
+  --blue: #1d3557;
+  --yellow: #ffb703;
+  --border: rgba(26,18,9,0.12);
+  --font-display: 'Playfair Display', serif;
+  --font-ui: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CURSOR */
+.cur { position: fixed; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: multiply; transition: transform 0.15s; }
+.cur-ring { position: fixed; width: 36px; height: 36px; border: 2px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 9998; opacity: 0.5; transition: width 0.2s, height 0.2s, opacity 0.2s; }
+
+/* TEXTURE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' x='0' y='0' fill='%23b8a99a' opacity='0.15'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* LAYOUT */
+.page { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 0 32px 100px; }
+
+/* ===================== HERO ===================== */
+.hero {
+  padding: 64px 0 48px;
+  border-bottom: 3px solid var(--ink);
+  position: relative;
+}
+.hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-kicker::before { content: ''; width: 32px; height: 2px; background: var(--accent); }
+
+.hero-layout { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -3px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+
+.hero-right {
+  text-align: right;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-tag {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.hero-sub {
+  font-size: 0.85rem;
+  color: var(--ink3);
+  max-width: 220px;
+  margin-left: auto;
+  line-height: 1.5;
+}
+
+.hero-meta {
+  margin-top: 28px;
+  display: flex; gap: 32px; flex-wrap: wrap;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.meta-item { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink3); }
+.meta-item strong { color: var(--ink); font-size: 1.1rem; display: block; font-family: var(--font-display); }
+
+/* ===================== PROGRESS STRIP ===================== */
+.progress-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 0;
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.prog-item {
+  padding: 20px 24px;
+  border-right: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.prog-item:last-child { border-right: none; }
+.prog-item:hover { background: var(--bg2); }
+.prog-fill {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: var(--prog-color, var(--accent));
+  width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.prog-item.loaded .prog-fill { width: var(--pct); }
+.prog-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--prog-color); margin-bottom: 8px;
+  display: inline-block;
+}
+.prog-label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px; color: var(--ink3); }
+.prog-name { font-family: var(--font-ui); font-size: 0.9rem; font-weight: 800; margin-top: 3px; }
+.prog-topics { font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink3); margin-top: 4px; }
+
+/* ===================== MAIN GRID ===================== */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===================== SECTIONS ===================== */
+.sections-col { border-right: 1px solid var(--border); }
+
+.section-item {
+  border-bottom: 1px solid var(--border);
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.section-item.visible { opacity: 1; transform: none; }
+
+.section-trigger {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: start;
+  padding: 24px 28px 24px 0;
+  cursor: pointer;
+  gap: 0;
+  transition: background 0.2s;
+}
+.section-trigger:hover { background: var(--bg2); }
+.section-trigger.open { background: var(--bg2); }
+
+.sec-num {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--border);
+  line-height: 1;
+  padding: 0 0 0 28px;
+  transition: color 0.2s;
+}
+.section-trigger.open .sec-num { color: var(--accent); }
+.section-trigger:hover .sec-num { color: var(--accent2); }
+
+.sec-info { padding-top: 4px; }
+.sec-level {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.62rem;
+  letter-spacing: 3px; margin-bottom: 5px;
+}
+.level-dot { width: 7px; height: 7px; border-radius: 50%; }
+.sec-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 700;
+  line-height: 1.2;
+}
+.sec-desc { font-size: 0.78rem; color: var(--ink3); margin-top: 5px; line-height: 1.4; }
+
+.sec-chevron {
+  font-size: 0.7rem; color: var(--ink3); padding-top: 8px; padding-right: 0;
+  transition: transform 0.3s;
+  align-self: flex-start;
+}
+.section-trigger.open .sec-chevron { transform: rotate(90deg); color: var(--accent); }
+
+/* SECTION BODY */
+.section-body { display: none; background: white; border-top: 1px solid var(--border); }
+.section-body.open { display: block; animation: bodyOpen 0.3s ease; }
+@keyframes bodyOpen { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+.body-inner { padding: 28px 28px 28px; }
+
+/* CONCEPT TAGS */
+.concept-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.concept-tag {
+  padding: 5px 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  transition: all 0.2s; cursor: default;
+  border-radius: 2px;
+}
+.concept-tag:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* CODE BLOCK */
+.code-block {
+  background: var(--ink);
+  color: #e8e0d0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 18px 20px;
+  line-height: 1.7;
+  margin: 16px 0;
+  position: relative;
+  overflow-x: auto;
+  border-radius: 2px;
+}
+.code-block::before {
+  content: attr(data-lang);
+  position: absolute; top: 8px; right: 12px;
+  font-size: 0.6rem; letter-spacing: 2px; color: var(--accent2); opacity: 0.8;
+}
+.code-block .hl { color: var(--accent2); }
+.code-block .hl2 { color: #80cbc4; }
+.code-block .hl3 { color: #f9a825; }
+.code-block .cm { color: #78716c; font-style: italic; }
+
+/* CALLOUT */
+.callout {
+  padding: 14px 16px;
+  border-left: 4px solid var(--accent);
+  background: rgba(232,93,4,0.06);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  margin: 16px 0;
+  color: var(--ink2);
+}
+.callout strong { color: var(--accent); }
+
+/* INFO GRID */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.info-card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: all 0.2s;
+}
+.info-card:hover { border-color: var(--accent); background: rgba(232,93,4,0.03); transform: translateY(-2px); }
+.info-card-title { font-weight: 800; font-size: 0.82rem; margin-bottom: 4px; }
+.info-card-desc { font-size: 0.72rem; color: var(--ink3); line-height: 1.4; font-family: var(--font-mono); }
+
+/* TABLE */
+.roadmap-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin: 12px 0; }
+.roadmap-table th {
+  text-align: left; padding: 8px 12px;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px;
+}
+.roadmap-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+.roadmap-table tr:hover td { background: var(--bg2); }
+.tag-elem { font-family: var(--font-mono); color: var(--accent); font-size: 0.78rem; }
+
+/* TARGET BOX */
+.target-box {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.8rem;
+  margin-top: 16px;
+}
+.target-box::before { content: '→'; color: var(--accent2); font-size: 1rem; }
+
+/* ===================== SIDEBAR ===================== */
+.sidebar { padding: 28px 24px; }
+
+.sidebar-widget { margin-bottom: 32px; }
+.widget-title {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  letter-spacing: 3px; color: var(--ink3);
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+  text-transform: uppercase;
+}
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item {
+  display: grid; grid-template-columns: 50px 1fr;
+  gap: 0; border-bottom: 1px solid var(--border);
+  padding: 12px 0; align-items: start;
+}
+.tl-day {
+  font-family: var(--font-display);
+  font-size: 1.8rem; font-weight: 900;
+  color: var(--accent); line-height: 1;
+}
+.tl-day span { display: block; font-family: var(--font-mono); font-size: 0.55rem; color: var(--ink3); font-weight: 400; letter-spacing: 1px; line-height: 2.5; }
+.tl-label { font-size: 0.8rem; font-weight: 800; line-height: 1.3; padding-top: 4px; }
+.tl-sub { font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink3); margin-top: 3px; }
+
+/* PROJECT CARDS */
+.project-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.project-card::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--pc-color, var(--accent));
+}
+.project-card:hover { border-color: var(--pc-color, var(--accent)); transform: translateX(3px); }
+.pc-num { font-family: var(--font-mono); font-size: 0.6rem; color: var(--ink3); letter-spacing: 2px; }
+.pc-name { font-weight: 800; font-size: 0.9rem; margin-top: 3px; }
+.pc-tags { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; }
+.pc-tag { font-family: var(--font-mono); font-size: 0.6rem; padding: 2px 7px; border: 1px solid var(--border); }
+
+/* STAT BLOCK */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.stat-cell { background: var(--bg); padding: 16px; text-align: center; }
+.stat-big { font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--accent); line-height: 1; }
+.stat-lbl { font-family: var(--font-mono); font-size: 0.6rem; color: var(--ink3); margin-top: 4px; letter-spacing: 1px; }
+
+/* RULE */
+.rule { height: 1px; background: var(--border); margin: 0; }
+
+/* ===================== BOTTOM STRIP ===================== */
+.bottom-cta {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 3px double var(--ink);
+  margin-top: 0;
+  animation: fadeUp 0.6s ease both;
+}
+.cta-left {
+  padding: 48px 40px 48px 0;
+  border-right: 1px solid var(--border);
+}
+.cta-right { padding: 48px 0 48px 40px; }
+
+.cta-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900; line-height: 1.05; margin-bottom: 16px;
+}
+.cta-headline em { font-style: italic; color: var(--accent); }
+
+.cta-text { font-size: 0.85rem; color: var(--ink3); line-height: 1.7; margin-bottom: 20px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+  text-decoration: none;
+}
+.btn:hover { background: var(--accent); }
+.btn-outline {
+  background: transparent; color: var(--ink);
+  border: 2px solid var(--ink);
+  margin-left: 10px;
+}
+.btn-outline:hover { background: var(--ink); color: var(--bg); }
+
+.bonus-list { display: flex; flex-direction: column; gap: 12px; }
+.bonus-item {
+  display: flex; gap: 14px; align-items: start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.bonus-arrow { color: var(--accent); font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+.bonus-name { font-weight: 800; font-size: 0.9rem; }
+.bonus-desc { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink3); margin-top: 3px; }
+
+/* FOOTER */
+footer {
+  padding: 24px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink3);
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .sections-col { border-right: none; }
+  .sidebar { border-top: 2px solid var(--border); }
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-right { text-align: left; }
+  .hero-sub { margin-left: 0; max-width: none; }
+  .bottom-cta { grid-template-columns: 1fr; }
+  .cta-left { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 0; }
+  .cta-right { padding: 32px 0; }
+  .progress-strip { grid-template-columns: repeat(2, 1fr); }
+  .info-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .page { padding: 0 16px 60px; }
+  .section-trigger { grid-template-columns: 52px 1fr auto; }
+  .progress-strip { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<div class="page">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-kicker">HTML Öğrenme Yol Haritası · 0 → 100</div>
+    <div class="hero-layout">
+      <h1 class="hero-title">HTML<br><em>Sıfırdan</em><br>Ustaya</h1>
+      <div class="hero-right">
+        <div class="hero-tag">16 BÖLÜM</div>
+        <div class="hero-sub">Temel etiketlerden Senior-level best practice'e kadar her şey.</div>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><strong>16</strong> Bölüm</div>
+      <div class="meta-item"><strong>5</strong> Proje</div>
+      <div class="meta-item"><strong>~30</strong> Gün</div>
+      <div class="meta-item"><strong>∞</strong> Pratik</div>
+    </div>
+  </header>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip">
+    <div class="prog-item" style="--prog-color:#2d6a4f; --pct:100%">
+      <div class="prog-dot" style="background:#2d6a4f"></div>
+      <div class="prog-label">SEVİYE 1</div>
+      <div class="prog-name">Başlangıç</div>
+      <div class="prog-topics">Bölüm 1–6</div>
+      <div class="prog-fill"></div>
+    </div>
+    <div class="prog-item" style="--prog-color:#e85d04; --pct:100%">
+      <div class="prog-dot" style="background:#e85d04"></div>
+      <div class="prog-label">SEVİYE 2</div>
+      <div class="prog-name">Orta</div>
+      <div class="prog-topics">Bölüm 7–11</div>
+      <div class="prog-fill"></div>
+    </div>
+    <div class="prog-item" style="--prog-color:#1d3557; --pct:100%">
+      <div class="prog-dot" style="background:#1d3557"></div>
+      <div class="prog-label">SEVİYE 3</div>
+      <div class="prog-name">İleri</div>
+      <div class="prog-topics">Bölüm 12–14</div>
+      <div class="prog-fill"></div>
+    </div>
+    <div class="prog-item" style="--prog-color:#9b2226; --pct:100%">
+      <div class="prog-dot" style="background:#9b2226"></div>
+      <div class="prog-label">SEVİYE 4</div>
+      <div class="prog-name">Uzman</div>
+      <div class="prog-topics">Bölüm 15–16</div>
+      <div class="prog-fill"></div>
+    </div>
+  </div>
+
+  <!-- CONTENT GRID -->
+  <div class="content-grid">
+
+    <!-- SECTIONS -->
+    <div class="sections-col">
+
+      <!-- B01 -->
+      <div class="section-item">
+        <div class="section-trigger open" onclick="toggle(this)">
+          <div class="sec-num">01</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">HTML Nedir?</div>
+            <div class="sec-desc">Temel mantığı kavra, etiket yapısını öğren</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body open">
+          <div class="body-inner">
+            <div class="concept-list">
+              <span class="concept-tag">HyperText</span>
+              <span class="concept-tag">Markup Language</span>
+              <span class="concept-tag">Web İskeleti</span>
+              <span class="concept-tag">Tarayıcı Render</span>
+              <span class="concept-tag">Tag Mantığı</span>
+            </div>
+            <p style="font-size:0.85rem;color:var(--ink2);line-height:1.7;margin-bottom:16px;">HTML (HyperText Markup Language), web sayfalarının görsel iskeletini oluşturan işaretleme dilidir. Bir programlama dili değildir — içeriği <strong>anlamlandırır</strong> ve tarayıcıya nasıl gösterileceğini söyler.</p>
+            <div class="code-block" data-lang="HTML">
+<span class="hl">&lt;p&gt;</span>Merhaba Dünya<span class="hl">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- Kural basit: aç → içerik → kapat --&gt;</span>
+<span class="hl">&lt;h1&gt;</span>Başlık<span class="hl">&lt;/h1&gt;</span>
+<span class="hl">&lt;strong&gt;</span>Kalın metin<span class="hl">&lt;/strong&gt;</span>
+<span class="hl">&lt;a</span> <span class="hl3">href=</span><span class="hl2">"#"</span><span class="hl">&gt;</span>Link<span class="hl">&lt;/a&gt;</span>
+            </div>
+            <div class="callout"><strong>Nasıl çalışır?</strong> Tarayıcı HTML dosyasını okur → DOM (Document Object Model) ağacı oluşturur → Her etiketi ekranda görsel öğeye dönüştürür.</div>
+            <div class="target-box">Hedef: Açılış/kapanış etiket mantığını ezberlemeden içselleştirmek</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B02 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">02</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">HTML Dosya Yapısı</div>
+            <div class="sec-desc">Temel şablon, head/body ayrımı</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="hl2">&lt;!DOCTYPE html&gt;</span>  <span class="cm">&lt;!-- HTML5 bildirimi --&gt;</span>
+<span class="hl">&lt;html</span> <span class="hl3">lang=</span><span class="hl2">"tr"</span><span class="hl">&gt;</span>
+
+  <span class="hl">&lt;head&gt;</span>  <span class="cm">&lt;!-- Meta bilgiler, tarayıcıya mesaj --&gt;</span>
+    <span class="hl">&lt;meta</span> <span class="hl3">charset=</span><span class="hl2">"UTF-8"</span><span class="hl">&gt;</span>
+    <span class="hl">&lt;title&gt;</span>Sayfa Başlığı<span class="hl">&lt;/title&gt;</span>
+    <span class="hl">&lt;link</span> <span class="hl3">rel=</span><span class="hl2">"stylesheet"</span> <span class="hl3">href=</span><span class="hl2">"style.css"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;/head&gt;</span>
+
+  <span class="hl">&lt;body&gt;</span>  <span class="cm">&lt;!-- Kullanıcının gördüğü her şey --&gt;</span>
+    <span class="hl">&lt;h1&gt;</span>Merhaba!<span class="hl">&lt;/h1&gt;</span>
+  <span class="hl">&lt;/body&gt;</span>
+
+<span class="hl">&lt;/html&gt;</span>
+            </div>
+            <div class="info-grid">
+              <div class="info-card"><div class="info-card-title">!DOCTYPE</div><div class="info-card-desc">Tarayıcıya "bu HTML5 dosyası" der. İlk satırda olmalı, her zaman.</div></div>
+              <div class="info-card"><div class="info-card-title">&lt;html&gt;</div><div class="info-card-desc">Root element. lang="tr" ile dil belirt — SEO + erişilebilirlik için kritik.</div></div>
+              <div class="info-card"><div class="info-card-title">&lt;head&gt;</div><div class="info-card-desc">Görünmez metadata. Title, charset, CSS/JS linkleri burada.</div></div>
+              <div class="info-card"><div class="info-card-title">&lt;body&gt;</div><div class="info-card-desc">Ekranda gördüğün her şey. DOM ağacının görünen kısmı.</div></div>
+            </div>
+            <div class="target-box">Hedef: Bu şablonu kapatarak ezberden yaz — HTML editörü olmadan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B03 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">03</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">Temel HTML Etiketleri</div>
+            <div class="sec-desc">Metin, formatlama, yapı etiketleri</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <table class="roadmap-table">
+              <tr><th>ETİKET</th><th>KULLANIM</th><th>NOT</th></tr>
+              <tr><td><span class="tag-elem">&lt;h1&gt;–&lt;h6&gt;</span></td><td>Başlıklar</td><td>Sayfada tek h1 kullan (SEO)</td></tr>
+              <tr><td><span class="tag-elem">&lt;p&gt;</span></td><td>Paragraf</td><td>Block element, alt alta dizilir</td></tr>
+              <tr><td><span class="tag-elem">&lt;div&gt;</span></td><td>Genel blok konteyner</td><td>Anlamı yok, sadece gruplar</td></tr>
+              <tr><td><span class="tag-elem">&lt;span&gt;</span></td><td>Inline konteyner</td><td>Metin içi stil için</td></tr>
+              <tr><td><span class="tag-elem">&lt;strong&gt;</span></td><td>Önemli / kalın</td><td>&lt;b&gt;'den farkı: semantik anlam taşır</td></tr>
+              <tr><td><span class="tag-elem">&lt;em&gt;</span></td><td>Vurgu / italik</td><td>&lt;i&gt;'den farkı: anlam taşır</td></tr>
+              <tr><td><span class="tag-elem">&lt;br&gt;</span></td><td>Satır sonu</td><td>Self-closing, kapanış yok</td></tr>
+              <tr><td><span class="tag-elem">&lt;hr&gt;</span></td><td>Yatay çizgi</td><td>Tematik ayrım için</td></tr>
+            </table>
+            <div class="callout"><strong>💡 İpucu:</strong> &lt;strong&gt; ve &lt;b&gt; görsel olarak aynı görünür ama ekran okuyucular &lt;strong&gt;'u "önemli" olarak seslendirir. <em>Semantic HTML, iyi HTML.</em></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B04 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">04</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">Link ve Medya</div>
+            <div class="sec-desc">Bağlantılar, görseller, video, ses</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- Link --&gt;</span>
+<span class="hl">&lt;a</span> <span class="hl3">href=</span><span class="hl2">"https://google.com"</span> <span class="hl3">target=</span><span class="hl2">"_blank"</span> <span class="hl3">rel=</span><span class="hl2">"noopener"</span><span class="hl">&gt;</span>
+  Google'a Git
+<span class="hl">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- Görsel --&gt;</span>
+<span class="hl">&lt;img</span> <span class="hl3">src=</span><span class="hl2">"foto.jpg"</span> <span class="hl3">alt=</span><span class="hl2">"Profilim"</span> <span class="hl3">width=</span><span class="hl2">"300"</span> <span class="hl3">loading=</span><span class="hl2">"lazy"</span><span class="hl">&gt;</span>
+
+<span class="cm">&lt;!-- Video --&gt;</span>
+<span class="hl">&lt;video</span> <span class="hl3">controls</span> <span class="hl3">muted</span> <span class="hl3">poster=</span><span class="hl2">"kapak.jpg"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;source</span> <span class="hl3">src=</span><span class="hl2">"video.mp4"</span> <span class="hl3">type=</span><span class="hl2">"video/mp4"</span><span class="hl">&gt;</span>
+<span class="hl">&lt;/video&gt;</span>
+            </div>
+            <div class="info-grid">
+              <div class="info-card"><div class="info-card-title">target="_blank"</div><div class="info-card-desc">Linki yeni sekmede açar. Güvenlik için rel="noopener noreferrer" ekle.</div></div>
+              <div class="info-card"><div class="info-card-title">alt=""</div><div class="info-card-desc">Görsel yüklenemezse gösterilir. Ekran okuyucular için ZORUNLU. SEO etkisi var.</div></div>
+              <div class="info-card"><div class="info-card-title">loading="lazy"</div><div class="info-card-desc">Görsel ekrana gelince yükle. Sayfa hızını artırır. Modern HTML5 özelliği.</div></div>
+              <div class="info-card"><div class="info-card-title">controls</div><div class="info-card-desc">Video/audio oynatma butonlarını gösterir. Olmadan tarayıcı UI'ı saklar.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B05 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">05</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">Listeler</div>
+            <div class="sec-desc">Sıralı, sırasız ve açıklama listeleri</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- Sırasız liste (ul) --&gt;</span>
+<span class="hl">&lt;ul&gt;</span>
+  <span class="hl">&lt;li&gt;</span>HTML öğren<span class="hl">&lt;/li&gt;</span>
+  <span class="hl">&lt;li&gt;</span>CSS öğren<span class="hl">&lt;/li&gt;</span>
+<span class="hl">&lt;/ul&gt;</span>
+
+<span class="cm">&lt;!-- Sıralı liste (ol) --&gt;</span>
+<span class="hl">&lt;ol</span> <span class="hl3">type=</span><span class="hl2">"A"</span><span class="hl">&gt;</span>  <span class="cm">&lt;!-- 1, A, I, a, i --&gt;</span>
+  <span class="hl">&lt;li&gt;</span>Adım 1<span class="hl">&lt;/li&gt;</span>
+  <span class="hl">&lt;li&gt;</span>Adım 2<span class="hl">&lt;/li&gt;</span>
+<span class="hl">&lt;/ol&gt;</span>
+
+<span class="cm">&lt;!-- Açıklama listesi (dl) --&gt;</span>
+<span class="hl">&lt;dl&gt;</span>
+  <span class="hl">&lt;dt&gt;</span>HTML<span class="hl">&lt;/dt&gt;</span>
+  <span class="hl">&lt;dd&gt;</span>Web'in iskeleti<span class="hl">&lt;/dd&gt;</span>
+<span class="hl">&lt;/dl&gt;</span>
+            </div>
+            <div class="callout"><strong>💡 Gizli özellik:</strong> Listeler iç içe koyulabilir (nested). Nav menüleri genellikle &lt;ul&gt;&lt;li&gt;&lt;a&gt; kombinasyonu ile yapılır.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B06 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">06</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#2d6a4f"></span>BAŞLANGIÇ</div>
+            <div class="sec-title">Tablolar</div>
+            <div class="sec-desc">Veri düzenleme, dashboard mantığı</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="hl">&lt;table&gt;</span>
+  <span class="hl">&lt;thead&gt;</span>  <span class="cm">&lt;!-- Başlık satırı --&gt;</span>
+    <span class="hl">&lt;tr&gt;</span>
+      <span class="hl">&lt;th</span> <span class="hl3">scope=</span><span class="hl2">"col"</span><span class="hl">&gt;</span>Ad<span class="hl">&lt;/th&gt;</span>
+      <span class="hl">&lt;th</span> <span class="hl3">scope=</span><span class="hl2">"col"</span><span class="hl">&gt;</span>Yaş<span class="hl">&lt;/th&gt;</span>
+      <span class="hl">&lt;th</span> <span class="hl3">scope=</span><span class="hl2">"col"</span><span class="hl">&gt;</span>Şehir<span class="hl">&lt;/th&gt;</span>
+    <span class="hl">&lt;/tr&gt;</span>
+  <span class="hl">&lt;/thead&gt;</span>
+  <span class="hl">&lt;tbody&gt;</span>  <span class="cm">&lt;!-- Veri satırları --&gt;</span>
+    <span class="hl">&lt;tr&gt;</span>
+      <span class="hl">&lt;td&gt;</span>Ali<span class="hl">&lt;/td&gt;</span> <span class="hl">&lt;td&gt;</span>20<span class="hl">&lt;/td&gt;</span> <span class="hl">&lt;td&gt;</span>İstanbul<span class="hl">&lt;/td&gt;</span>
+    <span class="hl">&lt;/tr&gt;</span>
+  <span class="hl">&lt;/tbody&gt;</span>
+  <span class="hl">&lt;tfoot&gt;</span>  <span class="cm">&lt;!-- Özet satırı (opsiyonel) --&gt;</span>
+    <span class="hl">&lt;tr&gt;&lt;td</span> <span class="hl3">colspan=</span><span class="hl2">"3"</span><span class="hl">&gt;</span>Toplam: 1 kişi<span class="hl">&lt;/td&gt;&lt;/tr&gt;</span>
+  <span class="hl">&lt;/tfoot&gt;</span>
+<span class="hl">&lt;/table&gt;</span>
+            </div>
+            <div class="callout"><strong>⚠️ Dikkat:</strong> Tablolar sadece tablo verisi için kullanılmalı! Eskiden layout için kullanılırdı — bu artık yanlış. Layout için CSS Flexbox/Grid kullan.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B07 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">07</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#e85d04"></span>ORTA SEVİYE</div>
+            <div class="sec-title">Formlar — ÇOK KRİTİK</div>
+            <div class="sec-desc">Kullanıcıdan veri almanın tek yolu</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="hl">&lt;form</span> <span class="hl3">action=</span><span class="hl2">"/giris"</span> <span class="hl3">method=</span><span class="hl2">"POST"</span><span class="hl">&gt;</span>
+
+  <span class="hl">&lt;label</span> <span class="hl3">for=</span><span class="hl2">"email"</span><span class="hl">&gt;</span>E-posta<span class="hl">&lt;/label&gt;</span>
+  <span class="hl">&lt;input</span> <span class="hl3">type=</span><span class="hl2">"email"</span> <span class="hl3">id=</span><span class="hl2">"email"</span> <span class="hl3">name=</span><span class="hl2">"email"</span>
+         <span class="hl3">placeholder=</span><span class="hl2">"ad@örnek.com"</span> <span class="hl3">required</span><span class="hl">&gt;</span>
+
+  <span class="hl">&lt;input</span> <span class="hl3">type=</span><span class="hl2">"password"</span> <span class="hl3">name=</span><span class="hl2">"sifre"</span> <span class="hl3">minlength=</span><span class="hl2">"8"</span><span class="hl">&gt;</span>
+
+  <span class="cm">&lt;!-- Checkbox --&gt;</span>
+  <span class="hl">&lt;input</span> <span class="hl3">type=</span><span class="hl2">"checkbox"</span> <span class="hl3">name=</span><span class="hl2">"kabul"</span> <span class="hl3">id=</span><span class="hl2">"kabul"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;label</span> <span class="hl3">for=</span><span class="hl2">"kabul"</span><span class="hl">&gt;</span>Şartları kabul et<span class="hl">&lt;/label&gt;</span>
+
+  <span class="cm">&lt;!-- Select dropdown --&gt;</span>
+  <span class="hl">&lt;select</span> <span class="hl3">name=</span><span class="hl2">"sehir"</span><span class="hl">&gt;</span>
+    <span class="hl">&lt;option</span> <span class="hl3">value=</span><span class="hl2">"ist"</span><span class="hl">&gt;</span>İstanbul<span class="hl">&lt;/option&gt;</span>
+    <span class="hl">&lt;option</span> <span class="hl3">value=</span><span class="hl2">"ank"</span><span class="hl">&gt;</span>Ankara<span class="hl">&lt;/option&gt;</span>
+  <span class="hl">&lt;/select&gt;</span>
+
+  <span class="hl">&lt;button</span> <span class="hl3">type=</span><span class="hl2">"submit"</span><span class="hl">&gt;</span>Giriş Yap<span class="hl">&lt;/button&gt;</span>
+<span class="hl">&lt;/form&gt;</span>
+            </div>
+            <table class="roadmap-table" style="margin-top:12px">
+              <tr><th>INPUT TYPE</th><th>NE YAPAR</th></tr>
+              <tr><td><span class="tag-elem">text</span></td><td>Düz metin girişi</td></tr>
+              <tr><td><span class="tag-elem">email</span></td><td>@ ve domain kontrolü yapar</td></tr>
+              <tr><td><span class="tag-elem">password</span></td><td>Karakterleri gizler</td></tr>
+              <tr><td><span class="tag-elem">number</span></td><td>Sadece sayı, min/max destekli</td></tr>
+              <tr><td><span class="tag-elem">checkbox</span></td><td>Çoklu seçim (true/false)</td></tr>
+              <tr><td><span class="tag-elem">radio</span></td><td>Tek seçim (group ile)</td></tr>
+              <tr><td><span class="tag-elem">file</span></td><td>Dosya yükleme diyaloğu</td></tr>
+              <tr><td><span class="tag-elem">range</span></td><td>Slider kaydırıcı</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- B08 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">08</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#e85d04"></span>ORTA SEVİYE</div>
+            <div class="sec-title">Semantic HTML</div>
+            <div class="sec-desc">Pro level başlangıcı — SEO + A11Y</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="hl">&lt;header&gt;</span>  <span class="cm">&lt;!-- Site/section başı --&gt;</span>
+  <span class="hl">&lt;nav&gt;</span>
+    <span class="hl">&lt;ul&gt;&lt;li&gt;&lt;a</span> <span class="hl3">href=</span><span class="hl2">"/"</span><span class="hl">&gt;</span>Ana Sayfa<span class="hl">&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</span>
+  <span class="hl">&lt;/nav&gt;</span>
+<span class="hl">&lt;/header&gt;</span>
+
+<span class="hl">&lt;main&gt;</span>  <span class="cm">&lt;!-- Sayfanın ana içeriği (tek olmalı) --&gt;</span>
+  <span class="hl">&lt;article&gt;</span>  <span class="cm">&lt;!-- Bağımsız içerik (blog yazısı) --&gt;</span>
+    <span class="hl">&lt;h1&gt;</span>Makale Başlığı<span class="hl">&lt;/h1&gt;</span>
+    <span class="hl">&lt;section&gt;</span>  <span class="cm">&lt;!-- Tematik bölüm --&gt;</span>
+      <span class="hl">&lt;p&gt;</span>İçerik...<span class="hl">&lt;/p&gt;</span>
+    <span class="hl">&lt;/section&gt;</span>
+  <span class="hl">&lt;/article&gt;</span>
+  <span class="hl">&lt;aside&gt;</span>Yan panel / reklam<span class="hl">&lt;/aside&gt;</span>
+<span class="hl">&lt;/main&gt;</span>
+
+<span class="hl">&lt;footer&gt;</span>Copyright 2025<span class="hl">&lt;/footer&gt;</span>
+            </div>
+            <div class="callout"><strong>Neden önemli?</strong> Google, semantic etiketleri anlar ve sayfa yapısını doğru yorumlar. &lt;div&gt; kullanırsak Google kör kalır. Ekran okuyucular da semantic yapıyla sayfayı anlamlı seslendirir.</div>
+            <div class="target-box">Hedef: Hayatında bir daha gereksiz &lt;div&gt; yazmamak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B09 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">09</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#e85d04"></span>ORTA SEVİYE</div>
+            <div class="sec-title">HTML Attributes</div>
+            <div class="sec-desc">CSS ve JS'e bağlanmanın kapısı</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- id: sayfada benzersiz, JS/CSS hedefi --&gt;</span>
+<span class="hl">&lt;div</span> <span class="hl3">id=</span><span class="hl2">"hero-section"</span><span class="hl">&gt;&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- class: tekrar kullanılabilir, CSS için --&gt;</span>
+<span class="hl">&lt;p</span> <span class="hl3">class=</span><span class="hl2">"kart vurgulu büyük"</span><span class="hl">&gt;</span>Metin<span class="hl">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- title: tooltip gösterir --&gt;</span>
+<span class="hl">&lt;abbr</span> <span class="hl3">title=</span><span class="hl2">"HyperText Markup Language"</span><span class="hl">&gt;</span>HTML<span class="hl">&lt;/abbr&gt;</span>
+
+<span class="cm">&lt;!-- data-*: custom veri taşıma (JS için) --&gt;</span>
+<span class="hl">&lt;div</span> <span class="hl3">data-kullanici-id=</span><span class="hl2">"42"</span> <span class="hl3">data-rol=</span><span class="hl2">"admin"</span><span class="hl">&gt;&lt;/div&gt;</span>
+<span class="cm">// JS: element.dataset.kullaniciId → "42"</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B10 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">10</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#e85d04"></span>ORTA SEVİYE</div>
+            <div class="sec-title">Inline vs Block Mantığı</div>
+            <div class="sec-desc">Layout anlayışının temeli</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="info-grid">
+              <div class="info-card" style="border-color:#2d6a4f">
+                <div class="info-card-title" style="color:#2d6a4f">🟩 BLOCK ELEMENTLER</div>
+                <div class="info-card-desc">Tam satırı kaplar. Altına iner.<br>div, p, h1-h6, ul, ol, li, table, header, footer, section, article, form</div>
+              </div>
+              <div class="info-card" style="border-color:#e85d04">
+                <div class="info-card-title" style="color:#e85d04">🟧 INLINE ELEMENTLER</div>
+                <div class="info-card-desc">İçerik kadar yer kaplar. Yan yana dizilir.<br>span, a, img, strong, em, label, input, button, abbr</div>
+              </div>
+            </div>
+            <div class="code-block" data-lang="CSS">
+<span class="cm">/* CSS ile display özelliği değiştirilebilir */</span>
+<span class="hl3">span</span> { <span class="hl2">display</span>: block; }     <span class="cm">/* inline → block */</span>
+<span class="hl3">div</span>  { <span class="hl2">display</span>: inline; }    <span class="cm">/* block → inline */</span>
+<span class="hl3">.flex</span>{ <span class="hl2">display</span>: flex; }     <span class="cm">/* modern layout */</span>
+<span class="hl3">.grid</span>{ <span class="hl2">display</span>: grid; }     <span class="cm">/* grid layout */</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B11 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">11</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#e85d04"></span>ORTA SEVİYE</div>
+            <div class="sec-title">HTML + CSS Entegrasyonu</div>
+            <div class="sec-desc">Frontend burada başlar</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- 1. External CSS (EN İYİ YOL) --&gt;</span>
+<span class="hl">&lt;link</span> <span class="hl3">rel=</span><span class="hl2">"stylesheet"</span> <span class="hl3">href=</span><span class="hl2">"style.css"</span><span class="hl">&gt;</span>
+
+<span class="cm">&lt;!-- 2. Internal CSS --&gt;</span>
+<span class="hl">&lt;style&gt;</span>
+  <span class="hl3">body</span> { <span class="hl2">background</span>: #f5f0e8; }
+<span class="hl">&lt;/style&gt;</span>
+
+<span class="cm">&lt;!-- 3. Inline CSS (son çare) --&gt;</span>
+<span class="hl">&lt;p</span> <span class="hl3">style=</span><span class="hl2">"color:red; font-size:16px"</span><span class="hl">&gt;</span>Metin<span class="hl">&lt;/p&gt;</span>
+
+<span class="cm">&lt;!-- JS bağlama --&gt;</span>
+<span class="hl">&lt;script</span> <span class="hl3">src=</span><span class="hl2">"app.js"</span> <span class="hl3">defer</span><span class="hl">&gt;&lt;/script&gt;</span>
+            </div>
+            <div class="callout"><strong>Kural:</strong> External CSS kullan, inline style yazma. HTML = yapı, CSS = görünüm, JS = davranış. Bu üçlü ayrımı asla karıştırma.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B12 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">12</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#1d3557"></span>İLERİ SEVİYE</div>
+            <div class="sec-title">SEO Temelleri</div>
+            <div class="sec-desc">Google'da görünmek için zorunlu bilgi</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="hl">&lt;head&gt;</span>
+  <span class="cm">&lt;!-- Temel SEO --&gt;</span>
+  <span class="hl">&lt;title&gt;</span>Anahtar Kelime | Site Adı<span class="hl">&lt;/title&gt;</span>
+  <span class="hl">&lt;meta</span> <span class="hl3">name=</span><span class="hl2">"description"</span> <span class="hl3">content=</span><span class="hl2">"150-160 karakter açıklama"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;meta</span> <span class="hl3">name=</span><span class="hl2">"robots"</span> <span class="hl3">content=</span><span class="hl2">"index, follow"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;link</span> <span class="hl3">rel=</span><span class="hl2">"canonical"</span> <span class="hl3">href=</span><span class="hl2">"https://sitem.com/sayfa"</span><span class="hl">&gt;</span>
+
+  <span class="cm">&lt;!-- Open Graph (sosyal medya önizleme) --&gt;</span>
+  <span class="hl">&lt;meta</span> <span class="hl3">property=</span><span class="hl2">"og:title"</span> <span class="hl3">content=</span><span class="hl2">"Başlık"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;meta</span> <span class="hl3">property=</span><span class="hl2">"og:image"</span> <span class="hl3">content=</span><span class="hl2">"og-resim.jpg"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;meta</span> <span class="hl3">property=</span><span class="hl2">"og:type"</span> <span class="hl3">content=</span><span class="hl2">"website"</span><span class="hl">&gt;</span>
+<span class="hl">&lt;/head&gt;</span>
+            </div>
+            <div class="callout"><strong>SEO Altın Kuralları:</strong> 1 sayfada tek &lt;h1&gt; · &lt;img&gt;'de alt yazısı · Anlamlı &lt;title&gt; (60 karakter) · Semantic HTML kullan · Hızlı yükle (LCP &lt; 2.5s)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B13 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">13</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#1d3557"></span>İLERİ SEVİYE</div>
+            <div class="sec-title">Accessibility (A11Y)</div>
+            <div class="sec-desc">Engelli kullanıcılar için erişilebilirlik</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- label ile input bağlama --&gt;</span>
+<span class="hl">&lt;label</span> <span class="hl3">for=</span><span class="hl2">"isim"</span><span class="hl">&gt;</span>Adınız<span class="hl">&lt;/label&gt;</span>
+<span class="hl">&lt;input</span> <span class="hl3">type=</span><span class="hl2">"text"</span> <span class="hl3">id=</span><span class="hl2">"isim"</span> <span class="hl3">aria-required=</span><span class="hl2">"true"</span><span class="hl">&gt;</span>
+
+<span class="cm">&lt;!-- ARIA rolleri --&gt;</span>
+<span class="hl">&lt;nav</span> <span class="hl3">aria-label=</span><span class="hl2">"Ana menü"</span><span class="hl">&gt;&lt;/nav&gt;</span>
+<span class="hl">&lt;button</span> <span class="hl3">aria-expanded=</span><span class="hl2">"false"</span> <span class="hl3">aria-controls=</span><span class="hl2">"menu"</span><span class="hl">&gt;</span>Menü<span class="hl">&lt;/button&gt;</span>
+
+<span class="cm">&lt;!-- Skip link (klavye kullanıcıları için) --&gt;</span>
+<span class="hl">&lt;a</span> <span class="hl3">href=</span><span class="hl2">"#main-content"</span> <span class="hl3">class=</span><span class="hl2">"skip-link"</span><span class="hl">&gt;</span>
+  İçeriğe atla
+<span class="hl">&lt;/a&gt;</span>
+            </div>
+            <div class="callout"><strong>Gerçek dünya:</strong> Web erişilebilirliği birçok ülkede yasal zorunluluk. WCAG 2.1 AA standardı. Ekran okuyucu (NVDA/VoiceOver) ile kendi siteni test et.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B14 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">14</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#1d3557"></span>İLERİ SEVİYE</div>
+            <div class="sec-title">Responsive Mantık</div>
+            <div class="sec-desc">Mobil uyumluluğun HTML tarafı</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- Viewport meta — HER sayfada olmalı --&gt;</span>
+<span class="hl">&lt;meta</span> <span class="hl3">name=</span><span class="hl2">"viewport"</span>
+      <span class="hl3">content=</span><span class="hl2">"width=device-width, initial-scale=1.0"</span><span class="hl">&gt;</span>
+
+<span class="cm">&lt;!-- Responsive görsel --&gt;</span>
+<span class="hl">&lt;picture&gt;</span>
+  <span class="hl">&lt;source</span> <span class="hl3">media=</span><span class="hl2">"(max-width:600px)"</span> <span class="hl3">srcset=</span><span class="hl2">"mobil.jpg"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;img</span> <span class="hl3">src=</span><span class="hl2">"masaustu.jpg"</span> <span class="hl3">alt=</span><span class="hl2">"Hero görsel"</span><span class="hl">&gt;</span>
+<span class="hl">&lt;/picture&gt;</span>
+
+<span class="cm">&lt;!-- srcset ile çözünürlük optimizasyonu --&gt;</span>
+<span class="hl">&lt;img</span> <span class="hl3">src=</span><span class="hl2">"img.jpg"</span>
+     <span class="hl3">srcset=</span><span class="hl2">"img-400.jpg 400w, img-800.jpg 800w"</span>
+     <span class="hl3">sizes=</span><span class="hl2">"(max-width:600px) 100vw, 50vw"</span><span class="hl">&gt;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B15 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">15</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#9b2226"></span>UZMAN</div>
+            <div class="sec-title">Advanced HTML</div>
+            <div class="sec-desc">iframe, canvas, SVG, custom elements</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="code-block" data-lang="HTML">
+<span class="cm">&lt;!-- Canvas: JS ile grafik çizimi --&gt;</span>
+<span class="hl">&lt;canvas</span> <span class="hl3">id=</span><span class="hl2">"grafik"</span> <span class="hl3">width=</span><span class="hl2">"800"</span> <span class="hl3">height=</span><span class="hl2">"400"</span><span class="hl">&gt;&lt;/canvas&gt;</span>
+
+<span class="cm">&lt;!-- SVG: Vektör grafik --&gt;</span>
+<span class="hl">&lt;svg</span> <span class="hl3">viewBox=</span><span class="hl2">"0 0 100 100"</span> <span class="hl3">xmlns=</span><span class="hl2">"..."</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;circle</span> <span class="hl3">cx=</span><span class="hl2">"50"</span> <span class="hl3">cy=</span><span class="hl2">"50"</span> <span class="hl3">r=</span><span class="hl2">"40"</span> <span class="hl3">fill=</span><span class="hl2">"#e85d04"</span><span class="hl">/&gt;</span>
+<span class="hl">&lt;/svg&gt;</span>
+
+<span class="cm">&lt;!-- Template: JS ile dinamik içerik --&gt;</span>
+<span class="hl">&lt;template</span> <span class="hl3">id=</span><span class="hl2">"kart-sablonu"</span><span class="hl">&gt;</span>
+  <span class="hl">&lt;div</span> <span class="hl3">class=</span><span class="hl2">"kart"</span><span class="hl">&gt;&lt;slot</span> <span class="hl3">name=</span><span class="hl2">"baslik"</span><span class="hl">&gt;&lt;/slot&gt;&lt;/div&gt;</span>
+<span class="hl">&lt;/template&gt;</span>
+
+<span class="cm">&lt;!-- data-* custom attribute --&gt;</span>
+<span class="hl">&lt;div</span> <span class="hl3">data-tema=</span><span class="hl2">"karanlik"</span> <span class="hl3">data-dil=</span><span class="hl2">"tr"</span><span class="hl">&gt;&lt;/div&gt;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B16 -->
+      <div class="section-item">
+        <div class="section-trigger" onclick="toggle(this)">
+          <div class="sec-num">16</div>
+          <div class="sec-info">
+            <div class="sec-level"><span class="level-dot" style="background:#9b2226"></span>UZMAN</div>
+            <div class="sec-title">Best Practices — Senior Level</div>
+            <div class="sec-desc">Temiz, ölçeklenebilir, erişilebilir HTML</div>
+          </div>
+          <div class="sec-chevron">▶</div>
+        </div>
+        <div class="section-body">
+          <div class="body-inner">
+            <div class="info-grid">
+              <div class="info-card"><div class="info-card-title">✅ Semantic kullan</div><div class="info-card-desc">&lt;div&gt; yerine &lt;article&gt;, &lt;section&gt;, &lt;nav&gt;. Google ve ekran okuyucular sever.</div></div>
+              <div class="info-card"><div class="info-card-title">✅ Alt attribute</div><div class="info-card-desc">Her &lt;img&gt;'e anlamlı alt yaz. Dekoratifse alt="" (boş bırak, saklamaz).</div></div>
+              <div class="info-card"><div class="info-card-title">✅ Indent tutarlılığı</div><div class="info-card-desc">2 ya da 4 boşluk — seç ve hep aynı yap. Okunabilirlik = bakım kolaylığı.</div></div>
+              <div class="info-card"><div class="info-card-title">✅ Küçük harf</div><div class="info-card-desc">Etiketler ve attribute'lar lowercase olmalı. &lt;DIV&gt; değil, &lt;div&gt;.</div></div>
+              <div class="info-card"><div class="info-card-title">✅ Validation</div><div class="info-card-desc">validator.w3.org ile HTML'ini kontrol et. Sıfır error hedefle.</div></div>
+              <div class="info-card"><div class="info-card-title">✅ Performance</div><div class="info-card-desc">loading="lazy", &lt;script defer&gt;, kritik CSS inline. LCP 2.5s altı.</div></div>
+            </div>
+            <div class="target-box">Hedef: Kodu okuyan biri "ah evet, bunu anladım" desin — yorum satırı gerekmeden</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sections-col -->
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- TIMELINE -->
+      <div class="sidebar-widget">
+        <div class="widget-title">// Öğrenme Takvimi</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-day">3<span>GÜN</span></div>
+            <div>
+              <div class="tl-label">Temel HTML</div>
+              <div class="tl-sub">Bölüm 1–6 · Etiketler · Yapı</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-day">7<span>GÜN</span></div>
+            <div>
+              <div class="tl-label">Orta Seviye</div>
+              <div class="tl-sub">Bölüm 7–11 · Form · Semantic</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-day">14<span>GÜN</span></div>
+            <div>
+              <div class="tl-label">Projeler</div>
+              <div class="tl-sub">5 proje · Gerçek kod</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-day">30<span>GÜN</span></div>
+            <div>
+              <div class="tl-label">CSS + Mastery</div>
+              <div class="tl-sub">Frontend başlangıcı</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="sidebar-widget">
+        <div class="widget-title">// Günlük Plan</div>
+        <div class="stat-grid">
+          <div class="stat-cell">
+            <div class="stat-big">1h</div>
+            <div class="stat-lbl">TEORİ</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-big">2h</div>
+            <div class="stat-lbl">KODLAMA</div>
+          </div>
+          <div class="stat-cell" style="grid-column:span 2">
+            <div class="stat-big" style="color:var(--ink)">%0</div>
+            <div class="stat-lbl">SADECE OKUMA İLE ÖĞRENME ORANI</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="sidebar-widget">
+        <div class="widget-title">// 5 Proje Aşaması</div>
+        <div class="project-card" style="--pc-color:#2d6a4f">
+          <div class="pc-num">PROJE 01</div>
+          <div class="pc-name">Kişisel Tanıtım Sitesi</div>
+          <div class="pc-tags"><span class="pc-tag">Semantic</span><span class="pc-tag">Medya</span><span class="pc-tag">Link</span></div>
+        </div>
+        <div class="project-card" style="--pc-color:#e85d04">
+          <div class="pc-num">PROJE 02</div>
+          <div class="pc-name">Blog Template</div>
+          <div class="pc-tags"><span class="pc-tag">article</span><span class="pc-tag">header</span><span class="pc-tag">footer</span></div>
+        </div>
+        <div class="project-card" style="--pc-color:#1d3557">
+          <div class="pc-num">PROJE 03</div>
+          <div class="pc-name">Login/Register UI</div>
+          <div class="pc-tags"><span class="pc-tag">form</span><span class="pc-tag">input</span><span class="pc-tag">label</span></div>
+        </div>
+        <div class="project-card" style="--pc-color:#9b2226">
+          <div class="pc-num">PROJE 04</div>
+          <div class="pc-name">Landing Page</div>
+          <div class="pc-tags"><span class="pc-tag">SEO</span><span class="pc-tag">A11Y</span><span class="pc-tag">OG</span></div>
+        </div>
+        <div class="project-card" style="--pc-color:#7b2d8b">
+          <div class="pc-num">PROJE 05</div>
+          <div class="pc-name">Dashboard UI</div>
+          <div class="pc-tags"><span class="pc-tag">table</span><span class="pc-tag">form</span><span class="pc-tag">layout</span></div>
+        </div>
+      </div>
+
+    </aside>
+  </div><!-- /content-grid -->
+
+  <!-- BOTTOM CTA -->
+  <div class="bottom-cta">
+    <div class="cta-left">
+      <h2 class="cta-headline">HTML tek başına<br>bir kariyer <em>değildir.</em><br>Ama şunun<br>kapısını açar:</h2>
+      <div class="cta-text">Temeli doğru kur. Semantic yaz. Best practice'i alışkanlık haline getir. Gerisi gelir.</div>
+      <a class="btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+      <a class="btn btn-outline" href="https://validator.w3.org" target="_blank">W3C Validator</a>
+    </div>
+    <div class="cta-right">
+      <div class="bonus-list">
+        <div class="bonus-item">
+          <div class="bonus-arrow">→</div>
+          <div><div class="bonus-name">CSS</div><div class="bonus-desc">Görsel tasarım, layout, animasyon</div></div>
+        </div>
+        <div class="bonus-item">
+          <div class="bonus-arrow">→</div>
+          <div><div class="bonus-name">JavaScript</div><div class="bonus-desc">Etkileşim, mantık, DOM manipülasyonu</div></div>
+        </div>
+        <div class="bonus-item">
+          <div class="bonus-arrow">→</div>
+          <div><div class="bonus-name">Frontend Framework</div><div class="bonus-desc">React / Vue / Svelte — modern UI</div></div>
+        </div>
+        <div class="bonus-item">
+          <div class="bonus-arrow">→</div>
+          <div><div class="bonus-name">UI/UX Design</div><div class="bonus-desc">Figma, tasarım prensipleri</div></div>
+        </div>
+        <div class="bonus-item">
+          <div class="bonus-arrow">→</div>
+          <div><div class="bonus-name">Web Development</div><div class="bonus-desc">Full stack → kariyer</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>HTML 0→100 Roadmap · 16 Bölüm</span>
+    <span>Yazmadan öğrenilmez.</span>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+// CURSOR
+const cur = document.getElementById('cur');
+const ring = document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx-6+'px'; cur.style.top=my-6+'px'; });
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(animRing);})();
+document.querySelectorAll('a,button,.section-trigger,.project-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='52px';ring.style.height='52px';ring.style.opacity='0.8';cur.style.transform='scale(0.5)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='36px';ring.style.height='36px';ring.style.opacity='0.5';cur.style.transform='scale(1)';});
+});
+
+// SECTION TOGGLE
+function toggle(header){
+  const wasOpen = header.classList.contains('open');
+  document.querySelectorAll('.section-trigger.open').forEach(h=>{
+    h.classList.remove('open');
+    h.nextElementSibling.classList.remove('open');
+  });
+  if(!wasOpen){ header.classList.add('open'); header.nextElementSibling.classList.add('open'); }
+}
+
+// SCROLL REVEAL
+const io = new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});},{threshold:0.05});
+document.querySelectorAll('.section-item').forEach(s=>io.observe(s));
+
+// PROGRESS BARS
+const pio = new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('loaded');pio.unobserve(e.target);}});},{threshold:0.5});
+document.querySelectorAll('.prog-item').forEach(p=>pio.observe(p));
+</script>
+</body>
+</html>

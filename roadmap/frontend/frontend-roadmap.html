@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontend 0→100 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,700;1,400&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #0c0a06;
+  --bg2:   #151208;
+  --bg3:   #1c1810;
+  --panel: rgba(255,255,255,.03);
+  --glass: rgba(255,255,255,.055);
+  --bord:  rgba(255,200,100,.1);
+  --bord2: rgba(255,200,100,.06);
+
+  --ink:   #f5ecd5;
+  --ink2:  #b8a888;
+  --ink3:  #7a6e58;
+
+  --a:  #ff8c00;   /* amber     */
+  --a2: #ffb340;   /* light amber */
+  --a3: #ff5c00;   /* deep orange */
+  --tl: #00e5c8;   /* teal accent */
+  --pk: #ff4d8f;   /* pink accent */
+  --gn: #7ed47e;   /* green accent */
+
+  --c1: var(--gn);   /* temel    */
+  --c2: var(--a2);   /* orta     */
+  --c3: #79b8f8;     /* framework*/
+  --c4: var(--pk);   /* ileri    */
+  --c5: var(--a);    /* uzman    */
+
+  --fh: 'Unbounded', sans-serif;
+  --fb: 'Familjen Grotesk', sans-serif;
+  --fm: 'Azeret Mono', monospace;
+  --r: 8px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#c1{position:fixed;width:12px;height:12px;background:var(--a);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;}
+#c2{position:fixed;width:32px;height:32px;border:1.5px solid rgba(255,140,0,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* ── DIAGONAL STRIPES BG ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(
+    -55deg,
+    transparent 0,transparent 40px,
+    rgba(255,140,0,.015) 40px,rgba(255,140,0,.015) 41px
+  );
+}
+
+/* ── GLOW ORBS ── */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(255,140,0,.12),transparent 70%);top:-100px;left:-100px;animation:orbDrift 20s ease-in-out infinite alternate;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(0,229,200,.07),transparent 70%);bottom:-80px;right:-80px;animation:orbDrift 16s ease-in-out infinite alternate-reverse;}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(255,77,143,.07),transparent 70%);top:50%;left:60%;animation:orbDrift 24s ease-in-out infinite alternate;}
+@keyframes orbDrift{0%{transform:translate(0,0);}100%{transform:translate(40px,30px);}}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{padding:60px 0 48px;border-bottom:1px solid var(--bord);position:relative;overflow:hidden;}
+
+.hero-ticker{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--fm);font-size:.62rem;letter-spacing:.2em;
+  color:var(--a2);margin-bottom:20px;
+  animation:up .5s ease both;
+}
+.hero-ticker-dot{width:6px;height:6px;border-radius:50%;background:var(--a);animation:blink 1.4s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;}
+.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(3.5rem,10vw,8.5rem);
+  font-weight:900;line-height:.88;
+  letter-spacing:-.04em;
+  animation:up .5s .06s ease both;
+}
+.hero-h .line1{display:block;}
+.hero-h .line2{display:block;color:var(--a);-webkit-text-stroke:0px;position:relative;}
+.hero-h .line2::after{
+  content:attr(data-text);
+  position:absolute;left:2px;top:2px;
+  -webkit-text-stroke:1px var(--a3);
+  color:transparent;z-index:-1;
+}
+.hero-h .line3{display:block;color:transparent;-webkit-text-stroke:1px rgba(245,236,213,.3);}
+
+.hero-right{display:flex;flex-direction:column;gap:8px;align-items:flex-end;padding-bottom:6px;animation:up .5s .12s ease both;}
+.hero-tag{
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.15em;
+  padding:5px 12px;border:1px solid var(--bord);
+  background:var(--panel);color:var(--a2);
+}
+.hero-tag.accent{background:var(--a);color:var(--bg);border-color:var(--a);font-weight:700;}
+
+.hero-bottom{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-top:28px;gap:24px;flex-wrap:wrap;
+  animation:up .5s .18s ease both;
+}
+.hero-desc{font-size:.9rem;color:var(--ink2);max-width:500px;line-height:1.75;}
+.hero-desc strong{color:var(--ink);}
+
+/* STAT ROW */
+.stats{display:flex;gap:0;border:1px solid var(--bord);animation:up .5s .24s ease both;}
+.stat{padding:14px 20px;border-right:1px solid var(--bord);text-align:center;}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:var(--fh);font-size:2rem;color:var(--a);line-height:1;font-weight:700;}
+.stat-l{font-family:var(--fm);font-size:.54rem;color:var(--ink3);margin-top:4px;letter-spacing:.1em;}
+
+/* ══════════ PHASE STRIP ══════════ */
+.phase-strip{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  border-bottom:1px solid var(--bord);
+  animation:up .5s .3s ease both;
+}
+.phase{
+  padding:16px 14px;border-right:1px solid var(--bord);
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:background .25s;
+}
+.phase:last-child{border-right:none;}
+.phase::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:var(--pc,var(--a));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.phase:hover{background:var(--panel);}
+.phase:hover::after,.phase.active::after{transform:scaleX(1);}
+.phase-num{font-family:var(--fh);font-size:1.8rem;font-weight:700;color:rgba(255,255,255,.06);line-height:1;transition:color .2s;}
+.phase:hover .phase-num{color:var(--pc,var(--a));}
+.phase-name{font-family:var(--fh);font-size:.72rem;font-weight:700;margin-top:4px;letter-spacing:.02em;}
+.phase-dur{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:3px;}
+
+/* ══════════ MAIN LAYOUT ══════════ */
+.main{display:grid;grid-template-columns:1fr 300px;gap:0;border:1px solid var(--bord);border-top:none;}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:1px solid var(--bord);}
+
+.sec{
+  border-bottom:1px solid var(--bord);
+  opacity:0;transform:translateX(-10px);
+  transition:opacity .5s,transform .5s;
+}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{
+  display:grid;grid-template-columns:60px 1fr auto;
+  cursor:pointer;transition:background .2s;align-items:start;
+}
+.sec-hd:hover{background:var(--panel);}
+.sec-hd.open{background:var(--bg3);}
+
+.sec-num-col{
+  padding:20px 0 0 18px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;
+}
+.sec-n{
+  font-family:var(--fh);font-size:1.9rem;font-weight:700;
+  color:rgba(255,255,255,.08);line-height:1;
+  transition:color .2s;
+}
+.sec-hd.open .sec-n,.sec-hd:hover .sec-n{color:var(--sc,var(--a));}
+.sec-bar{width:2px;height:0;background:var(--sc,var(--a));border-radius:1px;transition:height .3s;}
+.sec-hd.open .sec-bar,.sec-hd:hover .sec-bar{height:24px;}
+
+.sec-info{padding:20px 14px;}
+.sec-lv{font-family:var(--fm);font-size:.56rem;letter-spacing:.2em;color:var(--sc,var(--a));margin-bottom:5px;}
+.sec-title{font-family:var(--fh);font-size:1.15rem;font-weight:700;line-height:1.15;letter-spacing:-.01em;}
+.sec-sub{font-size:.74rem;color:var(--ink3);margin-top:4px;font-family:var(--fm);}
+.sec-arr{padding:20px 16px 0 0;font-size:.6rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--a));}
+
+/* BODY */
+.sec-body{display:none;border-top:1px solid var(--bord);}
+.sec-body.open{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+.sec-in{padding:22px 20px 26px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.chip{
+  font-family:var(--fm);font-size:.63rem;padding:3px 10px;
+  border:1px solid var(--bord);color:var(--ink2);
+  background:var(--panel);transition:all .2s;cursor:default;
+}
+.chip:hover{border-color:var(--sc,var(--a));color:var(--sc,var(--a));}
+
+/* ── CODE ── */
+.code{
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,200,100,.08);
+  border-left:3px solid var(--sc,var(--a));
+  font-family:var(--fm);font-size:.73rem;line-height:1.8;
+  padding:14px 16px;margin:12px 0;overflow-x:auto;position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:.54rem;letter-spacing:.12em;color:var(--ink3);}
+.kw{color:#ff8c00;} .fn{color:#ffb340;} .str{color:#7ed47e;}
+.cm{color:#4a4030;font-style:italic;} .op{color:var(--tl);}
+.tg{color:#ff4d8f;} .pr{color:#79b8f8;}
+
+/* ── INFO GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+
+.card{
+  padding:11px 13px;border:1px solid var(--bord);
+  background:var(--panel);transition:all .22s;
+  border-left:2px solid var(--sc,var(--a));
+}
+.card:hover{border-color:var(--sc,var(--a));background:var(--glass);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+.card-t{font-family:var(--fm);font-size:.72rem;color:var(--ink);margin-bottom:3px;font-weight:500;}
+.card-d{font-size:.7rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{
+  padding:11px 14px;margin:10px 0;font-size:.79rem;line-height:1.65;
+  border:1px solid rgba(255,255,255,.05);border-left:3px solid var(--nc,var(--tl));
+  background:rgba(255,255,255,.025);color:var(--ink2);
+}
+.note strong{color:var(--nc,var(--tl));}
+.note.warn{--nc:var(--pk);}
+.note.ok  {--nc:var(--gn);}
+.note.hot {--nc:var(--a);}
+
+/* ── TARGET ── */
+.target{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 13px;border:1px solid var(--bord);
+  border-left:2px solid var(--sc,var(--a));
+  font-family:var(--fm);font-size:.7rem;margin-top:12px;color:var(--ink2);
+}
+.target::before{content:'▸';color:var(--sc,var(--a));flex-shrink:0;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.74rem;margin:10px 0;}
+.tbl th{background:var(--bg3);padding:7px 10px;text-align:left;font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;color:var(--ink3);border-bottom:1px solid var(--bord);}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--bord2);color:var(--ink2);}
+.tbl tr:hover td{background:var(--panel);color:var(--ink);}
+.tbl .hi{color:var(--a);font-family:var(--fm);font-size:.72rem;}
+
+/* ── PROJECT BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.proj-badge{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 13px;border:1px solid var(--bord);
+  background:var(--panel);font-size:.76rem;font-weight:700;
+  transition:all .2s;cursor:default;
+}
+.proj-badge:hover{border-color:var(--sc,var(--a));background:var(--glass);}
+.proj-icon{font-size:.85rem;}
+
+/* ── ROADMAP PATH ── */
+.path{
+  display:flex;flex-direction:column;gap:0;
+  margin:14px 0;position:relative;
+}
+.path::before{
+  content:'';position:absolute;left:16px;top:0;bottom:0;
+  width:1px;background:linear-gradient(180deg,var(--sc,var(--a)) 0%,transparent 100%);
+}
+.path-step{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:10px 0;
+}
+.path-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--sc,var(--a));flex-shrink:0;
+  margin-top:5px;margin-left:13px;
+  box-shadow:0 0 8px var(--sc,var(--a));
+  position:relative;z-index:1;
+}
+.path-txt{font-size:.8rem;color:var(--ink2);line-height:1.5;}
+.path-txt strong{color:var(--ink);display:block;font-size:.82rem;margin-bottom:2px;}
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar{background:var(--bg2);}
+.sb{padding:18px 16px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{
+  font-family:var(--fm);font-size:.57rem;letter-spacing:.2em;
+  color:var(--ink3);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.sb-t::before{content:'//';color:var(--a);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tl-row{
+  display:grid;grid-template-columns:52px 1fr;
+  gap:8px;padding:9px 0;border-bottom:1px solid var(--bord2);align-items:center;
+}
+.tl-row:last-child{border-bottom:none;}
+.tl-d{font-family:var(--fh);font-size:1.5rem;font-weight:700;color:var(--a);line-height:1;text-align:center;}
+.tl-u{font-family:var(--fm);font-size:.48rem;color:var(--ink3);display:block;text-align:center;}
+.tl-n{font-size:.82rem;font-weight:700;}
+.tl-s{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;}
+
+/* Tools */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.tool{
+  padding:9px 10px;border:1px solid var(--bord);
+  background:var(--panel);transition:all .2s;
+  display:flex;align-items:center;gap:7px;
+}
+.tool:hover{border-color:var(--a);background:var(--glass);}
+.tool-icon{font-size:1rem;flex-shrink:0;}
+.tool-n{font-size:.75rem;font-weight:700;}
+.tool-d{font-family:var(--fm);font-size:.57rem;color:var(--ink3);margin-top:1px;}
+
+/* Portfolio list */
+.port-list{display:flex;flex-direction:column;gap:6px;}
+.port{
+  padding:9px 11px;border:1px solid var(--bord);
+  background:var(--panel);transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.port::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pc2,var(--a));}
+.port:hover{border-color:var(--pc2,var(--a));transform:translateX(3px);}
+.port-lv{font-family:var(--fm);font-size:.56rem;color:var(--ink3);letter-spacing:.1em;}
+.port-name{font-size:.82rem;font-weight:700;margin-top:2px;}
+.port-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.port-tag{font-family:var(--fm);font-size:.55rem;padding:2px 6px;border:1px solid var(--bord);color:var(--ink3);}
+
+/* Skill bars */
+.skills{display:flex;flex-direction:column;gap:9px;}
+.skill-r{display:flex;align-items:center;gap:8px;}
+.skill-lbl{font-family:var(--fm);font-size:.62rem;color:var(--ink2);width:80px;flex-shrink:0;}
+.skill-track{flex:1;height:3px;background:rgba(255,255,255,.06);position:relative;}
+.skill-fill{height:100%;background:var(--sc2,var(--a));width:0;transition:width 1.3s cubic-bezier(.4,0,.2,1);}
+.skill-pct{font-family:var(--fm);font-size:.58rem;color:var(--ink3);width:28px;text-align:right;flex-shrink:0;}
+
+/* Bonus chips */
+.bonus-grid{display:flex;flex-direction:column;gap:6px;}
+.bonus-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border:1px solid var(--bord);
+  transition:all .2s;background:var(--panel);
+}
+.bonus-item:hover{border-color:var(--a2);background:var(--glass);}
+.bonus-arrow{color:var(--a);font-family:var(--fh);font-size:.9rem;flex-shrink:0;}
+.bonus-t{font-size:.8rem;font-weight:700;}
+.bonus-d{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{
+  border:1px solid var(--bord);border-top:none;
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;overflow:hidden;
+}
+.bottom::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,140,0,.06) 0%,transparent 50%,rgba(0,229,200,.04) 100%);
+}
+.bot-l,.bot-r{padding:44px 36px;position:relative;z-index:1;}
+.bot-l{border-right:1px solid var(--bord);}
+.bot-h{
+  font-family:var(--fh);font-size:clamp(2rem,4.5vw,3.2rem);
+  font-weight:900;line-height:.95;margin-bottom:14px;letter-spacing:-.02em;
+}
+.bot-h em{font-style:normal;color:var(--a);}
+.bot-p{font-size:.85rem;color:var(--ink2);line-height:1.75;margin-bottom:20px;}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 22px;font-family:var(--fh);font-size:.72rem;
+  font-weight:700;letter-spacing:.05em;text-decoration:none;
+  cursor:pointer;transition:all .2s;
+}
+.btn-solid{background:var(--a);color:var(--bg);border:none;}
+.btn-solid:hover{background:var(--a2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,140,0,.3);}
+.btn-ghost{background:transparent;border:1px solid var(--bord);color:var(--ink2);margin-left:8px;}
+.btn-ghost:hover{border-color:var(--a);color:var(--a);}
+
+.strategy{display:flex;flex-direction:column;gap:10px;}
+.strat{
+  display:flex;gap:12px;padding:10px 0;
+  border-bottom:1px solid var(--bord2);
+}
+.strat:last-child{border-bottom:none;}
+.strat-num{
+  font-family:var(--fh);font-size:1.3rem;font-weight:700;
+  color:rgba(255,140,0,.25);line-height:1;flex-shrink:0;
+  transition:color .2s;
+}
+.strat:hover .strat-num{color:var(--a);}
+.strat-t{font-size:.84rem;font-weight:700;}
+.strat-d{font-family:var(--fm);font-size:.62rem;color:var(--ink3);margin-top:2px;}
+
+/* FOOTER */
+footer{padding:20px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.6rem;color:var(--ink3);border-top:1px solid var(--bord);margin-top:0;}
+footer span:first-child{color:var(--a);}
+
+/* ANIM */
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* RESPONSIVE */
+@media(max-width:960px){.main{grid-template-columns:1fr}.sidebar{border-top:1px solid var(--bord)}.bottom{grid-template-columns:1fr}.bot-l{border-right:none;border-bottom:1px solid var(--bord)}.phase-strip{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.page{padding:0 14px 60px}.phase-strip{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div id="c1"></div>
+<div id="c2"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-ticker">
+    <div class="hero-ticker-dot"></div>
+    FRONTEND ROADMAP · 0 → 100 · TAM YOLCULUK
+  </div>
+  <div class="hero-grid">
+    <h1 class="hero-h">
+      <span class="line1">FRONT</span>
+      <span class="line2" data-text="END">END</span>
+      <span class="line3">MASTER</span>
+    </h1>
+    <div class="hero-right">
+      <div class="hero-tag accent">5 SEVİYE</div>
+      <div class="hero-tag">6–9 AY YOLCULUK</div>
+      <div class="hero-tag">HTML → REACT → NEXT.JS</div>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      Web temellerinden <strong>senior frontend</strong>'e —
+      HTML iskeletinden <strong>Next.js</strong>'e, DOM'dan <strong>Virtual DOM</strong>'a.
+      Az öğren → çok üret → <strong>paylaş.</strong>
+    </p>
+    <div class="stats">
+      <div class="stat"><div class="stat-n" id="s1">0</div><div class="stat-l">SEVİYE</div></div>
+      <div class="stat"><div class="stat-n" id="s2">0</div><div class="stat-l">PROJE</div></div>
+      <div class="stat"><div class="stat-n" id="s3">0</div><div class="stat-l">ARAÇ</div></div>
+      <div class="stat"><div class="stat-n" id="s4">0</div><div class="stat-l">AY (MIN)</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ PHASE STRIP ══ -->
+<div class="phase-strip">
+  <div class="phase" style="--pc:var(--gn)">
+    <div class="phase-num">01</div>
+    <div class="phase-name" style="color:var(--gn)">TEMEL</div>
+    <div class="phase-dur">1–2 ay · Web + HTML/CSS/JS</div>
+  </div>
+  <div class="phase" style="--pc:var(--a2)">
+    <div class="phase-num">02</div>
+    <div class="phase-name" style="color:var(--a2)">ORTA</div>
+    <div class="phase-dur">2–3 ay · Advanced JS + Git</div>
+  </div>
+  <div class="phase" style="--pc:#79b8f8">
+    <div class="phase-num">03</div>
+    <div class="phase-name" style="color:#79b8f8">FRAMEWORK</div>
+    <div class="phase-dur">2–3 ay · React</div>
+  </div>
+  <div class="phase" style="--pc:var(--pk)">
+    <div class="phase-num">04</div>
+    <div class="phase-name" style="color:var(--pk)">İLERİ</div>
+    <div class="phase-dur">3+ ay · Next.js + Auth</div>
+  </div>
+  <div class="phase" style="--pc:var(--a)">
+    <div class="phase-num">05</div>
+    <div class="phase-name" style="color:var(--a)">UZMAN</div>
+    <div class="phase-dur">∞ · Architecture + PWA</div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ────── SEVİYE 1 ────── -->
+<div class="sec" data-lvl="1">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--gn)">
+    <div class="sec-num-col"><div class="sec-n">01</div><div class="sec-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// TEMEL SEVİYE (0→1)</div>
+      <div class="sec-title">Web Temelleri + HTML + CSS + JS</div>
+      <div class="sec-sub">Internet · DOM · Semantic · Flexbox · Grid · Events</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--gn)">
+    <div class="sec-in">
+      <div class="chips">
+        <span class="chip">HTTP/HTTPS</span><span class="chip">DNS</span><span class="chip">Client/Server</span>
+        <span class="chip">DOM Rendering</span><span class="chip">Semantic HTML</span>
+        <span class="chip">Flexbox</span><span class="chip">CSS Grid</span><span class="chip">Media Queries</span>
+        <span class="chip">DOM Manipulation</span><span class="chip">Event Listener</span>
+      </div>
+
+      <!-- Web Temelleri -->
+      <div class="note ok"><strong>🌐 Web Temelleri:</strong> URL yazdığında ne olur? DNS → IP → TCP bağlantısı → HTTP isteği → HTML gelir → Tarayıcı parse eder → DOM ağacı → CSSOM → Render tree → Layout → Paint. Bu akışı kör ezberle.</div>
+
+      <div class="g4">
+        <div class="card"><div class="card-t">HTTP/HTTPS</div><div class="card-d">Request/Response döngüsü, status codes (200/404/500), headers, methods</div></div>
+        <div class="card"><div class="card-t">DOM</div><div class="card-d">Document Object Model — HTML'in JS tarafından manipüle edilen ağaç temsili</div></div>
+        <div class="card"><div class="card-t">Client/Server</div><div class="card-d">Tarayıcı (client) sunucudan kaynak ister. Frontend = client tarafı mantığı</div></div>
+        <div class="card"><div class="card-t">DNS</div><div class="card-d">Domain → IP çözümleme. example.com → 93.184.216.34 nasıl bulunur?</div></div>
+      </div>
+
+      <!-- HTML -->
+      <div style="margin-top:16px;font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;color:var(--gn);margin-bottom:8px;">// HTML — ISKELET</div>
+      <div class="code" data-lang="HTML">
+<span class="cm">&lt;!-- Semantic HTML — SEO + A11Y için kritik --&gt;</span>
+<span class="tg">&lt;header&gt;</span>
+  <span class="tg">&lt;nav&gt;</span>
+    <span class="tg">&lt;ul&gt;&lt;li&gt;&lt;a</span> <span class="pr">href</span>=<span class="str">"/"</span><span class="tg">&gt;</span>Ana Sayfa<span class="tg">&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;</span>
+  <span class="tg">&lt;/nav&gt;</span>
+<span class="tg">&lt;/header&gt;</span>
+
+<span class="tg">&lt;main&gt;</span>
+  <span class="tg">&lt;section</span> <span class="pr">aria-labelledby</span>=<span class="str">"hero-h"</span><span class="tg">&gt;</span>
+    <span class="tg">&lt;h1</span> <span class="pr">id</span>=<span class="str">"hero-h"</span><span class="tg">&gt;</span>Başlık<span class="tg">&lt;/h1&gt;</span>
+    <span class="tg">&lt;p&gt;</span>İçerik<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;/section&gt;</span>
+  <span class="tg">&lt;article&gt;</span>...<span class="tg">&lt;/article&gt;</span>
+<span class="tg">&lt;/main&gt;</span>
+
+<span class="tg">&lt;footer&gt;</span>...<span class="tg">&lt;/footer&gt;</span></div>
+
+      <!-- CSS -->
+      <div style="margin-top:16px;font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;color:var(--gn);margin-bottom:8px;">// CSS — GÖRSELLIK</div>
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Flexbox — modern layout temeli */</span>
+<span class="fn">.navbar</span> {
+  <span class="pr">display</span>:          <span class="str">flex</span>;
+  <span class="pr">justify-content</span>: <span class="str">space-between</span>;
+  <span class="pr">align-items</span>:     <span class="str">center</span>;
+  <span class="pr">gap</span>:             <span class="kw">16px</span>;
+}
+
+<span class="cm">/* Grid — sayfa layout */</span>
+<span class="fn">.layout</span> {
+  <span class="pr">display</span>:               <span class="str">grid</span>;
+  <span class="pr">grid-template-columns</span>: <span class="kw">repeat</span>(<span class="str">auto-fill</span>, <span class="kw">minmax</span>(<span class="kw">280px</span>,<span class="kw">1fr</span>));
+  <span class="pr">gap</span>:                   <span class="kw">24px</span>;
+}
+
+<span class="cm">/* Responsive — mobile first */</span>
+<span class="fn">.container</span> { <span class="pr">padding</span>: <span class="kw">0 16px</span>; }
+<span class="op">@media</span> (<span class="pr">min-width</span>: <span class="kw">768px</span>)  { <span class="fn">.container</span> { <span class="pr">padding</span>: <span class="kw">0 32px</span>; } }
+<span class="op">@media</span> (<span class="pr">min-width</span>: <span class="kw">1200px</span>) { <span class="fn">.container</span> { <span class="pr">max-width</span>: <span class="kw">1200px</span>; <span class="pr">margin</span>: <span class="kw">0 auto</span>; } }</div>
+
+      <!-- JS -->
+      <div style="margin-top:16px;font-family:var(--fm);font-size:.62rem;letter-spacing:.15em;color:var(--gn);margin-bottom:8px;">// JAVASCRIPT — CANLILIK</div>
+      <div class="code" data-lang="JS">
+<span class="cm">// DOM Manipulation + Event System</span>
+<span class="kw">const</span> <span class="fn">btn</span> = document.<span class="fn">querySelector</span>(<span class="str">".ekle-btn"</span>);
+<span class="kw">const</span> <span class="fn">liste</span> = document.<span class="fn">querySelector</span>(<span class="str">"#todo-list"</span>);
+
+<span class="fn">btn</span>.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, (<span class="pr">e</span>) <span class="op">=></span> {
+  <span class="kw">const</span> <span class="fn">input</span> = document.<span class="fn">querySelector</span>(<span class="str">"#todo-input"</span>);
+  <span class="kw">if</span> (<span class="op">!</span><span class="fn">input</span>.<span class="fn">value</span>.<span class="fn">trim</span>()) <span class="kw">return</span>;
+
+  <span class="kw">const</span> <span class="fn">li</span> = document.<span class="fn">createElement</span>(<span class="str">"li"</span>);
+  <span class="fn">li</span>.<span class="fn">textContent</span> = <span class="fn">input</span>.<span class="fn">value</span>;
+  <span class="fn">li</span>.<span class="fn">classList</span>.<span class="fn">add</span>(<span class="str">"todo-item"</span>);
+  <span class="fn">liste</span>.<span class="fn">append</span>(<span class="fn">li</span>);
+  <span class="fn">input</span>.<span class="fn">value</span> = <span class="str">""</span>;
+});</div>
+
+      <div class="proj-row">
+        <div class="proj-badge"><div class="proj-icon">👤</div>Kişisel Site</div>
+        <div class="proj-badge"><div class="proj-icon">📰</div>Blog Sayfası</div>
+        <div class="proj-badge"><div class="proj-icon">📱</div>Responsive Landing</div>
+        <div class="proj-badge"><div class="proj-icon">✅</div>To-Do App</div>
+        <div class="proj-badge"><div class="proj-icon">🧮</div>Calculator</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── SEVİYE 2 ────── -->
+<div class="sec" data-lvl="2">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--a2)">
+    <div class="sec-num-col"><div class="sec-n">02</div><div class="sec-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// ORTA SEVİYE (1→2)</div>
+      <div class="sec-title">Advanced JS + Git + Build Tools</div>
+      <div class="sec-sub">ES6+ · Async/Await · Fetch · npm · Vite · Event Loop</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--a2)">
+    <div class="sec-in">
+      <div class="code" data-lang="JS">
+<span class="cm">// ES6+ — Modern JavaScript</span>
+<span class="kw">const</span> <span class="fn">kullanicilar</span> = [
+  { <span class="pr">id</span>: <span class="kw">1</span>, <span class="pr">isim</span>: <span class="str">"Ali"</span>,   <span class="pr">yas</span>: <span class="kw">22</span>, <span class="pr">aktif</span>: <span class="str">true</span>  },
+  { <span class="pr">id</span>: <span class="kw">2</span>, <span class="pr">isim</span>: <span class="str">"Veli"</span>,  <span class="pr">yas</span>: <span class="kw">17</span>, <span class="pr">aktif</span>: <span class="str">false</span> },
+];
+
+<span class="cm">// Destructuring + optional chaining</span>
+<span class="kw">const</span> { <span class="pr">isim</span>: <span class="fn">ad</span> = <span class="str">"Misafir"</span>, <span class="pr">yas</span> = <span class="kw">18</span> } = <span class="fn">kullanicilar</span>[<span class="kw">0</span>];
+<span class="kw">const</span> <span class="fn">sehir</span> = <span class="fn">kullanicilar</span>[<span class="kw">0</span>]<span class="op">?.</span><span class="fn">adres</span><span class="op">?.</span><span class="fn">sehir</span> <span class="op">??</span> <span class="str">"Bilinmiyor"</span>;
+
+<span class="cm">// Array methods zinciri</span>
+<span class="kw">const</span> <span class="fn">aktifIsimler</span> = <span class="fn">kullanicilar</span>
+  .<span class="fn">filter</span>(<span class="pr">u</span> <span class="op">=></span> <span class="pr">u</span>.<span class="fn">aktif</span> <span class="op">&&</span> <span class="pr">u</span>.<span class="fn">yas</span> <span class="op">>=</span> <span class="kw">18</span>)
+  .<span class="fn">map</span>(<span class="pr">u</span> <span class="op">=></span> <span class="pr">u</span>.<span class="fn">isim</span>.<span class="fn">toUpperCase</span>());
+
+<span class="cm">// Async/Await + hata yönetimi</span>
+<span class="kw">async function</span> <span class="fn">kullanicilariGetir</span>() {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="fn">res</span>  = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">"https://jsonplaceholder.typicode.com/users"</span>);
+    <span class="kw">if</span> (<span class="op">!</span><span class="fn">res</span>.<span class="fn">ok</span>) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="op">`HTTP ${</span><span class="fn">res</span>.<span class="fn">status</span><span class="op">}`</span>);
+    <span class="kw">const</span> <span class="fn">data</span> = <span class="kw">await</span> <span class="fn">res</span>.<span class="fn">json</span>();
+    <span class="kw">return</span> <span class="fn">data</span>;
+  } <span class="kw">catch</span> (<span class="fn">err</span>) {
+    console.<span class="fn">error</span>(<span class="fn">err</span>);
+  }
+}</div>
+
+      <div class="g2">
+        <div class="card"><div class="card-t">Event Loop</div><div class="card-d">Call Stack → Web API → Callback Queue → Microtask Queue. JS single-threaded çalışır.</div></div>
+        <div class="card"><div class="card-t">Git & GitHub</div><div class="card-d">git init/add/commit/push. Branching: feature → main. Pull request workflow.</div></div>
+        <div class="card"><div class="card-t">npm / yarn</div><div class="card-d">package.json, node_modules, scripts, devDependencies vs dependencies ayrımı.</div></div>
+        <div class="card"><div class="card-t">Vite</div><div class="card-d">Lightning fast dev server, ESM tabanlı. Webpack'ten 10-100x hızlı. Modern standart.</div></div>
+      </div>
+
+      <div class="code" data-lang="BASH">
+<span class="cm"># Git temel workflow</span>
+git init && git add . && git commit -m <span class="str">"feat: ilk commit"</span>
+git checkout -b <span class="str">feature/todo-app</span>
+git merge feature/todo-app && git push origin main
+
+<span class="cm"># npm / Vite</span>
+npm create vite@latest my-app -- --template react
+cd my-app && npm install && npm run dev</div>
+
+      <div class="proj-row">
+        <div class="proj-badge"><div class="proj-icon">🌤️</div>Weather App</div>
+        <div class="proj-badge"><div class="proj-icon">📡</div>API Dashboard</div>
+        <div class="proj-badge"><div class="proj-icon">🔍</div>GitHub User Search</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── SEVİYE 3 ────── -->
+<div class="sec" data-lvl="3">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:#79b8f8">
+    <div class="sec-num-col"><div class="sec-n">03</div><div class="sec-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// FRAMEWORK SEVİYESİ (2→3)</div>
+      <div class="sec-title">React + State + Routing + Tailwind</div>
+      <div class="sec-sub">Component · Props · Hooks · Context · Redux · React Router</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:#79b8f8">
+    <div class="sec-in">
+      <div class="code" data-lang="JSX">
+<span class="cm">// React Component Anatomy</span>
+<span class="kw">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span>, <span class="fn">useCallback</span> } <span class="kw">from</span> <span class="str">"react"</span>;
+
+<span class="kw">function</span> <span class="fn">KullaniciKarti</span>({ <span class="pr">kullanici</span>, <span class="pr">onSil</span> }) {
+  <span class="kw">const</span> [<span class="fn">aktif</span>, <span class="fn">setAktif</span>] = <span class="fn">useState</span>(<span class="str">false</span>);
+
+  <span class="fn">useEffect</span>(() <span class="op">=></span> {
+    document.<span class="fn">title</span> = <span class="fn">aktif</span> ? <span class="op">`</span><span class="str">${</span><span class="pr">kullanici</span>.<span class="fn">isim</span><span class="str">} seçildi</span><span class="op">`</span> : <span class="str">"Frontend App"</span>;
+    <span class="kw">return</span> () <span class="op">=></span> { document.<span class="fn">title</span> = <span class="str">"Frontend App"</span>; }; <span class="cm">// cleanup</span>
+  }, [<span class="fn">aktif</span>, <span class="pr">kullanici</span>.<span class="fn">isim</span>]);
+
+  <span class="kw">const</span> <span class="fn">handleSil</span> = <span class="fn">useCallback</span>(() <span class="op">=></span> {
+    <span class="fn">onSil</span>(<span class="pr">kullanici</span>.<span class="fn">id</span>);
+  }, [<span class="pr">kullanici</span>.<span class="fn">id</span>, <span class="fn">onSil</span>]);
+
+  <span class="kw">return</span> (
+    <span class="tg">&lt;div</span> <span class="pr">className</span>=<span class="str">{`kart ${aktif ? "aktif" : ""}`}</span>
+         <span class="pr">onClick</span>=<span class="str">{() => setAktif(prev => !prev)}</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;h3&gt;</span>{<span class="pr">kullanici</span>.<span class="fn">isim</span>}<span class="tg">&lt;/h3&gt;</span>
+      <span class="tg">&lt;button</span> <span class="pr">onClick</span>=<span class="str">{handleSil}</span><span class="tg">&gt;</span>Sil<span class="tg">&lt;/button&gt;</span>
+    <span class="tg">&lt;/div&gt;</span>
+  );
+}</div>
+
+      <div class="code" data-lang="JSX">
+<span class="cm">// Custom Hook — logic'i ayır, tekrar kullan</span>
+<span class="kw">function</span> <span class="fn">useFetch</span>(<span class="pr">url</span>) {
+  <span class="kw">const</span> [<span class="fn">data</span>,    <span class="fn">setData</span>   ] = <span class="fn">useState</span>(<span class="str">null</span>);
+  <span class="kw">const</span> [<span class="fn">loading</span>, <span class="fn">setLoading</span>] = <span class="fn">useState</span>(<span class="str">true</span>);
+  <span class="kw">const</span> [<span class="fn">error</span>,   <span class="fn">setError</span>  ] = <span class="fn">useState</span>(<span class="str">null</span>);
+
+  <span class="fn">useEffect</span>(() <span class="op">=></span> {
+    <span class="kw">const</span> <span class="fn">controller</span> = <span class="kw">new</span> <span class="fn">AbortController</span>();
+    <span class="fn">fetch</span>(<span class="pr">url</span>, { <span class="fn">signal</span>: <span class="fn">controller</span>.<span class="fn">signal</span> })
+      .<span class="fn">then</span>(<span class="fn">r</span> <span class="op">=></span> <span class="fn">r</span>.<span class="fn">json</span>()).<span class="fn">then</span>(<span class="fn">setData</span>).<span class="fn">catch</span>(<span class="fn">setError</span>)
+      .<span class="fn">finally</span>(() <span class="op">=></span> <span class="fn">setLoading</span>(<span class="str">false</span>));
+    <span class="kw">return</span> () <span class="op">=></span> <span class="fn">controller</span>.<span class="fn">abort</span>();
+  }, [<span class="pr">url</span>]);
+
+  <span class="kw">return</span> { <span class="fn">data</span>, <span class="fn">loading</span>, <span class="fn">error</span> };
+}</div>
+
+      <div class="g2">
+        <div class="card"><div class="card-t">Context API</div><div class="card-d">Global state küçük-orta app için. createContext → Provider → useContext. Redux'tan önce dene.</div></div>
+        <div class="card"><div class="card-t">Redux Toolkit</div><div class="card-d">createSlice, configureStore, useSelector/useDispatch. Büyük app için standart.</div></div>
+        <div class="card"><div class="card-t">React Router v6</div><div class="card-d">createBrowserRouter, nested routes, loader, action. SPA navigasyonunun standartı.</div></div>
+        <div class="card"><div class="card-t">Tailwind CSS</div><div class="card-d">Utility-first. Hızlı prototipleme. JIT compiler. Dark mode: dark: prefix. cn() helper.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="proj-badge"><div class="proj-icon">📊</div>Dashboard</div>
+        <div class="proj-badge"><div class="proj-icon">📝</div>Blog App</div>
+        <div class="proj-badge"><div class="proj-icon">🛒</div>E-Commerce Frontend</div>
+        <div class="proj-badge"><div class="proj-icon">🎬</div>Netflix Clone UI</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── SEVİYE 4 ────── -->
+<div class="sec" data-lvl="4">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--pk)">
+    <div class="sec-num-col"><div class="sec-n">04</div><div class="sec-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// İLERİ SEVİYE (3→4)</div>
+      <div class="sec-title">Next.js + Auth + Testing + Performance</div>
+      <div class="sec-sub">SSR · SSG · JWT · Jest · Lazy Loading · Code Splitting</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--pk)">
+    <div class="sec-in">
+      <div class="code" data-lang="NEXT.JS">
+<span class="cm">// Next.js App Router — modern pattern</span>
+
+<span class="cm">// app/blog/[slug]/page.tsx — SSG</span>
+<span class="kw">export async function</span> <span class="fn">generateStaticParams</span>() {
+  <span class="kw">const</span> <span class="fn">posts</span> = <span class="kw">await</span> <span class="fn">getPosts</span>();
+  <span class="kw">return</span> <span class="fn">posts</span>.<span class="fn">map</span>(<span class="pr">p</span> <span class="op">=></span> ({ <span class="fn">slug</span>: <span class="pr">p</span>.<span class="fn">slug</span> }));
+}
+
+<span class="kw">export default async function</span> <span class="fn">BlogPage</span>({ <span class="pr">params</span> }) {
+  <span class="kw">const</span> <span class="fn">post</span> = <span class="kw">await</span> <span class="fn">getPost</span>(<span class="pr">params</span>.<span class="fn">slug</span>); <span class="cm">// server comp</span>
+  <span class="kw">return</span> <span class="tg">&lt;article&gt;</span>{<span class="fn">post</span>.<span class="fn">content</span>}<span class="tg">&lt;/article&gt;</span>;
+}
+
+<span class="cm">// API Route — app/api/users/route.ts</span>
+<span class="kw">export async function</span> <span class="fn">GET</span>(<span class="pr">request</span>) {
+  <span class="kw">const</span> <span class="fn">users</span> = <span class="kw">await</span> <span class="fn">db</span>.<span class="fn">user</span>.<span class="fn">findMany</span>();
+  <span class="kw">return</span> <span class="fn">Response</span>.<span class="fn">json</span>({ <span class="fn">users</span> });
+}</div>
+
+      <div class="code" data-lang="JS">
+<span class="cm">// Performance — Lazy loading + Code splitting</span>
+<span class="kw">import</span> { <span class="fn">lazy</span>, <span class="fn">Suspense</span> } <span class="kw">from</span> <span class="str">"react"</span>;
+
+<span class="kw">const</span> <span class="fn">HeavyChart</span> = <span class="fn">lazy</span>(() <span class="op">=></span> <span class="kw">import</span>(<span class="str">"./HeavyChart"</span>));
+
+<span class="kw">function</span> <span class="fn">Dashboard</span>() {
+  <span class="kw">return</span> (
+    <span class="tg">&lt;Suspense</span> <span class="pr">fallback</span>=<span class="str">{&lt;ChartSkeleton /&gt;}</span><span class="tg">&gt;</span>
+      <span class="tg">&lt;HeavyChart /&gt;</span>
+    <span class="tg">&lt;/Suspense&gt;</span>
+  );
+}
+
+<span class="cm">// useMemo — pahalı hesaplamayı cache'le</span>
+<span class="kw">const</span> <span class="fn">filtrelenmis</span> = <span class="fn">useMemo</span>(
+  () <span class="op">=></span> <span class="fn">data</span>.<span class="fn">filter</span>(<span class="pr">d</span> <span class="op">=></span> <span class="pr">d</span>.<span class="fn">aktif</span>),
+  [<span class="fn">data</span>] <span class="cm">// sadece data değişince hesapla</span>
+);</div>
+
+      <div class="g2">
+        <div class="card"><div class="card-t">JWT Auth Flow</div><div class="card-d">Login → JWT al → header'a ekle → Protected route → Refresh token pattern.</div></div>
+        <div class="card"><div class="card-t">Jest + RTL</div><div class="card-d">Unit test (fonksiyon), integration test (component), snapshot test. %80 coverage hedef.</div></div>
+        <div class="card"><div class="card-t">GraphQL</div><div class="card-d">REST'e alternatif. Query/Mutation/Subscription. Apollo Client ile React entegrasyonu.</div></div>
+        <div class="card"><div class="card-t">Core Web Vitals</div><div class="card-d">LCP &lt; 2.5s · FID &lt; 100ms · CLS &lt; 0.1. Lighthouse ile ölç, PageSpeed Insights.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="proj-badge"><div class="proj-icon">🔐</div>Auth + Protected Routes</div>
+        <div class="proj-badge"><div class="proj-icon">🛍️</div>E-Ticaret (Next.js)</div>
+        <div class="proj-badge"><div class="proj-icon">📰</div>SEO Blog</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── SEVİYE 5 ────── -->
+<div class="sec" data-lvl="5">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--a)">
+    <div class="sec-num-col"><div class="sec-n">05</div><div class="sec-bar"></div></div>
+    <div class="sec-info">
+      <div class="sec-lv">// UZMANLIK SEVİYESİ (4→5)</div>
+      <div class="sec-title">Architecture + Advanced Topics + Mobile</div>
+      <div class="sec-sub">Design Patterns · Micro Frontend · WebSocket · PWA · Virtual DOM</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--a)">
+    <div class="sec-in">
+      <div class="code" data-lang="JS">
+<span class="cm">// Virtual DOM & Reconciliation anlaması</span>
+<span class="cm">// React diff algoritması — Fiber mimarisi</span>
+
+<span class="cm">// 1. Render → Virtual DOM ağacı oluştur</span>
+<span class="cm">// 2. Reconcile → eski ve yeni VDom'u karşılaştır</span>
+<span class="cm">// 3. Commit → sadece değişen DOM node'larını güncelle</span>
+
+<span class="cm">// Key prop neden önemli?</span>
+<span class="cm">// React key ile hangi item'ın değiştiğini anlar</span>
+{<span class="fn">liste</span>.<span class="fn">map</span>(<span class="pr">item</span> <span class="op">=></span>
+  <span class="tg">&lt;Item</span> <span class="pr">key</span>=<span class="str">{item.id}</span> {<span class="op">...item</span>} <span class="tg">/&gt;</span>  <span class="cm">// id, index DEĞİL!</span>
+)}
+
+<span class="cm">// WebSocket — gerçek zamanlı</span>
+<span class="kw">const</span> <span class="fn">ws</span> = <span class="kw">new</span> <span class="fn">WebSocket</span>(<span class="str">"wss://api.example.com/ws"</span>);
+<span class="fn">ws</span>.<span class="fn">onmessage</span> = (<span class="pr">event</span>) <span class="op">=></span> {
+  <span class="kw">const</span> <span class="fn">mesaj</span> = <span class="fn">JSON</span>.<span class="fn">parse</span>(<span class="pr">event</span>.<span class="fn">data</span>);
+  <span class="fn">setMesajlar</span>(<span class="pr">prev</span> <span class="op">=></span> [...<span class="pr">prev</span>, <span class="fn">mesaj</span>]);
+};</div>
+
+      <div class="g3">
+        <div class="card"><div class="card-t">Component Patterns</div><div class="card-d">Compound, Render Props, HOC, Composition. Hangi problem için hangisi?</div></div>
+        <div class="card"><div class="card-t">Micro Frontend</div><div class="card-d">Module Federation (Webpack 5). Bağımsız deploy. Her team kendi tech stack'i.</div></div>
+        <div class="card"><div class="card-t">PWA</div><div class="card-d">Service Worker, Web App Manifest, offline support, push notification, installable.</div></div>
+        <div class="card"><div class="card-t">TypeScript</div><div class="card-d">Interface, Generic, Union Type, Type Guard. Compile-time hata yakalama. Büyük projede şart.</div></div>
+        <div class="card"><div class="card-t">React Native</div><div class="card-d">Aynı JS/React bilgisi ile iOS+Android. Expo ile hızlı başlangıç. Native bridge.</div></div>
+        <div class="card"><div class="card-t">Framer Motion</div><div class="card-d">Production animasyon kütüphanesi. Layout animation, gesture, stagger, exit animation.</div></div>
+      </div>
+
+      <div class="note hot"><strong>🔥 Senior Mindset:</strong> "Nasıl çalışır?" sorusunu sor. Virtual DOM, Fiber, reconciliation, hydration — bunları anlayan developer, sadece kullanan developer'dan ayrışır. Kaynak kodu oku.</div>
+
+      <div class="proj-row">
+        <div class="proj-badge"><div class="proj-icon">🏗️</div>SaaS Dashboard</div>
+        <div class="proj-badge"><div class="proj-icon">💬</div>Real-time Chat App</div>
+        <div class="proj-badge"><div class="proj-icon">📦</div>Admin Panel</div>
+        <div class="proj-badge"><div class="proj-icon">🎨</div>UI Kit / Design System</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Zaman Çizelgesi</div>
+    <div class="tl">
+      <div class="tl-row"><div class="tl-d">2<span class="tl-u">AY</span></div><div><div class="tl-n">Temel</div><div class="tl-s">HTML · CSS · JS · DOM</div></div></div>
+      <div class="tl-row"><div class="tl-d">3<span class="tl-u">AY</span></div><div><div class="tl-n">Orta</div><div class="tl-s">ES6+ · Async · Git · Vite</div></div></div>
+      <div class="tl-row"><div class="tl-d">5<span class="tl-u">AY</span></div><div><div class="tl-n">Framework</div><div class="tl-s">React · Tailwind · Router</div></div></div>
+      <div class="tl-row"><div class="tl-d">7<span class="tl-u">AY</span></div><div><div class="tl-n">İleri</div><div class="tl-s">Next.js · Auth · Testing</div></div></div>
+      <div class="tl-row"><div class="tl-d">9<span class="tl-u">AY</span></div><div><div class="tl-n">İş Seviyesi</div><div class="tl-s">Ciddi çalışmayla</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Öğrenme Ağırlıkları</div>
+    <div class="skills" id="skills">
+      <div class="skill-r"><div class="skill-lbl">HTML/CSS</div><div class="skill-track"><div class="skill-fill" style="--sc2:var(--gn)"></div></div><div class="skill-pct">90%</div></div>
+      <div class="skill-r"><div class="skill-lbl">JavaScript</div><div class="skill-track"><div class="skill-fill" style="--sc2:var(--a2)"></div></div><div class="skill-pct">85%</div></div>
+      <div class="skill-r"><div class="skill-lbl">React</div><div class="skill-track"><div class="skill-fill" style="--sc2:#79b8f8"></div></div><div class="skill-pct">80%</div></div>
+      <div class="skill-r"><div class="skill-lbl">Next.js</div><div class="skill-track"><div class="skill-fill" style="--sc2:var(--pk)"></div></div><div class="skill-pct">65%</div></div>
+      <div class="skill-r"><div class="skill-lbl">TypeScript</div><div class="skill-track"><div class="skill-fill" style="--sc2:var(--a)"></div></div><div class="skill-pct">55%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Araç Kutusu</div>
+    <div class="tool-grid">
+      <div class="tool"><div class="tool-icon">🐙</div><div><div class="tool-n">Git/GitHub</div><div class="tool-d">Versiyon kontrol</div></div></div>
+      <div class="tool"><div class="tool-icon">🔍</div><div><div class="tool-n">DevTools</div><div class="tool-d">Debug + Perf</div></div></div>
+      <div class="tool"><div class="tool-icon">💻</div><div><div class="tool-n">VS Code</div><div class="tool-d">Editor</div></div></div>
+      <div class="tool"><div class="tool-icon">📮</div><div><div class="tool-n">Postman</div><div class="tool-d">API test</div></div></div>
+      <div class="tool"><div class="tool-icon">🎨</div><div><div class="tool-n">Figma</div><div class="tool-d">UI okuma</div></div></div>
+      <div class="tool"><div class="tool-icon">⚡</div><div><div class="tool-n">Vite</div><div class="tool-d">Build tool</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Portföy Projeleri</div>
+    <div class="port-list">
+      <div class="port" style="--pc2:var(--gn)"><div class="port-lv">BAŞLANGIÇ</div><div class="port-name">To-Do + Calculator + Blog UI</div><div class="port-tags"><span class="port-tag">HTML</span><span class="port-tag">CSS</span><span class="port-tag">JS</span></div></div>
+      <div class="port" style="--pc2:var(--a2)"><div class="port-lv">ORTA</div><div class="port-name">Weather + API Dashboard</div><div class="port-tags"><span class="port-tag">Fetch</span><span class="port-tag">Async</span><span class="port-tag">Git</span></div></div>
+      <div class="port" style="--pc2:#79b8f8"><div class="port-lv">İLERİ</div><div class="port-name">E-Commerce Site</div><div class="port-tags"><span class="port-tag">React</span><span class="port-tag">Tailwind</span><span class="port-tag">Redux</span></div></div>
+      <div class="port" style="--pc2:var(--pk)"><div class="port-lv">UZMAN</div><div class="port-name">Admin Panel + SaaS</div><div class="port-tags"><span class="port-tag">Next.js</span><span class="port-tag">Auth</span><span class="port-tag">TS</span></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Bonus — Öne Geçirenler</div>
+    <div class="bonus-grid">
+      <div class="bonus-item"><div class="bonus-arrow">→</div><div><div class="bonus-t">TypeScript</div><div class="bonus-d">Çok önemli ⚠️</div></div></div>
+      <div class="bonus-item"><div class="bonus-arrow">→</div><div><div class="bonus-t">Framer Motion</div><div class="bonus-d">Animasyon kütüphanesi</div></div></div>
+      <div class="bonus-item"><div class="bonus-arrow">→</div><div><div class="bonus-t">Clean UI</div><div class="bonus-d">Figma okuma + tasarım</div></div></div>
+      <div class="bonus-item"><div class="bonus-arrow">→</div><div><div class="bonus-t">Gerçek API</div><div class="bonus-d">Mock değil, real data</div></div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">Az öğren.<br><em>Çok üret.</em><br>Paylaş.</h2>
+    <p class="bot-p">
+      Frontend öğrenenlerin %80'i sadece izliyor, proje yapmıyor.
+      Sen farklı ol — editörü aç, bir component yaz, GitHub'a yükle, LinkedIn'de paylaş.
+      <strong>Freelance küçük işler kovala.</strong>
+    </p>
+    <a class="btn btn-solid" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-ghost" href="https://roadmap.sh/frontend" target="_blank">roadmap.sh</a>
+  </div>
+  <div class="bot-r">
+    <div class="strategy">
+      <div class="strat"><div class="strat-num">01</div><div><div class="strat-t">%30 öğren → %70 proje yap</div><div class="strat-d">Her öğrendiğini aynı gün projede kullan</div></div></div>
+      <div class="strat"><div class="strat-num">02</div><div><div class="strat-t">GitHub'a yükle</div><div class="strat-d">README yaz, commit geçmişi temiz tut</div></div></div>
+      <div class="strat"><div class="strat-num">03</div><div><div class="strat-t">LinkedIn'de paylaş</div><div class="strat-d">Her proje bir post. Öğrenme sürecini belgele.</div></div></div>
+      <div class="strat"><div class="strat-num">04</div><div><div class="strat-t">Freelance küçük işler</div><div class="strat-d">Fiverr/Upwork'te 1-2 iş = gerçek deneyim</div></div></div>
+      <div class="strat"><div class="strat-num">05</div><div><div class="strat-t">50+ CTF / Challenge çöz</div><div class="strat-d">Frontend Mentor, CSS Battles, JS challenges</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Frontend 0→100 Roadmap</span>
+  <span>5 Seviye · 9+ Proje · 6–9 Ay · Az öğren, çok üret.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// CURSOR
+const c1=document.getElementById('c1'),c2=document.getElementById('c2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.phase,.tool,.port,.bonus-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='18px';c1.style.height='18px';c2.style.width='48px';c2.style.height='48px';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='12px';c1.style.height='12px';c2.style.width='32px';c2.style.height='32px';});
+});
+
+// ACCORDION
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// SCROLL REVEAL
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// COUNTERS
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);const v=Math.round((1-Math.pow(1-p,3))*to);el.textContent=v;p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),5,800);cnt(document.getElementById('s2'),12,1000);cnt(document.getElementById('s3'),6,700);cnt(document.getElementById('s4'),6,600);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.stats'));
+
+// SKILL BARS
+const skills=[90,85,80,65,55];
+const widths=['90%','85%','80%','65%','55%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skill-fill').forEach((f,i)=>{
+    setTimeout(()=>{f.style.width=widths[i];},i*80);
+  });
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+
+// PHASE HOVER
+document.querySelectorAll('.phase').forEach(p=>{
+  p.addEventListener('mouseenter',()=>p.classList.add('active'));
+  p.addEventListener('mouseleave',()=>p.classList.remove('active'));
+});
+</script>
+</body>
+</html>

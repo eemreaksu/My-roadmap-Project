@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SİSTEM & AĞ MÜHENDİSLİĞİ — MASTER ROADMAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #00ff41;
+    --green-dim: #00cc33;
+    --green-dark: #004d14;
+    --green-glow: rgba(0,255,65,0.15);
+    --cyan: #00ffff;
+    --amber: #ffb300;
+    --red: #ff3b3b;
+    --bg: #020c04;
+    --bg2: #050f07;
+    --border: rgba(0,255,65,0.25);
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-display: 'Orbitron', monospace;
+    --font-terminal: 'VT323', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 18px; height: 18px;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-dot {
+    position: fixed;
+    width: 4px; height: 4px;
+    background: var(--green);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* MATRIX CANVAS */
+  #matrix-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NOISE OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* WRAPPER */
+  .wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 60px 0 40px;
+    position: relative;
+  }
+
+  .header-pre {
+    font-family: var(--font-terminal);
+    font-size: 1.2rem;
+    color: var(--green-dim);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    animation: fadeSlideDown 0.8s ease both;
+  }
+
+  .header-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    text-shadow: 0 0 30px rgba(0,255,65,0.6), 0 0 60px rgba(0,255,65,0.2);
+    animation: fadeSlideDown 0.8s 0.1s ease both, glitch 8s 2s infinite;
+  }
+
+  .header-title span { color: var(--cyan); }
+
+  .header-sub {
+    margin-top: 18px;
+    font-size: 0.9rem;
+    color: rgba(0,255,65,0.5);
+    letter-spacing: 2px;
+    animation: fadeSlideDown 0.8s 0.2s ease both;
+  }
+
+  .header-divider {
+    margin: 30px auto 0;
+    width: 300px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    animation: expandLine 1s 0.5s ease both;
+  }
+
+  /* OMURGA INTRO */
+  .omurga-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 40px 0;
+    animation: fadeSlideUp 0.8s 0.4s ease both;
+  }
+
+  .omurga-card {
+    border: 1px solid var(--border);
+    background: var(--green-glow);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .omurga-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,65,0.05) 0%, transparent 60%);
+    transition: opacity 0.3s;
+  }
+  .omurga-card:hover {
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(0,255,65,0.2), inset 0 0 20px rgba(0,255,65,0.05);
+    transform: translateY(-3px);
+  }
+  .omurga-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(0,255,65,0.15);
+    line-height: 1;
+  }
+  .omurga-label {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--cyan);
+    margin-top: 6px;
+  }
+
+  /* PROGRESS BAR */
+  .level-progress {
+    margin: 40px 0;
+    animation: fadeSlideUp 0.8s 0.5s ease both;
+  }
+  .level-progress h2 {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    color: var(--green-dim);
+    margin-bottom: 20px;
+  }
+  .levels {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .level-item {
+    border: 1px solid var(--border);
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .level-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--green);
+    transition: width 0.6s ease;
+    width: 0;
+  }
+  .level-item.loaded::after { width: var(--pct); }
+  .level-item:hover { border-color: var(--green); background: var(--green-glow); }
+  .level-tag {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--amber);
+  }
+  .level-name {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    margin-top: 6px;
+    font-weight: 700;
+  }
+  .level-pct { font-size: 0.75rem; color: var(--green-dim); margin-top: 4px; }
+
+  /* SECTIONS */
+  .section {
+    margin: 28px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .section.visible { opacity: 1; transform: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    background: rgba(0,15,5,0.8);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+  .section-header::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+  }
+  .section-header:hover { border-color: var(--green); background: rgba(0,255,65,0.04); }
+  .section-header.open { border-color: var(--green); background: rgba(0,255,65,0.06); }
+
+  .section-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .section-info { flex: 1; }
+  .section-num {
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    color: var(--green-dim);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 2px;
+    text-shadow: 0 0 10px rgba(0,255,65,0.4);
+  }
+  .section-badge {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border: 1px solid currentColor;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+  }
+  .badge-critical { color: var(--red); }
+  .badge-core { color: var(--amber); }
+  .badge-modern { color: var(--cyan); }
+  .badge-optional { color: var(--green-dim); }
+
+  .section-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+    color: var(--green-dim);
+  }
+  .section-header.open .section-arrow { transform: rotate(90deg); }
+
+  .section-body {
+    display: none;
+    border: 1px solid var(--border);
+    border-top: none;
+    background: rgba(0,8,2,0.95);
+    padding: 0;
+    overflow: hidden;
+  }
+  .section-body.open { display: block; }
+
+  /* SUBSECTIONS */
+  .subsection {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0,255,65,0.08);
+  }
+  .subsection:last-child { border-bottom: none; }
+
+  .sub-title {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,255,255,0.3), transparent);
+  }
+
+  /* ITEMS */
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+
+  .item {
+    padding: 10px 14px;
+    border: 1px solid rgba(0,255,65,0.12);
+    background: rgba(0,255,65,0.02);
+    font-size: 0.82rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .item::before {
+    content: '▸';
+    color: var(--green-dim);
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .item:hover {
+    border-color: var(--green);
+    background: rgba(0,255,65,0.06);
+    box-shadow: 0 0 10px rgba(0,255,65,0.1);
+    transform: translateX(3px);
+  }
+  .item:hover::before { color: var(--green); }
+
+  .item-content { flex: 1; }
+  .item-name { color: var(--green); line-height: 1.4; }
+  .item-desc { font-size: 0.72rem; color: rgba(0,255,65,0.45); margin-top: 3px; line-height: 1.3; }
+
+  /* CODE ITEMS */
+  .code-item {
+    font-family: var(--font-mono);
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(0,255,65,0.15);
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--amber);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .code-item::before { content: '$'; color: var(--green-dim); }
+  .code-item:hover { border-color: var(--amber); background: rgba(255,179,0,0.05); }
+
+  /* TOOLS */
+  .tools-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tool-tag {
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .tool-tag:hover {
+    background: var(--green);
+    color: var(--bg);
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(0,255,65,0.4);
+  }
+
+  /* CALLOUT */
+  .callout {
+    margin: 14px 0 0;
+    padding: 12px 16px;
+    border-left: 3px solid var(--amber);
+    background: rgba(255,179,0,0.04);
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+  .callout strong { color: var(--amber); }
+
+  /* TIPS */
+  .tip {
+    padding: 10px 14px;
+    border: 1px solid rgba(0,255,255,0.2);
+    background: rgba(0,255,255,0.03);
+    font-size: 0.78rem;
+    color: var(--cyan);
+    line-height: 1.5;
+    margin-top: 10px;
+  }
+  .tip::before { content: '⚡ '; }
+
+  /* SCENARIO BOX */
+  .scenario {
+    margin-top: 14px;
+    border: 1px solid rgba(255,59,59,0.3);
+    background: rgba(255,59,59,0.03);
+    padding: 16px 20px;
+  }
+  .scenario-title {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .scenario-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .scenario-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,59,59,0.1);
+  }
+  .scenario-step:last-child { border-bottom: none; }
+  .step-num {
+    width: 22px; height: 22px;
+    border: 1px solid var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem;
+    color: var(--red);
+    flex-shrink: 0;
+  }
+
+  /* FINAL CTA */
+  .final-cta {
+    margin: 50px 0 0;
+    padding: 40px;
+    border: 1px solid var(--green);
+    background: rgba(0,255,65,0.03);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlideUp 0.8s ease both;
+    clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,255,65,0.06) 0%, transparent 70%);
+  }
+  .final-cta h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 900;
+    text-shadow: 0 0 20px rgba(0,255,65,0.5);
+    position: relative;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 28px;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--green);
+    text-shadow: 0 0 20px rgba(0,255,65,0.6);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.7rem; letter-spacing: 2px; color: var(--green-dim); margin-top: 4px; }
+
+  .final-note {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: rgba(0,255,65,0.6);
+    position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 30px 0 0;
+    font-size: 0.7rem;
+    color: rgba(0,255,65,0.25);
+    letter-spacing: 3px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes expandLine {
+    from { width: 0; opacity: 0; }
+    to { width: 300px; opacity: 1; }
+  }
+  @keyframes glitch {
+    0%, 94%, 100% { text-shadow: 0 0 30px rgba(0,255,65,0.6), 0 0 60px rgba(0,255,65,0.2); }
+    95% { text-shadow: -3px 0 var(--cyan), 3px 0 var(--red), 0 0 30px rgba(0,255,65,0.6); transform: skewX(-1deg); }
+    97% { text-shadow: 3px 0 var(--cyan), -3px 0 var(--red), 0 0 30px rgba(0,255,65,0.6); transform: skewX(1deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .blink { animation: blink 1s step-end infinite; }
+
+  /* TERMINAL TYPING */
+  .typed-text {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid var(--green);
+    width: 0;
+    animation: typing 2s steps(40) 0.5s forwards, blinkCursor 0.75s step-end infinite;
+  }
+  @keyframes typing { to { width: 100%; } }
+  @keyframes blinkCursor { 50% { border-color: transparent; } }
+
+  /* OSI TABLE */
+  .osi-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    margin-top: 4px;
+  }
+  .osi-table td {
+    padding: 8px 12px;
+    border: 1px solid rgba(0,255,65,0.1);
+    vertical-align: middle;
+  }
+  .osi-table tr:hover td { background: rgba(0,255,65,0.04); }
+  .osi-layer-num {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--green);
+    font-weight: 700;
+    text-align: center;
+    width: 40px;
+  }
+  .osi-layer-name { color: var(--cyan); font-weight: 600; }
+  .osi-layer-proto { color: rgba(0,255,65,0.55); font-size: 0.72rem; }
+  .osi-critical td { background: rgba(0,255,65,0.05); }
+  .osi-critical .osi-layer-num { color: var(--amber); text-shadow: 0 0 10px rgba(255,179,0,0.5); }
+
+  /* CERT CARDS */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .cert-card {
+    padding: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .cert-card:hover { border-color: var(--amber); background: rgba(255,179,0,0.04); }
+  .cert-vendor { font-size: 0.65rem; letter-spacing: 3px; color: var(--amber); }
+  .cert-name { font-family: var(--font-display); font-size: 0.85rem; margin-top: 6px; font-weight: 700; }
+  .cert-level { font-size: 0.7rem; color: var(--green-dim); margin-top: 4px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .omurga-grid, .levels, .cert-grid { grid-template-columns: 1fr; }
+    .stat-row { gap: 24px; flex-wrap: wrap; }
+    .item-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="matrix-canvas"></canvas>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-pre">// MASTER ROADMAP v2.0 — SİSTEM & AĞ MÜHENDİSLİĞİ</div>
+    <h1 class="header-title">SİSTEM &amp; <span>AĞ</span><br>MÜHENDİSLİĞİ</h1>
+    <div class="header-sub">FOUNDATION → NETWORKING → SYSADMIN → CLOUD → DEVOPS → SECURITY</div>
+    <div class="header-divider"></div>
+  </header>
+
+  <!-- 3 OMURGA -->
+  <div class="omurga-grid">
+    <div class="omurga-card">
+      <div class="omurga-num">01</div>
+      <div class="omurga-label">🌐 AĞ (NETWORKING)</div>
+    </div>
+    <div class="omurga-card">
+      <div class="omurga-num">02</div>
+      <div class="omurga-label">🖥️ SİSTEM (SYSADMIN)</div>
+    </div>
+    <div class="omurga-card">
+      <div class="omurga-num">03</div>
+      <div class="omurga-label">☁️ ALTYAPI & MODERN</div>
+    </div>
+  </div>
+
+  <!-- LEVEL PROGRESS -->
+  <div class="level-progress">
+    <h2>// LEARNING PATH — 4 SEVİYE</h2>
+    <div class="levels">
+      <div class="level-item" style="--pct:25%">
+        <div class="level-tag">LEVEL 01</div>
+        <div class="level-name">BEGINNER</div>
+        <div class="level-pct">OSI · Linux · IP/DNS</div>
+      </div>
+      <div class="level-item" style="--pct:50%">
+        <div class="level-tag">LEVEL 02</div>
+        <div class="level-name">INTERMEDIATE</div>
+        <div class="level-pct">Networking · Server · Monitoring</div>
+      </div>
+      <div class="level-item" style="--pct:75%">
+        <div class="level-tag">LEVEL 03</div>
+        <div class="level-name">ADVANCED</div>
+        <div class="level-pct">Cloud · Docker · Security</div>
+      </div>
+      <div class="level-item" style="--pct:100%">
+        <div class="level-tag">LEVEL 04</div>
+        <div class="level-name">EXPERT</div>
+        <div class="level-pct">Distributed · HA · Infra Design</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1: TEMEL ===== -->
+  <div class="section">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <div class="section-icon">🧱</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 01</div>
+        <div class="section-title">TEMEL (FOUNDATION)</div>
+      </div>
+      <span class="section-badge badge-critical">ZORUNLU</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body open">
+
+      <div class="subsection">
+        <div class="sub-title">🧠 TEMEL AĞ KAVRAMLARI</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">IP Adresi (IPv4 / IPv6)</div><div class="item-desc">32-bit (v4) ve 128-bit (v6) adres yapısı, hexadecimal notation, dual-stack</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">MAC Adresi</div><div class="item-desc">Layer 2 fiziksel adres, 48-bit, OUI (Organizationally Unique Identifier)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">DNS (Domain Name System)</div><div class="item-desc">A, AAAA, CNAME, MX, NS, TXT record tipleri; recursive vs iterative sorgu; TTL</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">DHCP</div><div class="item-desc">DORA süreci (Discover→Offer→Request→Acknowledge), lease süresi, scope, exclusions</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">NAT (Network Address Translation)</div><div class="item-desc">Static / Dynamic / PAT (masquerade), private IP → public IP dönüşümü</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Gateway (Varsayılan Ağ Geçidi)</div><div class="item-desc">Default gateway, inter-VLAN routing, next-hop kavramı</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Port Kavramı</div><div class="item-desc">Well-known (0-1023), registered (1024-49151), dynamic (49152-65535) portlar</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Kritik Portlar</div><div class="item-desc">22 SSH · 80 HTTP · 443 HTTPS · 53 DNS · 25 SMTP · 3306 MySQL · 5432 PG</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🌐 OSI MODELİ — DEBUG ZİHNİN</div>
+        <table class="osi-table">
+          <tr class="osi-critical">
+            <td class="osi-layer-num">7</td>
+            <td class="osi-layer-name">Application</td>
+            <td class="osi-layer-proto">HTTP, HTTPS, DNS, SMTP, FTP, SSH — kullanıcı verisinin son noktası</td>
+          </tr>
+          <tr>
+            <td class="osi-layer-num">6</td>
+            <td class="osi-layer-name">Presentation</td>
+            <td class="osi-layer-proto">TLS/SSL şifreleme, veri kodlama, sıkıştırma (JPEG, MP4 formatları)</td>
+          </tr>
+          <tr>
+            <td class="osi-layer-num">5</td>
+            <td class="osi-layer-name">Session</td>
+            <td class="osi-layer-proto">Oturum yönetimi, NetBIOS, RPC — bağlantı kurma/sonlandırma</td>
+          </tr>
+          <tr class="osi-critical">
+            <td class="osi-layer-num">4</td>
+            <td class="osi-layer-name">Transport</td>
+            <td class="osi-layer-proto">TCP (güvenilir, 3-way handshake) / UDP (hızlı, bağlantısız) — segment/datagram</td>
+          </tr>
+          <tr class="osi-critical">
+            <td class="osi-layer-num">3</td>
+            <td class="osi-layer-name">Network</td>
+            <td class="osi-layer-proto">IP routing, ICMP, packet — router cihazı bu katmanda çalışır</td>
+          </tr>
+          <tr class="osi-critical">
+            <td class="osi-layer-num">2</td>
+            <td class="osi-layer-name">Data Link</td>
+            <td class="osi-layer-proto">MAC adresleme, Ethernet frame, ARP, switch — VLAN bu katmandadır</td>
+          </tr>
+          <tr>
+            <td class="osi-layer-num">1</td>
+            <td class="osi-layer-name">Physical</td>
+            <td class="osi-layer-proto">Kablo, fiber, RF sinyali, hub — bit akışı, voltaj seviyeleri</td>
+          </tr>
+        </table>
+        <div class="callout"><strong>💡 Debug Mindset:</strong> Sorun çıktığında Layer 1'den yukarı çık. Kablo var mı? → Link up mı? → IP var mı? → Route var mı? → Port açık mı? → Uygulama cevap veriyor mu?</div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🐧 LİNUX (ŞART)</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Dosya Sistemi Hiyerarşisi</div><div class="item-desc">/etc (config) · /var (logs, data) · /home (kullanıcılar) · /proc (kernel) · /tmp</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Paket Yöneticileri</div><div class="item-desc">apt (Debian/Ubuntu) · yum/dnf (RHEL/CentOS) · pacman (Arch) · zypper (SUSE)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Servis Yönetimi</div><div class="item-desc">systemctl start/stop/enable/status · journalctl -u service · service logs</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">İzin Sistemi</div><div class="item-desc">chmod (rwx octal), chown (kullanıcı:grup), umask, SUID/SGID/sticky bit</div></div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="code-item">ls -la /etc/nginx/</div>
+          <div class="code-item">grep -r "error" /var/log/nginx/ | tail -50</div>
+          <div class="code-item">chmod 600 ~/.ssh/authorized_keys && chown $USER ~/.ssh/</div>
+          <div class="code-item">systemctl enable --now nginx && journalctl -fu nginx</div>
+          <div class="code-item">ps aux | grep nginx | awk '{print $1, $2, $11}'</div>
+          <div class="code-item">htop -u www-data -d 5</div>
+        </div>
+        <div class="tip">Hedef: SSH ile bağlan → Nginx kur → Config yaz → Log oku → Servis yönet. Bu döngüyü ezberleyene kadar tekrarla.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🪟 WINDOWS SERVER (OPSİYONEL AMA DEĞERLİ)</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Active Directory (AD DS)</div><div class="item-desc">Domain, Forest, OU yapısı, kullanıcı/grup yönetimi, Kerberos authentication</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Group Policy (GPO)</div><div class="item-desc">Merkezi konfigürasyon yönetimi, password policy, software deployment</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Windows DNS Server</div><div class="item-desc">Forward/Reverse lookup zone, AD-integrated DNS, conditional forwarding</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">PowerShell Yönetimi</div><div class="item-desc">Get-ADUser, New-ADGroup, Set-GPO, Invoke-Command (remote exec)</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: NETWORKING ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🌐</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 02</div>
+        <div class="section-title">NETWORKING (CORE)</div>
+      </div>
+      <span class="section-badge badge-core">KRİTİK</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">🔌 TEMEL AĞ MİMARİSİ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Subnetting</div><div class="item-desc">CIDR notasyon, /24 → 254 host, /30 → 2 host (P2P link). VLSM ile verimli adres planı</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">CIDR (Classless Inter-Domain Routing)</div><div class="item-desc">Prefix length, supernetting, route aggregation, prefix advertisement</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Routing</div><div class="item-desc">Static route, dynamic routing (OSPF, BGP, EIGRP), routing table, longest prefix match</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Switching</div><div class="item-desc">Layer 2 switching, MAC table, VLAN, STP (Spanning Tree), trunk/access port</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">VLAN (Virtual LAN)</div><div class="item-desc">802.1Q tagging, inter-VLAN routing, native VLAN, voice VLAN</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">VPN Teknolojileri</div><div class="item-desc">IPSec (site-to-site), SSL/TLS VPN (remote access), WireGuard, OpenVPN</div></div></div>
+        </div>
+        <div class="callout"><strong>💡 Subnetting Egzersizi:</strong> 192.168.10.0/24 bloğunu 4 eşit ağa böl. Her ağın network, broadcast ve ilk/son host adresini hesapla. Bunu 5 dakikada yapabilene kadar pratik yap.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">📡 PROTOKOLLER — DERİNLEŞ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">TCP (Transmission Control Protocol)</div><div class="item-desc">3-way handshake (SYN→SYN-ACK→ACK), flow control, congestion control, ordered delivery</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">UDP (User Datagram Protocol)</div><div class="item-desc">Connectionless, no guarantee — DNS, streaming, gaming, VoIP için tercih edilir</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">HTTP/HTTPS</div><div class="item-desc">REST methods (GET/POST/PUT/DELETE), status codes (2xx/3xx/4xx/5xx), headers, HTTP/2 & HTTP/3</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">SSH (Secure Shell)</div><div class="item-desc">Port 22, key-based auth (RSA/ED25519), SSH tunneling, port forwarding, SFTP</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">ICMP</div><div class="item-desc">Ping (echo request/reply), traceroute, type/code alanları, MTU discovery</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">FTP / SFTP / SCP</div><div class="item-desc">Active vs Passive FTP (NAT sorunu!), SFTP (SSH üzeri), SCP (secure copy)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">TLS/SSL</div><div class="item-desc">Handshake süreci, sertifika doğrulama, TLS 1.2 vs 1.3, cipher suites, mTLS</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">BGP (Border Gateway Protocol)</div><div class="item-desc">İnternet'in omurgası, AS numaraları, eBGP vs iBGP, path selection, route policy</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🔥 NETWORK CİHAZLARI</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Router</div><div class="item-desc">Layer 3 yönlendirme, routing table, NAT/PAT, WAN bağlantısı, ACL uygulama</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Switch (Managed)</div><div class="item-desc">VLAN config, STP, EtherChannel/LAG, QoS, port mirroring, SNMP</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Firewall (Stateful)</div><div class="item-desc">Stateful inspection, zone-based policy, NAT rules, IPS/IDS entegrasyonu</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Load Balancer</div><div class="item-desc">L4 (TCP) vs L7 (HTTP) LB, round-robin/least-conn/IP-hash algoritmaları, health check</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">WAF (Web Application Firewall)</div><div class="item-desc">OWASP Top 10 koruması, regex rule engine, rate limiting, bot protection</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Proxy / Reverse Proxy</div><div class="item-desc">Forward proxy (istemci gizler), reverse proxy (sunucu gizler), SSL termination</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🛠️ NETWORK ARAÇLARI</div>
+        <div class="tools-row">
+          <span class="tool-tag">ping</span>
+          <span class="tool-tag">traceroute / tracert</span>
+          <span class="tool-tag">netstat / ss</span>
+          <span class="tool-tag">tcpdump</span>
+          <span class="tool-tag">Wireshark</span>
+          <span class="tool-tag">nmap</span>
+          <span class="tool-tag">dig / nslookup</span>
+          <span class="tool-tag">curl / wget</span>
+          <span class="tool-tag">iperf3</span>
+          <span class="tool-tag">mtr</span>
+          <span class="tool-tag">ip route</span>
+          <span class="tool-tag">arp -n</span>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="code-item">tcpdump -i eth0 port 80 -w capture.pcap</div>
+          <div class="code-item">ss -tulpn | grep :443</div>
+          <div class="code-item">nmap -sS -O -p 1-65535 target.ip</div>
+          <div class="code-item">dig @8.8.8.8 example.com ANY +noall +answer</div>
+          <div class="code-item">mtr --report --report-cycles 10 google.com</div>
+        </div>
+        <div class="scenario">
+          <div class="scenario-title">// SENARYO: "BU SİTE NEDEN AÇILMIYOR?"</div>
+          <div class="scenario-steps">
+            <div class="scenario-step"><div class="step-num">01</div>ping atla → ICMP cevabı var mı? (Layer 3 kontrol)</div>
+            <div class="scenario-step"><div class="step-num">02</div>traceroute → Paket nerede duruyor? (Routing kontrol)</div>
+            <div class="scenario-step"><div class="step-num">03</div>nmap port scan → 80/443 open mı? (Firewall/servis kontrol)</div>
+            <div class="scenario-step"><div class="step-num">04</div>curl -v https://site.com → HTTP response nedir? (App kontrol)</div>
+            <div class="scenario-step"><div class="step-num">05</div>dig site.com → DNS doğru IP'ye çözülüyor mu? (DNS kontrol)</div>
+            <div class="scenario-step"><div class="step-num">06</div>Log oku → /var/log/nginx/error.log (Root cause)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3: SYSTEM ADMIN ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🖥️</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 03</div>
+        <div class="section-title">SİSTEM YÖNETİMİ</div>
+      </div>
+      <span class="section-badge badge-core">CORE</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">🧩 SUNUCU YÖNETİMİ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Nginx</div><div class="item-desc">High-performance web server & reverse proxy, event-driven mimari, config blokları (server/location)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Apache HTTP Server</div><div class="item-desc">Process-based mimari, .htaccess, mod_rewrite, virtual host konfigürasyonu</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Reverse Proxy Konfigürasyonu</div><div class="item-desc">proxy_pass, upstream tanımı, health check, timeout ayarları, X-Forwarded-For header</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Load Balancer Kurulumu</div><div class="item-desc">HAProxy / Nginx upstream, round-robin/least-conn, sticky session, SSL termination</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">SSL/TLS Sertifika</div><div class="item-desc">Let's Encrypt (Certbot), wildcard cert, sertifika yenileme otomasyonu, HSTS</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Cron & Scheduled Tasks</div><div class="item-desc">crontab -e syntax, log rotation (logrotate), backup otomasyonu, at komutu</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">📦 VERİTABANI & CACHE SERVİSLERİ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">MySQL / MariaDB</div><div class="item-desc">InnoDB engine, replication (master-slave/GTID), backup (mysqldump, xtrabackup), indexing</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">PostgreSQL</div><div class="item-desc">MVCC, streaming replication, pgBouncer (connection pooling), vacuum, pg_dump</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Redis</div><div class="item-desc">In-memory key-value, data structures (string/hash/list/set), persistence (RDB/AOF), pub/sub, Sentinel</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Elasticsearch</div><div class="item-desc">Full-text search, index/shard/replica kavramları, ELK stack (Logstash + Kibana)</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🔐 KULLANICI & YETKİ YÖNETİMİ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Linux User Management</div><div class="item-desc">useradd/usermod/userdel, /etc/passwd & /etc/shadow, groups, id komutu</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">sudo Yetkileri</div><div class="item-desc">/etc/sudoers (visudo), NOPASSWD, command whitelisting, sudo log audit</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">SSH Key Authentication</div><div class="item-desc">RSA/ED25519 key üret, authorized_keys, ~/.ssh/config, agent forwarding, bastion host</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">PAM (Pluggable Auth Modules)</div><div class="item-desc">MFA entegrasyonu, Google Authenticator, login politikaları, pam_faillock</div></div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="code-item">ssh-keygen -t ed25519 -C "server@prod" -f ~/.ssh/id_prod</div>
+          <div class="code-item">ssh-copy-id -i ~/.ssh/id_prod.pub user@server</div>
+          <div class="code-item">usermod -aG sudo,docker,www-data username</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">📊 MONİTORİNG & OBSERVABİLİTY</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Prometheus</div><div class="item-desc">Pull-based metrics toplama, scrape config, PromQL sorgu dili, alert rules, recording rules</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Grafana</div><div class="item-desc">Dashboard oluşturma, veri kaynağı entegrasyonu, alert notification, panel tipleri</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Node Exporter</div><div class="item-desc">CPU/RAM/Disk/Network metrikleri, sistem seviyesi exposure, custom metrics</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Log Yönetimi</div><div class="item-desc">journalctl, /var/log/, log seviyeleri (DEBUG/INFO/WARN/ERROR), log aggregation</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Alerting</div><div class="item-desc">Alertmanager, PagerDuty/OpsGenie entegrasyonu, on-call rotation, escalation policy</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Zabbix / Nagios</div><div class="item-desc">Agent-based monitoring, SNMP trap, network device monitoring, SLA raporlama</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: CLOUD ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">☁️</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 04</div>
+        <div class="section-title">CLOUD (MODERN ZORUNLULUK)</div>
+      </div>
+      <span class="section-badge badge-modern">MODERN</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">☁️ CLOUD PLATFORMLARI</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Amazon Web Services (AWS)</div><div class="item-desc">Pazar lideri, 200+ servis, global region ağı, pay-as-you-go fiyatlandırma</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Microsoft Azure</div><div class="item-desc">Microsoft ekosistemi entegrasyonu, hybrid cloud, Active Directory, enterprise odaklı</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Google Cloud Platform</div><div class="item-desc">BigQuery, Kubernetes (GKE-origin), AI/ML servisleri, global fiber ağ</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🔧 ÖĞRENİLECEK CORE SERVİSLER</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">EC2 / Compute Engine / Azure VM</div><div class="item-desc">Instance type seçimi, AMI/snapshot, Auto Scaling Group, Spot vs Reserved vs On-Demand</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">S3 / GCS / Azure Blob</div><div class="item-desc">Object storage, bucket policy, versioning, lifecycle rules, presigned URL, CDN entegrasyonu</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">VPC (Virtual Private Cloud)</div><div class="item-desc">Subnet (public/private), security group, NACL, VPC peering, Transit Gateway</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">IAM (Identity & Access Management)</div><div class="item-desc">User/Role/Policy, least privilege prensibi, service account, MFA enforcement</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">RDS / Cloud SQL</div><div class="item-desc">Managed database, Multi-AZ HA, read replica, automated backup, parameter group</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">CloudWatch / Stackdriver</div><div class="item-desc">Metrics, logs, alarms, custom namespace, log insights sorguları</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Terraform / IaC</div><div class="item-desc">Infrastructure as Code, HCL dili, state yönetimi, module yapısı, remote backend</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Route 53 / Cloud DNS</div><div class="item-desc">DNS yönetimi, health check, failover routing, geolocation routing, latency-based</div></div></div>
+        </div>
+        <div class="tip">Öneri: AWS'de ücretsiz tier hesabı aç. EC2 kur → Elastic IP bağla → Security group yaz → Nginx deploy et → Domain bağla. Bu 4 saatlik lab, 40 saatlik okumadan değerlidir.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5: CONTAINER & DEVOPS ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🐳</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 05</div>
+        <div class="section-title">CONTAINER & DEVOPS</div>
+      </div>
+      <span class="section-badge badge-modern">MODERN</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">🐳 DOCKER</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Container Mimarisi</div><div class="item-desc">VM'den farkı: kernel paylaşımı, namespace/cgroup izolasyonu, copy-on-write filesystem</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Image & Layer</div><div class="item-desc">Union filesystem, layer caching, multi-stage build, image optimizasyonu, .dockerignore</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Dockerfile</div><div class="item-desc">FROM/RUN/COPY/EXPOSE/CMD/ENTRYPOINT direktifleri, best practices, güvenli base image</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Docker Compose</div><div class="item-desc">Multi-container uygulama, service/network/volume tanımı, depends_on, health check</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Docker Network</div><div class="item-desc">bridge/host/overlay ağ modları, container DNS, port mapping, network isolation</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Docker Registry</div><div class="item-desc">Docker Hub, ECR/GCR/ACR, private registry, image tagging & versioning stratejisi</div></div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="code-item">docker build -t myapp:v1.0 --target production .</div>
+          <div class="code-item">docker run -d -p 8080:80 --name web --restart=unless-stopped myapp:v1.0</div>
+          <div class="code-item">docker compose up -d --build && docker compose logs -f</div>
+          <div class="code-item">docker stats && docker system prune -af --volumes</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">☸️ KUBERNETES</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Pod</div><div class="item-desc">En küçük deployment birimi, container grubu, shared network/storage, lifecycle</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Deployment</div><div class="item-desc">Replica yönetimi, rolling update, rollback, HPA (horizontal pod autoscaling)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Service</div><div class="item-desc">ClusterIP/NodePort/LoadBalancer/ExternalName tipleri, selector, kube-proxy</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Ingress</div><div class="item-desc">HTTP routing, TLS termination, path-based routing, Nginx/Traefik ingress controller</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">ConfigMap & Secret</div><div class="item-desc">Konfigürasyon yönetimi, env var injection, volume mount, Secret şifreleme (RBAC)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Namespace & RBAC</div><div class="item-desc">İzolasyon, ResourceQuota, LimitRange, Role/ClusterRole, ServiceAccount</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">⚙️ CI/CD & DEVOPS</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">CI/CD Pipeline</div><div class="item-desc">Code → Build → Test → Package → Deploy → Monitor döngüsü, GitOps prensibi</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">GitHub Actions</div><div class="item-desc">Workflow YAML, trigger (push/PR/schedule), runner, matrix build, secrets management</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">GitLab CI / Jenkins</div><div class="item-desc">.gitlab-ci.yml, stages/jobs/artifacts, Jenkins pipeline (Declarative vs Scripted)</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Ansible</div><div class="item-desc">Agentless config management, playbook/inventory/role yapısı, idempotency</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6: SECURITY ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🔐</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 06</div>
+        <div class="section-title">SİBER GÜVENLİK</div>
+      </div>
+      <span class="section-badge badge-critical">KRİTİK</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">🛡️ SAVUNMA TEMELLERİ</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Firewall Mantığı</div><div class="item-desc">Stateful vs stateless, iptables/nftables, zone-based firewall, default-deny prensibi</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Port Security</div><div class="item-desc">Gereksiz port kapatma, fail2ban, knock daemon, port knocking, geofencing</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">SSL/TLS Hardening</div><div class="item-desc">TLS 1.3 enforce, weak cipher disable, certificate pinning, HSTS preload</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Network Segmentasi</div><div class="item-desc">DMZ mimarisi, VLAN izolasyonu, micro-segmentation, zero-trust network</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Hardening</div><div class="item-desc">CIS Benchmark, root login disable, unnecessary service kapatma, kernel parametreleri</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">IDS/IPS</div><div class="item-desc">Snort/Suricata, signature-based vs anomaly-based, inline mode, alert tuning</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🧠 SALDIRI VEKTÖRLERİ (SAVUNMAK İÇİN ANLA)</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">DDoS (Distributed DoS)</div><div class="item-desc">Volumetric/protocol/application layer saldırıları, Cloudflare/AWS Shield, rate limiting</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Brute Force</div><div class="item-desc">Credential stuffing, password spray, fail2ban kuralları, account lockout, CAPTCHA</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Network Scanning</div><div class="item-desc">nmap ile keşif, banner grabbing, OS fingerprinting, güvenlik açığı taraması</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Man-in-the-Middle</div><div class="item-desc">ARP spoofing, DNS poisoning, SSL stripping — önlem: HTTPS+HSTS, DNSSEC</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">SQL Injection & XSS</div><div class="item-desc">OWASP Top 10, parameterized queries, input validation, WAF kuralları, CSP header</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Privilege Escalation</div><div class="item-desc">SUID bit, sudo misconfiguration, kernel exploit — düzenli patch yönetimi kritik</div></div></div>
+        </div>
+        <div class="tools-row" style="margin-top:12px;">
+          <span class="tool-tag">nmap</span>
+          <span class="tool-tag">fail2ban</span>
+          <span class="tool-tag">iptables</span>
+          <span class="tool-tag">Metasploit</span>
+          <span class="tool-tag">Burp Suite</span>
+          <span class="tool-tag">OSSEC</span>
+          <span class="tool-tag">OpenVAS</span>
+          <span class="tool-tag">Lynis</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7: LAB ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">🧪</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 07</div>
+        <div class="section-title">LAB — EN KRİTİK KISIM</div>
+      </div>
+      <span class="section-badge badge-critical">%70 ÖĞRENME</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection">
+        <div class="sub-title">🖥️ LAB ORTAMI KURULUMU</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">VirtualBox / VMware Workstation</div><div class="item-desc">Host-only / NAT / Bridged network modları, snapshot alma, linked clone</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Proxmox VE (Önerilen)</div><div class="item-desc">Ücretsiz bare-metal hypervisor, LXC container + KVM VM, web UI, cluster</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">GNS3 / EVE-NG</div><div class="item-desc">Network simulator, Cisco IOS emülasyon, gerçekçi topoloji tasarımı</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Vagrant</div><div class="item-desc">Otomatik VM provision, Vagrantfile, multi-machine lab, box yönetimi</div></div></div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="sub-title">🔥 LAB SENARYOLARI (SIRASIZ YAP)</div>
+        <div class="item-grid">
+          <div class="item"><div class="item-content"><div class="item-name">Web Server Lab</div><div class="item-desc">2 VM: Nginx + PHP-FPM kur, SSL ekle, virtual host yaz, log izle</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">DNS Server Lab</div><div class="item-desc">BIND9 kur, forward/reverse zone yaz, secondary DNS ekle, DNSSEC aktif et</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Firewall Lab</div><div class="item-desc">iptables ile zone tabanlı kurallar yaz, DNAT/SNAT konfigürasyonu, test et</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Load Balancing Lab</div><div class="item-desc">3 VM: 1 HAProxy + 2 backend, health check, session persistence, Grafana dashboard</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Docker Lab</div><div class="item-desc">Dockerfile yaz, multi-stage build, compose ile stack kur, network izolasyonu test et</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Monitoring Lab</div><div class="item-desc">Prometheus + Node Exporter + Grafana. Alert kur, dashboard yaz, anomali sim et</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Subnetting Lab</div><div class="item-desc">4 subnet tasarla, router üzerinde inter-VLAN routing yap, routing table doğrula</div></div></div>
+          <div class="item"><div class="item-content"><div class="item-name">Backup & Recovery Lab</div><div class="item-desc">rsync + cron ile backup, test restore yap, RPO/RTO hesapla</div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8: SERTİFİKALAR ===== -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-icon">📜</div>
+      <div class="section-info">
+        <div class="section-num">// BÖLÜM 08</div>
+        <div class="section-title">SERTİFİKALAR</div>
+      </div>
+      <span class="section-badge badge-optional">OPSİYONEL AMA GÜÇLÜ</span>
+      <span class="section-arrow">▶</span>
+    </div>
+    <div class="section-body">
+      <div class="subsection">
+        <div class="sub-title">🏆 SEKTÖR SERTİFİKALARI</div>
+        <div class="cert-grid">
+          <div class="cert-card">
+            <div class="cert-vendor">CISCO</div>
+            <div class="cert-name">CCNA</div>
+            <div class="cert-level">Network Associate — Altın Standart</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-vendor">COMPTIA</div>
+            <div class="cert-name">Network+</div>
+            <div class="cert-level">Vendor-neutral — Başlangıç için ideal</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-vendor">COMPTIA</div>
+            <div class="cert-name">Security+</div>
+            <div class="cert-level">DoD onaylı — Siber güvenlik kapısı</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-vendor">AMAZON WEB SERVICES</div>
+            <div class="cert-name">SAA-C03</div>
+            <div class="cert-level">Solutions Architect Associate</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-vendor">LINUX FOUNDATION</div>
+            <div class="cert-name">CKA</div>
+            <div class="cert-level">Certified Kubernetes Administrator</div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-vendor">REDHAT</div>
+            <div class="cert-name">RHCSA</div>
+            <div class="cert-level">Enterprise Linux System Admin</div>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:16px;"><strong>💡 Sıralama Önerisi:</strong> CompTIA Network+ → CCNA → AWS SAA → CKA. Her sertifika arasında en az 3-6 ay lab yaparak geç.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta">
+    <h2>🔥 GERÇEK HAYAT TRUTH</h2>
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-num" id="stat1">0</span>
+        <div class="stat-label">% LAB & PRATİK</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="stat2">0</span>
+        <div class="stat-label">% TEORİ</div>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="stat3">0</span>
+        <div class="stat-label">BÖLÜM / ROADMAP</div>
+      </div>
+    </div>
+    <div class="final-note">
+      Bu alan <strong style="color:var(--green)">"okuyarak"</strong> öğrenilmez.<br>
+      VirtualBox aç → VM kur → Boz → Düzelt → Tekrarla.<br>
+      <span style="color:var(--amber)">Her kırık sistem seni bir adım öne götürür.</span>
+    </div>
+  </div>
+
+  <footer>
+    SİSTEM & AĞ MÜHENDİSLİĞİ MASTER ROADMAP &nbsp;|&nbsp; <span class="blink">█</span>
+  </footer>
+
+</div>
+
+<script>
+// CUSTOM CURSOR
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursorDot');
+let mx = 0, my = 0, cx = 0, cy = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cx += (mx - cx) * 0.15;
+  cy += (my - cy) * 0.15;
+  cursor.style.left = cx - 9 + 'px';
+  cursor.style.top = cy - 9 + 'px';
+  dot.style.left = mx - 2 + 'px';
+  dot.style.top = my - 2 + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// MATRIX CANVAS
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+const chars = '01アイウエオカキクケコ∑∆Ω∞⊕⊗ABCDEF0123456789';
+const fontSize = 13;
+const cols = Math.floor(canvas.width / fontSize);
+const drops = Array(cols).fill(1);
+
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(2,12,4,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ff41';
+  ctx.font = fontSize + 'px Share Tech Mono';
+  for (let i = 0; i < drops.length; i++) {
+    const c = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(c, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 50);
+
+// SECTION TOGGLE
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// SCROLL REVEAL
+const sections = document.querySelectorAll('.section');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.05 });
+sections.forEach(s => io.observe(s));
+
+// LEVEL PROGRESS BARS
+const levels = document.querySelectorAll('.level-item');
+const lvlObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('loaded'); lvlObs.unobserve(e.target); } });
+}, { threshold: 0.5 });
+levels.forEach(l => lvlObs.observe(l));
+
+// COUNTER ANIMATION
+function animateCounter(el, target, duration) {
+  let start = 0;
+  const step = timestamp => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  };
+  requestAnimationFrame(step);
+}
+
+const statsObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateCounter(document.getElementById('stat1'), 70, 1800);
+      animateCounter(document.getElementById('stat2'), 30, 1800);
+      animateCounter(document.getElementById('stat3'), 8, 1200);
+      statsObs.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+statsObs.observe(document.querySelector('.final-cta'));
+
+// HOVER GLOW ON ITEMS
+document.querySelectorAll('.item').forEach(item => {
+  item.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'scale(1.8)';
+    cursor.style.borderColor = '#00ffff';
+  });
+  item.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'scale(1)';
+    cursor.style.borderColor = 'var(--green)';
+  });
+});
+</script>
+</body>
+</html>

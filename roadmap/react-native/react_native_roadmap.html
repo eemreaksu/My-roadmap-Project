@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Native Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Epilogue:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+:root{
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --ink: #1a1209;
+  --ink2: #3d2f1a;
+  --muted: #8a7860;
+  --dim: #c4b49a;
+  --border: #d9ccb8;
+  --border2: #c4b49a;
+
+  --a1: #e8420a;   /* bold orange-red */
+  --a1l: #fde8e0;
+  --a2: #1a6b3c;   /* forest green */
+  --a2l: #e0f0e8;
+  --a3: #b5410f;   /* burnt sienna */
+  --a3l: #faeae0;
+  --a4: #1f4d8c;   /* deep blue */
+  --a4l: #e0eaf8;
+  --a5: #7b2d8b;   /* plum */
+  --a5l: #f0e0f8;
+  --a6: #0e7a6e;   /* teal */
+  --a6l: #e0f5f2;
+  --a7: #c47c00;   /* amber */
+  --a7l: #fef3d8;
+  --a8: #8b1a1a;   /* ruby */
+  --a8l: #fde8e8;
+}
+
+body{
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Epilogue', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--a1);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, background .2s;
+  mix-blend-mode: multiply;
+}
+#cursor.big{width:40px;height:40px;background:var(--a1);opacity:.3;}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.5;
+}
+
+/* ── HERO ── */
+.hero{
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 3rem;
+  align-items: center;
+  padding: 4rem 5vw 3rem;
+  z-index: 1;
+  border-bottom: 1.5px solid var(--border);
+  overflow: hidden;
+}
+
+.hero::after{
+  content:'';
+  position:absolute;
+  right: -80px; top: 50%;
+  transform: translateY(-50%);
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: var(--a1);
+  opacity: .04;
+  pointer-events: none;
+}
+
+
+
+.eyebrow{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .22em;
+  color: var(--a1);
+  text-transform: uppercase;
+  margin-bottom: 1.8rem;
+  opacity: 0;
+  animation: riseIn .6s .1s forwards;
+}
+
+.hero-title{
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  font-weight: 900;
+  line-height: .92;
+  letter-spacing: -.04em;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: riseIn .7s .2s forwards;
+}
+
+.hero-title .stroke{
+  -webkit-text-stroke: 2px var(--ink);
+  color: transparent;
+  font-style: italic;
+}
+
+.hero-title .fill{color: var(--ink);}
+
+.hero-sub{
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 500px;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: riseIn .7s .35s forwards;
+}
+
+.hero-stats{
+  display: flex;
+  gap: 2.5rem;
+  opacity: 0;
+  animation: riseIn .7s .5s forwards;
+  flex-wrap: wrap;
+}
+
+.stat-item{display:flex;flex-direction:column;gap:3px;}
+.stat-n{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-l{
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── PHONE MOCKUP ── */
+.phone-wrap{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: riseIn .8s .4s forwards;
+}
+
+.phone{
+  width: 200px;
+  height: 400px;
+  border: 2.5px solid var(--ink);
+  border-radius: 36px;
+  position: relative;
+  background: var(--bg2);
+  overflow: hidden;
+  box-shadow: 8px 12px 0 var(--ink);
+}
+
+.phone-notch{
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 18px;
+  background: var(--ink);
+  border-radius: 0 0 12px 12px;
+  z-index: 2;
+}
+
+.phone-screen{
+  position: absolute;
+  inset: 0;
+  padding: 44px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  overflow: hidden;
+}
+
+.ph-bar{
+  border-radius: 6px;
+  background: var(--border);
+  animation: pulsePh 2s ease-in-out infinite;
+}
+.ph-bar.title{ height: 14px; width: 70%; background: var(--ink2);}
+.ph-bar.sub{ height: 9px; width: 90%;}
+.ph-bar.sub2{ height: 9px; width: 75%;}
+.ph-bar.img{ height: 80px; width: 100%; border-radius: 10px; background: var(--dim); animation-delay:.3s;}
+.ph-bar.s{ height: 9px; width: 80%; animation-delay:.1s;}
+.ph-bar.s2{ height: 9px; width: 60%; animation-delay:.2s;}
+.ph-btn{
+  height: 28px; width: 100%;
+  background: var(--a1);
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.phone-nav{
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 44px;
+  background: var(--bg2);
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+}
+.nav-dot{
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--border);
+}
+.nav-dot.active{ background: var(--a1);}
+
+.phone-spin{
+  animation: floatPhone 4s ease-in-out infinite;
+}
+
+@keyframes floatPhone{
+  0%,100%{transform:translateY(0) rotate(-3deg);}
+  50%{transform:translateY(-14px) rotate(-1deg);}
+}
+@keyframes pulsePh{
+  0%,100%{opacity:1;}50%{opacity:.5;}
+}
+
+/* ── SECTION ── */
+.section{
+  position: relative; z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+/* ── VISUAL TIMELINE ── */
+.timeline-wrap{
+  padding: 4rem 5vw;
+  border-bottom: 1.5px solid var(--border);
+  position: relative; z-index: 1;
+}
+
+.tl-label{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  letter-spacing: .2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.timeline{
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: none;
+}
+.timeline::-webkit-scrollbar{display:none;}
+
+.tl-item{
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.tl-item::before{
+  content:'';
+  position: absolute;
+  top: 18px; left: 60px;
+  width: 100%; height: 2px;
+  background: var(--border2);
+}
+.tl-item:last-child::before{display:none;}
+
+.tl-node{
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px; font-weight: 700;
+  position: relative; z-index: 1;
+  background: var(--bg);
+  cursor: default;
+  transition: transform .2s;
+}
+.tl-node:hover{transform:scale(1.2);}
+
+.tl-name{
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 8px;
+  color: var(--ink2);
+  line-height: 1.3;
+  padding: 0 6px;
+}
+.tl-wk{
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: .05em;
+}
+
+/* ── PHASE CARDS ── */
+.phases{ padding: 4rem 5vw 6rem; position: relative; z-index: 1;}
+
+.phase-section-title{
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 3.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid var(--border);
+}
+.phase-section-title:first-child{margin-top:0;}
+
+.ps-num{
+  font-size: 10px;
+  letter-spacing: .15em;
+  color: var(--muted);
+  font-weight: 400;
+}
+.ps-badge{
+  font-size: 9px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 500;
+  letter-spacing: .05em;
+  margin-left: auto;
+}
+
+.phase-card{
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+.phase-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 5px 8px 0 var(--border);
+}
+
+/* color themes */
+.phase-card[data-c="1"]{--pc:var(--a1);--pcl:var(--a1l);}
+.phase-card[data-c="2"]{--pc:var(--a2);--pcl:var(--a2l);}
+.phase-card[data-c="3"]{--pc:var(--a3);--pcl:var(--a3l);}
+.phase-card[data-c="4"]{--pc:var(--a4);--pcl:var(--a4l);}
+.phase-card[data-c="5"]{--pc:var(--a5);--pcl:var(--a5l);}
+.phase-card[data-c="6"]{--pc:var(--a6);--pcl:var(--a6l);}
+.phase-card[data-c="7"]{--pc:var(--a7);--pcl:var(--a7l);}
+.phase-card[data-c="8"]{--pc:var(--a8);--pcl:var(--a8l);}
+
+.phase-card:hover{border-color: var(--pc);}
+
+.ph-head{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+  background: white;
+  border-left: 4px solid var(--pc);
+  transition: background .15s;
+}
+.ph-head:hover{background: var(--pcl);}
+
+.ph-icon{
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--pcl);
+  border: 1.5px solid var(--pc);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ph-info{flex:1;}
+.ph-tag{
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--pc);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.ph-name{
+  font-family: 'Unbounded', sans-serif;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.ph-right{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.ph-dur{
+  font-size: 11px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.ph-lv{
+  font-size: 9px;
+  padding: 2px 9px;
+  border-radius: 100px;
+  background: var(--pcl);
+  color: var(--pc);
+  font-weight: 500;
+  letter-spacing: .05em;
+  border: 1px solid var(--pc);
+}
+
+.chevron{
+  width: 16px; height: 16px;
+  color: var(--dim);
+  transition: transform .3s;
+  flex-shrink:0;
+}
+.phase-card.open .chevron{transform:rotate(180deg);}
+
+/* ── BODY ── */
+.ph-body{
+  display: none;
+  padding: 1.75rem;
+  border-top: 1.5px solid var(--border);
+  background: var(--bg2);
+}
+.phase-card.open .ph-body{display:block;}
+
+.topics-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.topic-card{
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  transition: border-color .2s, transform .2s;
+}
+.topic-card:hover{
+  border-color: var(--pc);
+  transform: translateY(-2px);
+}
+
+.tc-head{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--pc);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid var(--pcl);
+  padding-bottom: 7px;
+  margin-bottom: 9px;
+}
+
+.tc-list{list-style:none;}
+.tc-list li{
+  font-size: 12.5px;
+  color: var(--ink2);
+  padding: 2.5px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  line-height: 1.5;
+  font-weight: 300;
+}
+.tc-list li::before{
+  content: '→';
+  color: var(--pc);
+  font-size: 10px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── CODE SNIPPET IN CARD ── */
+.code-snippet{
+  background: var(--ink);
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+.code-snippet code{
+  font-family: 'Epilogue', monospace;
+  font-size: 11.5px;
+  color: #f0e8d8;
+  line-height: 1.7;
+  white-space: pre;
+}
+.code-snippet .kw{color:#e8a070;}
+.code-snippet .fn{color:#a8d8a8;}
+.code-snippet .str{color:#f0d070;}
+.code-snippet .cm{color:#7a8a7a;font-style:italic;}
+
+/* ── PROJECTS ── */
+.proj-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.proj-label{
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 7px;
+  font-weight: 500;
+}
+.proj-tags{display:flex;flex-wrap:wrap;gap:7px;}
+.proj-tag{
+  font-size: 11.5px;
+  padding: 5px 13px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border2);
+  color: var(--muted);
+  background: white;
+  cursor: default;
+  transition: all .2s;
+  font-weight: 400;
+  display: flex; align-items: center; gap: 5px;
+}
+.proj-tag::before{content:'◆';font-size:7px;color:var(--pc);}
+.proj-tag:hover{
+  border-color: var(--pc);
+  color: var(--pc);
+  background: var(--pcl);
+}
+
+/* ── TIP ── */
+.tip-box{
+  margin-top: 1.25rem;
+  padding: .85rem 1.1rem;
+  border-radius: 8px;
+  background: var(--pcl);
+  border-left: 3px solid var(--pc);
+  font-size: 12.5px;
+  color: var(--ink2);
+  line-height: 1.65;
+  font-style: italic;
+  font-weight: 300;
+}
+.tip-box strong{font-style:normal;font-weight:600;color:var(--pc);}
+
+/* ── TOOLS SECTION ── */
+.tools-section{
+  padding: 4rem 5vw;
+  background: var(--ink);
+  color: #f0e8d8;
+  position: relative; z-index:1;
+}
+.tools-title{
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 800;
+  margin-bottom: .5rem;
+  color: #f0e8d8;
+}
+.tools-sub{
+  font-size: 13px;
+  color: #7a8070;
+  margin-bottom: 2.5rem;
+  font-style: italic;
+  font-weight: 300;
+}
+.tools-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+  gap: 10px;
+}
+.tool-card{
+  background: #232018;
+  border: 1px solid #2e2a20;
+  border-radius: 10px;
+  padding: .9rem 1rem;
+  transition: border-color .2s, transform .2s;
+}
+.tool-card:hover{
+  border-color: var(--a1);
+  transform: translateY(-3px);
+}
+.tool-card-icon{
+  font-size: 20px;
+  margin-bottom: 7px;
+  display: block;
+}
+.tool-card-name{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f0e8d8;
+  margin-bottom: 4px;
+}
+.tool-card-desc{
+  font-size: 11px;
+  color: #7a8070;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ── FOOTER ── */
+footer{
+  position: relative; z-index:1;
+  padding: 2.5rem 5vw;
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--bg2);
+}
+.footer-brand{
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+.footer-meta{
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal{
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .6s, transform .6s;
+}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── ANIMATIONS ── */
+@keyframes riseIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;padding:3rem 1.25rem 2rem;}
+  .phone-wrap{display:none;}
+  .timeline-wrap,.phases,.tools-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .ph-head{padding:1rem 1.1rem;}
+  .ph-body{padding:1.25rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="eyebrow">// Mobil Geliştirme Yol Haritası</p>
+    <h1 class="hero-title">
+      <span class="fill">React</span><br>
+      <span class="stroke">Native</span><br>
+      <span class="fill">Roadmap</span>
+    </h1>
+    <p class="hero-sub">
+      iOS ve Android için tek kod tabanıyla uygulama geliştirmeyi 
+      adım adım, konu başlıklarıyla ve proje ödevleriyle öğren.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-n">8</span>
+        <span class="stat-l">Faz</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-n">4–10</span>
+        <span class="stat-l">Ay</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-n">25+</span>
+        <span class="stat-l">Proje</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-n">70+</span>
+        <span class="stat-l">Konu</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone phone-spin">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="ph-bar title"></div>
+        <div class="ph-bar sub"></div>
+        <div class="ph-bar sub2"></div>
+        <div class="ph-bar img"></div>
+        <div class="ph-bar s"></div>
+        <div class="ph-bar s2"></div>
+        <div class="ph-bar s"></div>
+        <div class="ph-btn"></div>
+      </div>
+      <div class="phone-nav">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TIMELINE ══════════ -->
+<div class="timeline-wrap reveal">
+  <div class="tl-label">// Öğrenme Akışı — Adım Adım</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a1);color:var(--a1);background:var(--a1l);">ÖN</div>
+      <div class="tl-name">JS & React Temelleri</div>
+      <div class="tl-wk">2–4 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a2);color:var(--a2);background:var(--a2l);">01</div>
+      <div class="tl-name">Kurulum & İlk Uygulama</div>
+      <div class="tl-wk">1–2 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a3);color:var(--a3);background:var(--a3l);">02</div>
+      <div class="tl-name">Temel Bileşenler</div>
+      <div class="tl-wk">2–3 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a4);color:var(--a4);background:var(--a4l);">03</div>
+      <div class="tl-name">Navigasyon</div>
+      <div class="tl-wk">1–2 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a5);color:var(--a5);background:var(--a5l);">04</div>
+      <div class="tl-name">State & API</div>
+      <div class="tl-wk">2–3 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a6);color:var(--a6);background:var(--a6l);">05</div>
+      <div class="tl-name">Native Özellikler</div>
+      <div class="tl-wk">2–3 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a7);color:var(--a7);background:var(--a7l);">06</div>
+      <div class="tl-name">Performans & Animasyon</div>
+      <div class="tl-wk">2 hafta</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node" style="border-color:var(--a8);color:var(--a8);background:var(--a8l);">07</div>
+      <div class="tl-name">Test & Yayın</div>
+      <div class="tl-wk">2–3 hafta</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PHASES ══════════ -->
+<div class="phases">
+
+  <!-- ─── ÖN KOŞUL ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 00</span>
+    Ön Koşullar
+    <span class="ps-badge" style="background:var(--a1l);color:var(--a1);border:1px solid var(--a1);">Zorunlu</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="1" id="p0">
+    <div class="ph-head" onclick="toggle('p0')">
+      <div class="ph-icon">⚡</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 00 — Temel Hazırlık</div>
+        <div class="ph-name">JavaScript ES6+ & React Temelleri</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2–4 hafta</span>
+        <span class="ph-lv">başlangıç</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">ES6+ Zorunlular</div>
+          <ul class="tc-list">
+            <li>Arrow functions & this bağlamı</li>
+            <li>Destructuring (obje & dizi)</li>
+            <li>Spread / Rest operatörü</li>
+            <li>async/await & Promise</li>
+            <li>map, filter, reduce</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">React Temelleri</div>
+          <ul class="tc-list">
+            <li>Fonksiyonel bileşenler & JSX</li>
+            <li>Props ve State kavramı</li>
+            <li>useState & useEffect</li>
+            <li>Event handling</li>
+            <li>Liste render ve key prop</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Mobil Geliştirme Kavramları</div>
+          <ul class="tc-list">
+            <li>Native vs Hybrid vs Cross-platform</li>
+            <li>iOS ve Android farkları</li>
+            <li>App Store & Play Store süreci</li>
+            <li>Cihaz boyutları ve DPI</li>
+            <li>Dokunmatik UI tasarım prensipleri</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tip-box"><strong>Kritik:</strong> React Native, React'in mobil versiyonudur. React'i bilmeden RN öğrenmek çok zorlaşır. En az 2 hafta React'e ayır, sonra buraya gel.</div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 1 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 01</span>
+    Kurulum & İlk Uygulama
+    <span class="ps-badge" style="background:var(--a2l);color:var(--a2);border:1px solid var(--a2);">Başlangıç</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="2" id="p1">
+    <div class="ph-head" onclick="toggle('p1')">
+      <div class="ph-icon">🛠</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 01 — Ortam Kurulumu</div>
+        <div class="ph-name">React Native CLI & Expo ile Proje Başlatma</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">1–2 hafta</span>
+        <span class="ph-lv">başlangıç</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Expo ile Başlangıç</div>
+          <ul class="tc-list">
+            <li>Expo Go uygulaması kurulumu</li>
+            <li>npx create-expo-app ile proje</li>
+            <li>Expo Router kurulumu</li>
+            <li>QR kod ile cihazda test</li>
+            <li>Expo SDK ve kütüphaneler</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">React Native CLI</div>
+          <ul class="tc-list">
+            <li>Android Studio kurulumu</li>
+            <li>Xcode kurulumu (macOS)</li>
+            <li>JDK & SDK yapılandırması</li>
+            <li>Emülatör & Simülatör kullanımı</li>
+            <li>Metro bundler anlama</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Proje Yapısı</div>
+          <ul class="tc-list">
+            <li>Dosya & klasör organizasyonu</li>
+            <li>app.json / app.config.js</li>
+            <li>package.json ve bağımlılıklar</li>
+            <li>TypeScript konfigürasyonu</li>
+            <li>ESLint & Prettier kurulumu</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Debug Araçları</div>
+          <ul class="tc-list">
+            <li>React Native Debugger</li>
+            <li>Flipper kurulumu</li>
+            <li>Logbox ve console kullanımı</li>
+            <li>Shake menüsü ile developer tools</li>
+            <li>Hot Reload & Fast Refresh</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Hello World Uygulaması</span>
+          <span class="proj-tag">Expo Projesi Deploy</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 2 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 02</span>
+    Temel Bileşenler & Styling
+    <span class="ps-badge" style="background:var(--a3l);color:var(--a3);border:1px solid var(--a3);">Çekirdek</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="3" id="p2">
+    <div class="ph-head" onclick="toggle('p2')">
+      <div class="ph-icon">📦</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 02 — Core Components</div>
+        <div class="ph-name">Temel UI Bileşenleri, StyleSheet & Flexbox</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2–3 hafta</span>
+        <span class="ph-lv">başlangıç</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Temel Bileşenler</div>
+          <ul class="tc-list">
+            <li>View — ana container</li>
+            <li>Text — metin gösterimi</li>
+            <li>Image & ImageBackground</li>
+            <li>TextInput — kullanıcı girişi</li>
+            <li>Button & Pressable & TouchableOpacity</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Liste Bileşenleri</div>
+          <ul class="tc-list">
+            <li>ScrollView kullanımı</li>
+            <li>FlatList — büyük listeler</li>
+            <li>SectionList — gruplu listeler</li>
+            <li>keyExtractor ve renderItem</li>
+            <li>ListHeaderComponent & footer</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">StyleSheet & Flexbox</div>
+          <ul class="tc-list">
+            <li>StyleSheet.create() kullanımı</li>
+            <li>Flexbox ile layout (RN'de default)</li>
+            <li>flexDirection, justifyContent, alignItems</li>
+            <li>Padding, margin, border</li>
+            <li>Dimensions API ile boyut alma</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Platform & Responsive</div>
+          <ul class="tc-list">
+            <li>Platform.OS ile iOS/Android ayırımı</li>
+            <li>Platform.select kullanımı</li>
+            <li>SafeAreaView — çentik güvenliği</li>
+            <li>StatusBar yönetimi</li>
+            <li>useWindowDimensions hook'u</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Kullanıcı Etkileşimi</div>
+          <ul class="tc-list">
+            <li>onPress, onLongPress, onPressIn</li>
+            <li>Keyboard handling & dismiss</li>
+            <li>TouchableHighlight vs Pressable</li>
+            <li>Gesture feedback (ripple, opacity)</li>
+            <li>Alert & ActionSheet API</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Modal & Overlay</div>
+          <ul class="tc-list">
+            <li>Modal bileşeni</li>
+            <li>Bottom Sheet implementasyonu</li>
+            <li>ActivityIndicator (loading)</li>
+            <li>RefreshControl ile pull-to-refresh</li>
+            <li>Snackbar / Toast bildirimleri</li>
+          </ul>
+        </div>
+      </div>
+      
+
+  <div>
+    </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Kişi Rehberi Uygulaması</span>
+          <span class="proj-tag">Haber Listesi</span>
+          <span class="proj-tag">Profil Ekranı UI</span>
+        </div>
+      </div>
+    </div>
+   </div>
+
+  <!-- ─── FAZ 3 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 03</span>
+    Navigasyon
+    <span class="ps-badge" style="background:var(--a4l);color:var(--a4);border:1px solid var(--a4);">Kritik</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="4" id="p3">
+    <div class="ph-head" onclick="toggle('p3')">
+      <div class="ph-icon">🧭</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 03 — Navigation</div>
+        <div class="ph-name">React Navigation v6 & Expo Router</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">1–2 hafta</span>
+        <span class="ph-lv">orta</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Stack Navigator</div>
+          <ul class="tc-list">
+            <li>createNativeStackNavigator kurulumu</li>
+            <li>navigation.navigate() ve goBack()</li>
+            <li>Ekranlar arası parametre geçirme</li>
+            <li>Header özelleştirme</li>
+            <li>Gesture ile geri gitme</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Tab & Drawer Navigator</div>
+          <ul class="tc-list">
+            <li>createBottomTabNavigator</li>
+            <li>Tab ikonları ve badge</li>
+            <li>createDrawerNavigator</li>
+            <li>Drawer içeriği özelleştirme</li>
+            <li>Tab + Stack iç içe kullanım</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Expo Router (File-based)</div>
+          <ul class="tc-list">
+            <li>app/ klasör yapısı</li>
+            <li>Dinamik rotalar ([id].tsx)</li>
+            <li>Layout dosyaları (_layout.tsx)</li>
+            <li>useRouter ve useLocalSearchParams</li>
+            <li>Link bileşeni kullanımı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">İleri Navigasyon</div>
+          <ul class="tc-list">
+            <li>Deep linking yapılandırması</li>
+            <li>Authentication flow (Korumalı route)</li>
+            <li>Modal stack navigasyonu</li>
+            <li>navigationRef ile global navigasyon</li>
+            <li>Navigasyon olayları ve dinleyiciler</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Tab + Stack Yapılı Uygulama</span>
+          <span class="proj-tag">Auth Flow (Login → Ana Ekran)</span>
+          <span class="proj-tag">E-Ticaret Navigasyon Yapısı</span>
+        </div>
+      </div>
+      <div class="tip-box"><strong>Öneri:</strong> Expo kullanıyorsan <strong>Expo Router</strong>'ı tercih et — Next.js'e benzer dosya tabanlı yapısı öğrenmesi kolay. Bare RN projelerinde React Navigation v6 standart.</div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 4 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 04</span>
+    State Yönetimi & API
+    <span class="ps-badge" style="background:var(--a5l);color:var(--a5);border:1px solid var(--a5);">Orta</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="5" id="p4">
+    <div class="ph-head" onclick="toggle('p4')">
+      <div class="ph-icon">🗃</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 04 — Data Layer</div>
+        <div class="ph-name">Zustand, React Query & Yerel Depolama</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2–3 hafta</span>
+        <span class="ph-lv">orta</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Global State</div>
+          <ul class="tc-list">
+            <li>Zustand ile store oluşturma</li>
+            <li>Actions ve selectors</li>
+            <li>Redux Toolkit (RTK) alternatifi</li>
+            <li>Context API ile basit state</li>
+            <li>Jotai atomları ile hafif state</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">API & Veri Getirme</div>
+          <ul class="tc-list">
+            <li>fetch / Axios ile HTTP istekleri</li>
+            <li>TanStack Query (React Query) RN</li>
+            <li>useQuery ve useMutation</li>
+            <li>Offline-first stratejisi</li>
+            <li>GraphQL (Apollo Client) giriş</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Yerel Depolama</div>
+          <ul class="tc-list">
+            <li>AsyncStorage temel kullanım</li>
+            <li>MMKV — hızlı key-value storage</li>
+            <li>SQLite (expo-sqlite) ile veritabanı</li>
+            <li>SecureStore ile hassas veri</li>
+            <li>WatermelonDB ile offline-first DB</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Auth & Güvenlik</div>
+          <ul class="tc-list">
+            <li>JWT token yönetimi</li>
+            <li>expo-secure-store ile token saklama</li>
+            <li>Biometric auth (parmak izi, Face ID)</li>
+            <li>OAuth2 (Google, Apple sign-in)</li>
+            <li>Token refresh mekanizması</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Offline Todo Uygulaması</span>
+          <span class="proj-tag">Haber Uygulaması (API + Cache)</span>
+          <span class="proj-tag">Login/Register + JWT</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 5 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 05</span>
+    Native Özellikler & Cihaz API'ları
+    <span class="ps-badge" style="background:var(--a6l);color:var(--a6);border:1px solid var(--a6);">İlgi Çekici</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="6" id="p5">
+    <div class="ph-head" onclick="toggle('p5')">
+      <div class="ph-icon">📱</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 05 — Native APIs</div>
+        <div class="ph-name">Kamera, Konum, Push Bildirim & Cihaz Özellikleri</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2–3 hafta</span>
+        <span class="ph-lv">orta</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Medya & Kamera</div>
+          <ul class="tc-list">
+            <li>expo-camera ile kamera erişimi</li>
+            <li>expo-image-picker ile galeri</li>
+            <li>expo-media-library</li>
+            <li>expo-av ile ses & video oynatma</li>
+            <li>QR kod tarayıcı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Konum & Harita</div>
+          <ul class="tc-list">
+            <li>expo-location ile GPS</li>
+            <li>Ön plan / arka plan konum</li>
+            <li>react-native-maps kurulumu</li>
+            <li>Marker, Polyline, Polygon</li>
+            <li>Geocoding ve reverse geocoding</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Push Bildirimler</div>
+          <ul class="tc-list">
+            <li>expo-notifications kurulumu</li>
+            <li>Yerel bildirimler (local)</li>
+            <li>Uzak bildirimler (remote/push)</li>
+            <li>Bildirime tıklama işleme</li>
+            <li>Firebase Cloud Messaging (FCM)</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Sensörler & Donanım</div>
+          <ul class="tc-list">
+            <li>Accelerometer & Gyroscope</li>
+            <li>expo-haptics (titreşim)</li>
+            <li>expo-brightness (ekran parlaklığı)</li>
+            <li>Clipboard API</li>
+            <li>Sharing API (paylaş)</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Ağ & Bağlantı</div>
+          <ul class="tc-list">
+            <li>NetInfo ile ağ durumu izleme</li>
+            <li>WebSocket bağlantısı</li>
+            <li>Background fetch</li>
+            <li>expo-file-system ile dosya sistemi</li>
+            <li>In-App Browser (expo-web-browser)</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Ödeme & Satın Alma</div>
+          <ul class="tc-list">
+            <li>In-App Purchase kavramı</li>
+            <li>expo-in-app-purchases</li>
+            <li>Stripe React Native SDK</li>
+            <li>Apple Pay & Google Pay</li>
+            <li>Abonelik yönetimi</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Konum Tabanlı Uygulama</span>
+          <span class="proj-tag">QR Kod Okuyucu</span>
+          <span class="proj-tag">Push Bildirim Demo</span>
+          <span class="proj-tag">Kamera Uygulaması</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 6 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 06</span>
+    Animasyon & Performans
+    <span class="ps-badge" style="background:var(--a7l);color:var(--a7);border:1px solid var(--a7);">İleri</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="7" id="p6">
+    <div class="ph-head" onclick="toggle('p6')">
+      <div class="ph-icon">✨</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 06 — Animasyon & Optimizasyon</div>
+        <div class="ph-name">Reanimated 3, Gesture Handler & Performans</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2 hafta</span>
+        <span class="ph-lv">ileri</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Animated API (Built-in)</div>
+          <ul class="tc-list">
+            <li>Animated.Value ve useAnimatedValue</li>
+            <li>Animated.timing, spring, decay</li>
+            <li>Animated.parallel & sequence</li>
+            <li>interpolate ile dönüşüm</li>
+            <li>LayoutAnimation</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Reanimated 3</div>
+          <ul class="tc-list">
+            <li>useSharedValue & useAnimatedStyle</li>
+            <li>withTiming, withSpring, withRepeat</li>
+            <li>Worklet kavramı (UI thread)</li>
+            <li>useAnimatedScrollHandler</li>
+            <li>Entering / Exiting animasyonları</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Gesture Handler</div>
+          <ul class="tc-list">
+            <li>GestureDetector & Gesture API</li>
+            <li>Pan, Pinch, Tap, LongPress gesture</li>
+            <li>Swipe-to-delete implementasyonu</li>
+            <li>Draggable bileşenler</li>
+            <li>Gesture bileştirme</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Performans Optimizasyonu</div>
+          <ul class="tc-list">
+            <li>React.memo ile re-render önleme</li>
+            <li>useCallback & useMemo</li>
+            <li>FlatList optimizasyonu (windowSize vb.)</li>
+            <li>Hermes JS engine aktifleştirme</li>
+            <li>Flipper Profiler ile analiz</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Swipe Kart Arayüzü (Tinder)</span>
+          <span class="proj-tag">Parallax Scroll Effect</span>
+          <span class="proj-tag">Sürükle-Bırak Liste</span>
+        </div>
+      </div>
+      <div class="tip-box"><strong>Altın kural:</strong> <strong>React Native Reanimated 3</strong>, animasyonları UI thread'inde çalıştırır — JS thread tıkandığında bile akıcı kalır. Ciddi animasyonlar için Reanimated kullan, built-in Animated değil.</div>
+    </div>
+  </div>
+
+  <!-- ─── FAZ 7 ─── -->
+  <div class="phase-section-title reveal">
+    <span class="ps-num">// 07</span>
+    Test, Build & Yayın
+    <span class="ps-badge" style="background:var(--a8l);color:var(--a8);border:1px solid var(--a8);">Son Adım</span>
+  </div>
+
+  <div class="phase-card reveal" data-c="8" id="p7">
+    <div class="ph-head" onclick="toggle('p7')">
+      <div class="ph-icon">🚀</div>
+      <div class="ph-info">
+        <div class="ph-tag">Faz 07 — Production</div>
+        <div class="ph-name">Test Yazma, EAS Build & App Store Yayın</div>
+      </div>
+      <div class="ph-right">
+        <span class="ph-dur">2–3 hafta</span>
+        <span class="ph-lv">ileri</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="ph-body">
+      <div class="topics-grid">
+        <div class="topic-card">
+          <div class="tc-head">Test Stratejisi</div>
+          <ul class="tc-list">
+            <li>Jest kurulumu ve konfigürasyonu</li>
+            <li>@testing-library/react-native</li>
+            <li>Bileşen testleri yazma</li>
+            <li>Hook testleri</li>
+            <li>Detox ile E2E test</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">EAS Build (Expo)</div>
+          <ul class="tc-list">
+            <li>eas.json yapılandırması</li>
+            <li>Development / Preview / Production profilleri</li>
+            <li>iOS sertifika & provisioning</li>
+            <li>Android keystore yönetimi</li>
+            <li>OTA (Over-the-Air) güncellemeler</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">App Store Yayını</div>
+          <ul class="tc-list">
+            <li>Apple Developer hesabı & TestFlight</li>
+            <li>App Store Connect konfigürasyonu</li>
+            <li>Google Play Console kurulumu</li>
+            <li>Uygulama metadata & ekran görüntüleri</li>
+            <li>Review süreci ve yaygın ret nedenleri</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">CI/CD & İzleme</div>
+          <ul class="tc-list">
+            <li>GitHub Actions ile otomatik build</li>
+            <li>EAS Submit ile otomatik yayın</li>
+            <li>Sentry ile crash raporlama</li>
+            <li>Firebase Crashlytics</li>
+            <li>CodePush ile anlık güncelleme</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="tc-head">Analitik & Büyüme</div>
+          <ul class="tc-list">
+            <li>Firebase Analytics kurulumu</li>
+            <li>Mixpanel & Amplitude entegrasyonu</li>
+            <li>A/B test yapılandırması</li>
+            <li>App Store Optimization (ASO)</li>
+            <li>Kullanıcı geri bildirim araçları</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proj-row">
+        <span class="proj-label">Final Projeler</span>
+        <div class="proj-tags">
+          <span class="proj-tag">Full-stack Mobil Uygulama</span>
+          <span class="proj-tag">App Store'da Yayınlanan Uygulama</span>
+          <span class="proj-tag">CI/CD Pipeline Kurulumu</span>
+        </div>
+      </div>
+      <div class="tip-box"><strong>Hedef:</strong> Bu fazın sonunda gerçek kullanıcıların indirebileceği bir uygulamana sahip olacaksın. İş başvurularında bu bağlantıyı paylaşmak seni anında öne çıkarır.</div>
+    </div>
+  </div>
+
+</div><!-- end phases -->
+
+<!-- ══════════ TOOLS ══════════ -->
+<div class="tools-section reveal">
+  <div class="tools-title">Ekosistem & Araçlar</div>
+  <div class="tools-sub">React Native geliştirme yaparken hayatını kolaylaştıracak kütüphaneler</div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <span class="tool-card-icon">🧭</span>
+      <div class="tool-card-name">React Navigation</div>
+      <div class="tool-card-desc">Navigasyon için endüstri standardı kütüphane</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">⚡</span>
+      <div class="tool-card-name">Reanimated 3</div>
+      <div class="tool-card-desc">UI thread'de çalışan animasyon kütüphanesi</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🗃</span>
+      <div class="tool-card-name">Zustand</div>
+      <div class="tool-card-desc">Minimal ve hızlı global state yönetimi</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🔄</span>
+      <div class="tool-card-name">TanStack Query</div>
+      <div class="tool-card-desc">Sunucu state, cache ve senkronizasyon</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">💾</span>
+      <div class="tool-card-name">MMKV</div>
+      <div class="tool-card-desc">AsyncStorage'dan 30x hızlı yerel depolama</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🎨</span>
+      <div class="tool-card-name">NativeWind</div>
+      <div class="tool-card-desc">Tailwind CSS sözdizimiyle React Native styling</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🗺</span>
+      <div class="tool-card-name">react-native-maps</div>
+      <div class="tool-card-desc">Google Maps ve Apple Maps entegrasyonu</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🛡</span>
+      <div class="tool-card-name">Expo Secure Store</div>
+      <div class="tool-card-desc">Token ve hassas veri için şifreli depolama</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🐛</span>
+      <div class="tool-card-name">Sentry</div>
+      <div class="tool-card-desc">Production'da hata izleme ve crash raporlama</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🧪</span>
+      <div class="tool-card-name">Detox</div>
+      <div class="tool-card-desc">React Native için E2E test framework'ü</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">📦</span>
+      <div class="tool-card-name">EAS Build</div>
+      <div class="tool-card-desc">Expo'nun cloud build ve deploy servisi</div>
+    </div>
+    <div class="tool-card">
+      <span class="tool-card-icon">🔥</span>
+      <div class="tool-card-name">Firebase</div>
+      <div class="tool-card-desc">Auth, Firestore, Analytics, Push tümleşik</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <span class="footer-brand">React Native Roadmap</span>
+  <span class="footer-meta">8 Faz · 4–10 Ay · Sıfırdan App Store'a</span>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.querySelectorAll('a,button,.ph-head,.proj-tag,.tl-node,.tool-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cursor.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cursor.classList.remove('big'));
+});
+(function moveCursor(){
+  cx+=(mx-cx)*0.15;
+  cy+=(my-cy)*0.15;
+  cursor.style.left=cx+'px';
+  cursor.style.top=cy+'px';
+  requestAnimationFrame(moveCursor);
+})();
+
+/* ── ACCORDION ── */
+function toggle(id){
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ── SCROLL REVEAL ── */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ── STAGGER PHASE CARDS ── */
+const cardObs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*80);
+      cardObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.05});
+document.querySelectorAll('.phase-card').forEach(el=>cardObs.observe(el));
+</script>
+</body>
+</html>

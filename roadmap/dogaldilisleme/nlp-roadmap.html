@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doğal Dil İşleme 0→100 Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,600&family=Manrope:wght@300;400;600;700;800&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:    #060d1a;
+  --bg2:   #09152a;
+  --bg3:   #0d1e3a;
+  --bg4:   #112348;
+  --panel: rgba(255,255,255,.03);
+  --glass: rgba(255,255,255,.06);
+
+  --ink:   #e8f4ff;
+  --ink2:  #8ab0d0;
+  --ink3:  #4a6a88;
+
+  --tl:  #00e5c8;   /* teal          */
+  --tl2: #33ffe0;   /* light teal    */
+  --tl3: rgba(0,229,200,.1);
+  --mn:  #5efbcf;   /* mint          */
+  --la:  #7b6bff;   /* lavender      */
+  --pk:  #ff6bba;   /* pink          */
+  --yw:  #ffe066;   /* yellow        */
+  --or:  #ff9b42;   /* orange        */
+  --rd:  #ff5566;   /* red           */
+
+  --bord:  rgba(0,229,200,.18);
+  --bord2: rgba(0,229,200,.07);
+  --bord3: rgba(123,107,255,.2);
+
+  --fh: 'Fraunces', serif;
+  --fb: 'Manrope', sans-serif;
+  --fm: 'Fragment Mono', monospace;
+  --r: 8px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb);overflow-x:hidden;cursor:none;}
+
+/* ── CURSOR ── */
+#cur {position:fixed;width:10px;height:10px;background:var(--tl);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .12s,height .12s;}
+#cur2{position:fixed;width:28px;height:28px;border:1.5px solid rgba(0,229,200,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+
+/* ── FLOATING WORDS BG ── */
+#word-canvas{position:fixed;inset:0;z-index:0;opacity:.07;pointer-events:none;}
+
+/* ── MESH ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 10%, rgba(0,229,200,.08) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(123,107,255,.07) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,107,186,.04) 0%,transparent 70%);
+}
+
+/* ── PAGE ── */
+.page{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px 100px;}
+
+/* ══════════ HERO ══════════ */
+.hero{padding:60px 0 48px;border-bottom:1px solid var(--bord);position:relative;overflow:hidden;}
+
+/* Floating speech bubble deco */
+.bubble-deco{
+  position:absolute;pointer-events:none;
+  border-radius:50% 50% 50% 4px;
+  border:1px solid;
+  opacity:.12;
+}
+
+.hero-kicker{
+  font-family:var(--fm);font-size:.63rem;letter-spacing:.22em;
+  color:var(--tl);display:flex;align-items:center;gap:10px;
+  margin-bottom:20px;animation:up .5s ease both;
+}
+.hero-kicker::before{content:'';width:28px;height:1px;background:var(--tl);}
+
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;}
+
+.hero-h{
+  font-family:var(--fh);
+  font-size:clamp(3.8rem,10vw,8.5rem);
+  font-weight:900;line-height:.88;
+  letter-spacing:-.03em;
+  animation:up .5s .07s ease both;
+}
+.hero-h .l1{display:block;color:var(--ink);}
+.hero-h .l2{display:block;color:var(--tl);font-style:italic;text-shadow:0 0 40px rgba(0,229,200,.35);}
+.hero-h .l3{display:block;color:transparent;-webkit-text-stroke:1px rgba(232,244,255,.12);}
+
+.hero-right{
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid var(--bord);flex-shrink:0;background:var(--bg2);
+  position:relative;overflow:hidden;
+  animation:up .5s .14s ease both;
+}
+.hero-right::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--tl),var(--la),var(--pk));}
+.hstat{padding:13px 20px;border-bottom:1px solid var(--bord);text-align:center;}
+.hstat:last-child{border-bottom:none;}
+.hstat-n{font-family:var(--fh);font-size:2.5rem;font-weight:700;color:var(--tl);line-height:1;}
+.hstat-l{font-family:var(--fm);font-size:.5rem;letter-spacing:.15em;color:var(--ink3);margin-top:3px;}
+
+.hero-desc{margin-top:22px;font-size:.9rem;color:var(--ink2);max-width:560px;line-height:1.8;animation:up .5s .21s ease both;}
+.hero-desc strong{color:var(--ink);}
+
+/* ══════════ ZIHNIYET STRIP ══════════ */
+.mind-strip{
+  display:grid;grid-template-columns:160px 1fr;
+  border:1px solid var(--bord);border-top:none;
+  animation:up .5s .26s ease both;
+}
+.ms-head{
+  padding:16px 20px;border-right:1px solid var(--bord);
+  font-family:var(--fh);font-size:1.3rem;font-style:italic;
+  color:var(--tl);display:flex;align-items:center;
+}
+.ms-items{display:flex;}
+.ms-i{flex:1;padding:10px 14px;border-right:1px solid var(--bord);display:flex;align-items:center;gap:10px;transition:background .2s;}
+.ms-i:last-child{border-right:none;}
+.ms-i:hover{background:var(--tl3);}
+.ms-icon{font-size:1.4rem;flex-shrink:0;}
+.ms-t{font-size:.78rem;line-height:1.35;color:var(--ink2);}
+.ms-t strong{color:var(--ink);display:block;font-size:.82rem;}
+
+/* ══════════ PHASE STRIP ══════════ */
+.phases{
+  display:grid;grid-template-columns:repeat(12,1fr);
+  border:1px solid var(--bord);border-top:none;
+  animation:up .5s .3s ease both;
+}
+.ph{
+  padding:10px 4px;border-right:1px solid var(--bord);
+  cursor:pointer;text-align:center;position:relative;overflow:hidden;transition:background .2s;
+}
+.ph:last-child{border-right:none;}
+.ph::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--pc,var(--tl));transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.ph:hover{background:var(--tl3);}
+.ph:hover::after{transform:scaleX(1);}
+.ph-n{font-family:var(--fh);font-size:1.3rem;font-weight:700;color:rgba(255,255,255,.07);line-height:1;transition:color .2s;}
+.ph:hover .ph-n{color:var(--pc,var(--tl));}
+.ph-lbl{font-family:var(--fm);font-size:.44rem;letter-spacing:.08em;color:var(--ink3);margin-top:3px;}
+
+/* ══════════ MAIN ══════════ */
+.main{display:grid;grid-template-columns:1fr 288px;gap:0;border:1px solid var(--bord);border-top:none;}
+
+/* ══════════ SECTIONS ══════════ */
+.secs{border-right:1px solid var(--bord);}
+.sec{border-bottom:1px solid var(--bord);opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;}
+.sec.in{opacity:1;transform:none;}
+.sec:last-child{border-bottom:none;}
+
+.sec-hd{display:grid;grid-template-columns:58px 1fr auto;cursor:pointer;transition:background .2s;align-items:start;}
+.sec-hd:hover{background:var(--tl3);}
+.sec-hd.open{background:var(--bg3);}
+
+.sec-nc{padding:17px 0 0 15px;display:flex;flex-direction:column;gap:4px;}
+.sec-num{font-family:var(--fh);font-size:2rem;font-weight:700;color:rgba(255,255,255,.07);line-height:1;transition:color .2s;}
+.sec-hd.open .sec-num,.sec-hd:hover .sec-num{color:var(--sc,var(--tl));}
+.sec-wave{width:20px;height:2px;background:var(--sc,var(--tl));transform:scaleX(0);transform-origin:left;transition:transform .3s;border-radius:1px;}
+.sec-hd.open .sec-wave,.sec-hd:hover .sec-wave{transform:scaleX(1);}
+
+.sec-info{padding:17px 11px;}
+.sec-lv{font-family:var(--fm);font-size:.52rem;letter-spacing:.2em;color:var(--sc,var(--tl));margin-bottom:4px;}
+.sec-time{font-family:var(--fm);font-size:.54rem;padding:1px 7px;background:rgba(0,229,200,.12);color:var(--tl);border:1px solid rgba(0,229,200,.2);display:inline-block;margin-bottom:5px;letter-spacing:.06em;}
+.sec-title{font-family:var(--fh);font-size:1.15rem;font-weight:700;line-height:1.15;}
+.sec-sub{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:3px;line-height:1.4;}
+.sec-arr{padding:17px 13px 0 0;font-size:.58rem;color:var(--ink3);transition:transform .3s;align-self:flex-start;}
+.sec-hd.open .sec-arr{transform:rotate(90deg);color:var(--sc,var(--tl));}
+
+.sec-body{display:none;border-top:1px solid var(--bord);}
+.sec-body.open{display:block;animation:bIn .25s ease;}
+@keyframes bIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.sec-in{padding:20px 20px 24px;}
+
+/* ── SPEECH BUBBLE QUOTE ── */
+.quote-bubble{
+  position:relative;padding:14px 16px;
+  background:var(--bg4);border:1px solid var(--bord);
+  border-radius:12px 12px 12px 4px;
+  font-style:italic;font-size:.85rem;color:var(--ink2);
+  line-height:1.65;margin-bottom:14px;
+}
+.quote-bubble::before{
+  content:'';position:absolute;left:-1px;bottom:-12px;
+  border-width:0 0 12px 12px;border-style:solid;
+  border-color:transparent transparent transparent var(--bord);
+}
+.quote-bubble strong{color:var(--tl);font-style:normal;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.chip{font-family:var(--fm);font-size:.6rem;padding:3px 10px;border:1px solid var(--bord);color:var(--ink3);background:var(--panel);transition:all .18s;cursor:default;border-radius:999px;}
+.chip:hover{background:var(--tl);color:var(--bg);border-color:var(--tl);}
+
+/* ── CODE ── */
+.code{
+  background:rgba(0,0,0,.55);border:1px solid rgba(0,229,200,.1);
+  border-left:3px solid var(--sc,var(--tl));
+  border-radius:0 var(--r) var(--r) 0;
+  font-family:var(--fm);font-size:.71rem;line-height:1.85;
+  padding:14px 16px;margin:11px 0;overflow-x:auto;position:relative;
+}
+.code::after{content:attr(data-lang);position:absolute;top:6px;right:10px;font-size:.5rem;letter-spacing:.12em;color:var(--ink3);}
+.kw{color:#93c5fd;} .fn{color:#86efac;} .str{color:#fde68a;}
+.cm{color:#1e3a50;font-style:italic;} .op{color:var(--tl);}
+.num{color:#fdba74;} .cls{color:#c4b5fd;} .hi2{color:var(--tl2);}
+.str2{color:var(--mn);}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0;}
+
+.card{padding:11px 13px;border:1px solid var(--bord);background:var(--panel);transition:all .2s;border-left:3px solid var(--sc,var(--tl));position:relative;overflow:hidden;border-radius:0 var(--r) var(--r) 0;}
+.card:hover{border-color:var(--sc,var(--tl));background:var(--tl3);transform:translateY(-2px);}
+.card-t{font-family:var(--fm);font-size:.7rem;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.card-d{font-size:.69rem;color:var(--ink3);line-height:1.45;}
+
+/* ── NOTE ── */
+.note{padding:11px 14px;margin:10px 0;font-size:.79rem;line-height:1.65;color:var(--ink2);border-left:3px solid var(--nc,var(--tl));background:rgba(0,229,200,.04);border-radius:0 var(--r) var(--r) 0;}
+.note strong{color:var(--nc,var(--tl2));}
+.note.la{--nc:var(--la);background:rgba(123,107,255,.05);}
+.note.pk{--nc:var(--pk);background:rgba(255,107,186,.05);}
+.note.yw{--nc:var(--yw);background:rgba(255,224,102,.05);}
+.note.or{--nc:var(--or);background:rgba(255,155,66,.05);}
+
+/* ── TARGET ── */
+.target{display:flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid var(--bord);border-left:3px solid var(--sc,var(--tl));font-family:var(--fm);font-size:.68rem;margin-top:11px;color:var(--ink3);border-radius:0 var(--r) var(--r) 0;}
+.target::before{content:'▸';color:var(--sc,var(--tl));flex-shrink:0;}
+
+/* ── PROJ BADGES ── */
+.proj-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pb{display:flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--bord);background:var(--panel);font-size:.73rem;font-weight:600;transition:all .18s;cursor:default;border-radius:var(--r);}
+.pb:hover{background:var(--tl);color:var(--bg);border-color:var(--tl);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:.72rem;margin:10px 0;}
+.tbl th{background:var(--bg4);padding:7px 10px;text-align:left;font-family:var(--fm);font-size:.55rem;letter-spacing:.14em;color:var(--ink3);border-bottom:1px solid var(--bord);}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--bord2);color:var(--ink2);}
+.tbl tr:hover td{background:var(--tl3);}
+.hi{color:var(--tl);font-family:var(--fm);}
+.hi3{color:var(--la);font-family:var(--fm);}
+.hi4{color:var(--mn);font-family:var(--fm);}
+
+/* ── NLP PIPELINE VISUAL ── */
+.nlp-pipe{display:flex;align-items:center;gap:0;overflow-x:auto;padding:12px 0;margin:12px 0;}
+.pipe-step{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  flex-shrink:0;
+}
+.pipe-box{
+  padding:8px 12px;border:1px solid var(--bord);background:var(--bg4);
+  font-family:var(--fm);font-size:.62rem;text-align:center;color:var(--tl);
+  transition:all .2s;cursor:default;white-space:nowrap;border-radius:var(--r);
+}
+.pipe-box:hover{background:var(--tl3);border-color:var(--tl);}
+.pipe-in{font-family:var(--fm);font-size:.52rem;color:var(--ink3);letter-spacing:.08em;}
+.pipe-arrow{font-size:1.1rem;color:var(--tl);flex-shrink:0;padding:0 5px;margin-top:-16px;opacity:.5;}
+
+/* ── TRANSFORMER DIAGRAM ── */
+.transf{display:grid;grid-template-columns:1fr 40px 1fr;gap:8px;margin:12px 0;align-items:start;}
+.transf-block{border:1px solid var(--bord3);border-radius:var(--r);overflow:hidden;}
+.transf-head{background:var(--la);color:var(--bg);font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;padding:6px 10px;text-align:center;font-weight:700;}
+.transf-layers{display:flex;flex-direction:column;}
+.transf-layer{padding:6px 10px;border-bottom:1px solid var(--bord3);font-family:var(--fm);font-size:.62rem;color:var(--ink2);text-align:center;transition:background .2s;}
+.transf-layer:last-child{border-bottom:none;}
+.transf-layer:hover{background:rgba(123,107,255,.08);}
+.transf-arrow{display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--tl);padding-top:24px;}
+
+/* ── LLMS TABLE ── */
+.llm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:11px 0;}
+.llm-card{padding:12px;border:1px solid var(--bord);background:var(--panel);transition:all .2s;border-radius:var(--r);position:relative;overflow:hidden;}
+.llm-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lc,var(--tl));}
+.llm-card:hover{background:var(--tl3);border-color:var(--tl);}
+.llm-name{font-family:var(--fh);font-size:1.1rem;font-weight:700;color:var(--lc,var(--tl));margin-bottom:4px;}
+.llm-maker{font-family:var(--fm);font-size:.56rem;color:var(--ink3);letter-spacing:.1em;margin-bottom:6px;}
+.llm-desc{font-size:.7rem;color:var(--ink2);line-height:1.4;}
+
+/* ──────── SIDEBAR ──────── */
+.sidebar{background:var(--bg2);}
+.sb{padding:17px 15px;border-bottom:1px solid var(--bord);}
+.sb:last-child{border-bottom:none;}
+.sb-t{font-family:var(--fm);font-size:.54rem;letter-spacing:.2em;color:var(--ink3);margin-bottom:12px;display:flex;align-items:center;gap:6px;text-transform:uppercase;}
+.sb-t::before{content:'//';color:var(--tl);}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;}
+.tlr{display:grid;grid-template-columns:46px 1fr;gap:7px;padding:8px 0;border-bottom:1px solid var(--bord2);align-items:center;}
+.tlr:last-child{border-bottom:none;}
+.tld{font-family:var(--fh);font-size:1.4rem;font-weight:700;color:var(--tl);line-height:1;text-align:center;}
+.tlu{font-family:var(--fm);font-size:.43rem;color:var(--ink3);display:block;text-align:center;}
+.tln{font-size:.8rem;font-weight:700;}
+.tls{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* Skills */
+.skills{display:flex;flex-direction:column;gap:7px;}
+.skr{display:flex;align-items:center;gap:7px;}
+.skl{font-family:var(--fm);font-size:.58rem;color:var(--ink2);width:84px;flex-shrink:0;}
+.skt{flex:1;height:3px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden;}
+.skf{height:100%;background:var(--sc2,var(--tl));width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+.skp{font-family:var(--fm);font-size:.55rem;color:var(--ink3);width:26px;text-align:right;flex-shrink:0;}
+
+/* Specializations */
+.spec-list{display:flex;flex-direction:column;gap:6px;}
+.spec{padding:10px 11px;border:1px solid var(--bord);background:var(--panel);transition:all .2s;border-left:3px solid var(--spc,var(--tl));border-radius:0 var(--r) var(--r) 0;}
+.spec:hover{background:var(--tl3);border-color:var(--spc,var(--tl));}
+.spec-n{font-size:.8rem;font-weight:700;}
+.spec-d{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* Eval metrics */
+.metric-list{display:flex;flex-direction:column;gap:5px;}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border:1px solid var(--bord);background:var(--panel);transition:all .18s;border-radius:var(--r);}
+.metric:hover{background:var(--tl3);border-color:var(--tl);}
+.metric-name{font-family:var(--fm);font-size:.66rem;color:var(--ink);}
+.metric-task{font-family:var(--fm);font-size:.58rem;color:var(--ink3);}
+
+/* Reading list */
+.read-list{display:flex;flex-direction:column;gap:5px;}
+.read-item{padding:8px 10px;border:1px solid var(--bord);background:var(--panel);transition:all .18s;border-radius:var(--r);}
+.read-item:hover{background:rgba(123,107,255,.06);border-color:var(--la);}
+.read-year{font-family:var(--fm);font-size:.52rem;color:var(--la);margin-bottom:2px;}
+.read-title{font-size:.74rem;font-weight:700;line-height:1.2;}
+.read-why{font-family:var(--fm);font-size:.58rem;color:var(--ink3);margin-top:2px;}
+
+/* ══════════ BOTTOM ══════════ */
+.bottom{border:1px solid var(--bord);border-top:none;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.bottom::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(0,229,200,.05) 0%,transparent 70%);}
+.bot-l,.bot-r{padding:40px 34px;position:relative;z-index:1;}
+.bot-l{border-right:1px solid var(--bord);background:rgba(0,229,200,.02);}
+.bot-h{font-family:var(--fh);font-size:clamp(1.8rem,4vw,3.2rem);font-weight:700;line-height:.95;margin-bottom:14px;}
+.bot-h em{font-style:italic;color:var(--tl);}
+.bot-p{font-size:.84rem;color:var(--ink2);line-height:1.75;margin-bottom:20px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;font-family:var(--fh);font-size:.8rem;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border-radius:var(--r);}
+.btn-tl{background:var(--tl);color:var(--bg);border:none;}
+.btn-tl:hover{background:var(--tl2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,229,200,.25);}
+.btn-gh{background:transparent;border:1px solid var(--bord);color:var(--ink2);margin-left:7px;border-radius:var(--r);}
+.btn-gh:hover{border-color:var(--tl);color:var(--tl);}
+.plan-list{display:flex;flex-direction:column;gap:0;}
+.plan-item{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--bord2);align-items:flex-start;}
+.plan-item:last-child{border-bottom:none;}
+.plan-n{font-family:var(--fh);font-size:1.5rem;font-weight:700;color:rgba(0,229,200,.2);line-height:1;flex-shrink:0;width:28px;transition:color .2s;}
+.plan-item:hover .plan-n{color:var(--tl);}
+.plan-t{font-size:.82rem;font-weight:700;color:var(--ink);}
+.plan-d{font-family:var(--fm);font-size:.6rem;color:var(--ink3);margin-top:2px;line-height:1.4;}
+
+/* FOOTER */
+footer{padding:16px 0;display:flex;justify-content:space-between;font-family:var(--fm);font-size:.58rem;color:var(--ink3);border-top:1px solid var(--bord);}
+footer span:first-child{color:var(--tl);}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+</style>
+</head>
+<body>
+
+<canvas id="word-canvas"></canvas>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- Floating bubble deco -->
+<div class="bubble-deco" style="width:120px;height:90px;top:80px;right:8%;border-color:rgba(0,229,200,.3);animation:float 8s ease-in-out infinite;"></div>
+<div class="bubble-deco" style="width:70px;height:55px;top:200px;right:15%;border-color:rgba(123,107,255,.2);animation:float 11s ease-in-out infinite 2s;border-radius:4px 50% 50% 50%;"></div>
+<div class="bubble-deco" style="width:90px;height:70px;top:350px;left:2%;border-color:rgba(255,107,186,.15);animation:float 9s ease-in-out infinite 1s;border-radius:50% 50% 4px 50%;"></div>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-kicker">Doğal Dil İşleme Yol Haritası · 0 → 100</div>
+  <div class="hero-grid">
+    <div>
+      <h1 class="hero-h">
+        <span class="l1">DOĞAL DİL</span>
+        <span class="l2">İŞLEME</span>
+        <span class="l3">ROADMAP</span>
+      </h1>
+      <p class="hero-desc">
+        Klasik NLP'den <strong>LLM mühendisliğine</strong> — tokenizasyondan <strong>Transformer</strong>'a,
+        NLTK'dan <strong>HuggingFace</strong>'e. Dil + istatistik + matematik + yazılım =
+        <strong>modern yapay zeka.</strong>
+      </p>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="hstat-n" id="s1">0</div><div class="hstat-l">AŞAMA</div></div>
+      <div class="hstat"><div class="hstat-n" id="s2">0</div><div class="hstat-l">AY PLAN</div></div>
+      <div class="hstat"><div class="hstat-n" id="s3">0</div><div class="hstat-l">PROJE</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ ZIHNIYET ══ -->
+<div class="mind-strip">
+  <div class="ms-head">Zihniyet</div>
+  <div class="ms-items">
+    <div class="ms-i"><div class="ms-icon">🔤</div><div class="ms-t"><strong>Dil</strong>Metin anlama ve üretme</div></div>
+    <div class="ms-i"><div class="ms-icon">📊</div><div class="ms-t"><strong>İstatistik</strong>Olasılık, dağılımlar</div></div>
+    <div class="ms-i"><div class="ms-icon">➗</div><div class="ms-t"><strong>Matematik</strong>Lineer cebir, türev</div></div>
+    <div class="ms-i"><div class="ms-icon">💻</div><div class="ms-t"><strong>Yazılım</strong>Python, API, deploy</div></div>
+    <div class="ms-i" style="background:rgba(0,229,200,.04);border-left:1px solid var(--bord)"><div class="ms-icon">🚀</div><div class="ms-t"><strong>LLM Devri</strong>GPT · BERT · RAG · Fine-tune</div></div>
+  </div>
+</div>
+
+<!-- ══ PHASE STRIP ══ -->
+<div class="phases">
+  <div class="ph" style="--pc:var(--tl)"><div class="ph-n">1</div><div class="ph-lbl" style="color:var(--tl)">PYTHON</div></div>
+  <div class="ph" style="--pc:var(--tl)"><div class="ph-n">2</div><div class="ph-lbl" style="color:var(--tl)">MATEMATİK</div></div>
+  <div class="ph" style="--pc:var(--mn)"><div class="ph-n">3</div><div class="ph-lbl" style="color:var(--mn)">ML TEMELİ</div></div>
+  <div class="ph" style="--pc:var(--la)"><div class="ph-n">4</div><div class="ph-lbl" style="color:var(--la)">KLASİK NLP</div></div>
+  <div class="ph" style="--pc:var(--la)"><div class="ph-n">5</div><div class="ph-lbl" style="color:var(--la)">DEEP NLP</div></div>
+  <div class="ph" style="--pc:var(--pk)"><div class="ph-n">6</div><div class="ph-lbl" style="color:var(--pk)">TRANSFORMER</div></div>
+  <div class="ph" style="--pc:var(--pk)"><div class="ph-n">7</div><div class="ph-lbl" style="color:var(--pk)">🤗 HF</div></div>
+  <div class="ph" style="--pc:var(--yw)"><div class="ph-n">8</div><div class="ph-lbl" style="color:var(--yw)">İLERİ NLP</div></div>
+  <div class="ph" style="--pc:var(--yw)"><div class="ph-n">9</div><div class="ph-lbl" style="color:var(--yw)">LLM MÜH.</div></div>
+  <div class="ph" style="--pc:var(--or)"><div class="ph-n">10</div><div class="ph-lbl" style="color:var(--or)">DEPLOY</div></div>
+  <div class="ph" style="--pc:var(--or)"><div class="ph-n">11</div><div class="ph-lbl" style="color:var(--or)">PROJELER</div></div>
+  <div class="ph" style="--pc:var(--rd)"><div class="ph-n">12</div><div class="ph-lbl" style="color:var(--rd)">UZMANLIK</div></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── B1+2: PYTHON + MATEMATİK ──── -->
+<div class="sec">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--tl)">
+    <div class="sec-nc"><div class="sec-num">1–2</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">0–3 AY</div>
+      <div class="sec-title">Python + Matematik & İstatistik Temeli</div>
+      <div class="sec-sub">OOP · NumPy · Pandas · Lineer Cebir · Olasılık · Gradient</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body open" style="--sc:var(--tl)">
+    <div class="sec-in">
+      <div class="chips"><span class="chip">Python OOP</span><span class="chip">NumPy</span><span class="chip">Pandas</span><span class="chip">Lineer Cebir</span><span class="chip">Olasılık</span><span class="chip">Türev</span><span class="chip">Gradient</span></div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># NLP için kritik Python becerileri</span>
+<span class="kw">import</span> numpy  <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span>   collections <span class="kw">import</span> Counter
+
+<span class="cm"># Metin ile çalışma — temel operasyonlar</span>
+<span class="fn">metin</span> = <span class="str">"NLP çok ilginç bir alan"</span>
+<span class="fn">kelimeler</span> = <span class="fn">metin</span>.<span class="fn">lower</span>().<span class="fn">split</span>()
+<span class="fn">frekans</span>   = Counter(<span class="fn">kelimeler</span>)
+
+<span class="cm"># Vektör uzayı — embedding temeli</span>
+<span class="fn">v1</span> = np.<span class="fn">array</span>([<span class="num">0.2</span>, <span class="num">0.8</span>, <span class="num">0.1</span>])  <span class="cm"># "kedi" embedding</span>
+<span class="fn">v2</span> = np.<span class="fn">array</span>([<span class="num">0.3</span>, <span class="num">0.7</span>, <span class="num">0.2</span>])  <span class="cm"># "köpek" embedding</span>
+
+<span class="cm"># Cosine similarity — kelime benzerliği</span>
+<span class="fn">cos_sim</span> = np.<span class="fn">dot</span>(<span class="fn">v1</span>, <span class="fn">v2</span>) / (np.<span class="fn">linalg.norm</span>(<span class="fn">v1</span>) * np.<span class="fn">linalg.norm</span>(<span class="fn">v2</span>))
+
+<span class="cm"># Softmax — dil modellerinin çıkış katmanı</span>
+<span class="kw">def</span> <span class="fn">softmax</span>(<span class="fn">x</span>: np.ndarray) -> np.ndarray:
+    <span class="fn">e_x</span> = np.<span class="fn">exp</span>(<span class="fn">x</span> - np.<span class="fn">max</span>(<span class="fn">x</span>))  <span class="cm"># numerik stabilite için max çıkar</span>
+    <span class="kw">return</span> <span class="fn">e_x</span> / <span class="fn">e_x</span>.<span class="fn">sum</span>()</div>
+
+      <div class="note"><strong>💡 Neden cosine similarity?</strong> Kelime vektörlerinin uzunluğu (frekans) önemli değil, yönleri (anlam) önemli. "kedi" ve "köpek" benzer anlam → vektörleri küçük açılı → cos(θ) ≈ 1. NLP'nin temel aritmetiği bu.</div>
+      <div class="target">Hedef: NumPy ile cosine similarity hesapla. Pandas ile metin verisi analiz et. OOP ile tokenizer yaz.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B3: ML TEMELİ ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--mn)">
+    <div class="sec-nc"><div class="sec-num">3</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">1–3 AY</div>
+      <div class="sec-title">Makine Öğrenmesi Temeli</div>
+      <div class="sec-sub">Supervised · Classification · Overfitting · Cross-Val · Scikit-learn</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--mn)">
+    <div class="sec-in">
+      <div class="g4">
+        <div class="card" style="--sc:var(--mn)"><div class="card-t">Logistic Regression</div><div class="card-d">İlk text classifier. Spam/ham, pozitif/negatif. Basit ama güçlü baseline.</div></div>
+        <div class="card" style="--sc:var(--mn)"><div class="card-t">Naive Bayes</div><div class="card-d">Metin sınıflandırmanın klasiği. P(sınıf|kelimeler). E-posta filtreleme.</div></div>
+        <div class="card" style="--sc:var(--mn)"><div class="card-t">SVM</div><div class="card-d">Yüksek boyutlu metin verisi için güçlü. TF-IDF + LinearSVC kombinasyonu.</div></div>
+        <div class="card" style="--sc:var(--mn)"><div class="card-t">Random Forest</div><div class="card-d">Feature importance ile hangi kelimeler önemli? Yorumlanabilir.</div></div>
+      </div>
+      <div class="proj-row">
+        <div class="pb">📧 Spam Sınıflandırma</div>
+        <div class="pb">😊 Basit Sentiment Analysis</div>
+        <div class="pb">📰 Haber Kategorizasyonu</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B4: KLASİK NLP ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--la)">
+    <div class="sec-nc"><div class="sec-num">4</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">3–5 AY</div>
+      <div class="sec-title">Klasik NLP — Metin İşleme ve Feature Extraction</div>
+      <div class="sec-sub">Tokenization · BoW · TF-IDF · Stemming · Lemmatization · NLTK · spaCy</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--la)">
+    <div class="sec-in">
+
+      <!-- NLP Pipeline -->
+      <div style="font-family:var(--fm);font-size:.56rem;letter-spacing:.15em;color:var(--la);margin-bottom:8px;">// KLASİK NLP PIPELINE</div>
+      <div class="nlp-pipe">
+        <div class="pipe-step"><div class="pipe-box">Ham<br>Metin</div><div class="pipe-in">GİRİŞ</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">Temizleme<br>lowercase/regex</div><div class="pipe-in">CLEAN</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">Tokenization<br>kelime/cümle</div><div class="pipe-in">TOKEN</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">Stopword<br>Removal</div><div class="pipe-in">FILTER</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">Stem/<br>Lemma</div><div class="pipe-in">NORMALIZE</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">TF-IDF<br>BoW</div><div class="pipe-in">VECTORIZE</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step"><div class="pipe-box">ML<br>Model</div><div class="pipe-in">OUTPUT</div></div>
+      </div>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># spaCy — modern NLP kütüphanesi</span>
+<span class="kw">import</span> spacy
+<span class="fn">nlp</span> = spacy.<span class="fn">load</span>(<span class="str">"tr_core_news_md"</span>)  <span class="cm"># Türkçe model</span>
+
+<span class="fn">doc</span> = <span class="fn">nlp</span>(<span class="str">"Ahmet dün İstanbul'dan geldi ve bana güzel haberler verdi."</span>)
+<span class="kw">for</span> <span class="fn">token</span> <span class="kw">in</span> <span class="fn">doc</span>:
+    <span class="op">print</span>(<span class="str">f"{token.text:15} {token.lemma_:15} {token.pos_:8} {token.dep_}"</span>)
+
+<span class="cm"># Named Entity Recognition</span>
+<span class="kw">for</span> <span class="fn">ent</span> <span class="kw">in</span> <span class="fn">doc</span>.ents:
+    <span class="op">print</span>(<span class="str">f"{ent.text:20} → {ent.label_}"</span>)
+<span class="cm"># Ahmet → PERSON, İstanbul → GPE</span>
+
+<span class="cm"># TF-IDF — en iyi klasik vektörleme</span>
+<span class="kw">from</span> sklearn.feature_extraction.text <span class="kw">import</span> TfidfVectorizer
+
+<span class="fn">vect</span> = TfidfVectorizer(max_features=<span class="num">10000</span>, ngram_range=(<span class="num">1</span>,<span class="num">2</span>), sublinear_tf=<span class="kw">True</span>)
+<span class="fn">X</span>    = <span class="fn">vect</span>.<span class="fn">fit_transform</span>(<span class="fn">corpus</span>)  <span class="cm"># sparse matrix</span>
+<span class="fn">top_feats</span> = <span class="fn">vect</span>.<span class="fn">get_feature_names_out</span>()[:<span class="num">10</span>]</div>
+
+      <div class="note la"><strong>spaCy vs NLTK:</strong> NLTK = araştırma/öğrenme. spaCy = üretim. spaCy 10x daha hızlı, Türkçe model mevcut (tr_core_news), pipeline tabanlı, endüstri standardı. Baştan spaCy öğren.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B5: DEEP NLP ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--la)">
+    <div class="sec-nc"><div class="sec-num">5</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">4–6 AY</div>
+      <div class="sec-title">Deep Learning NLP — RNN/LSTM ve Word Embeddings</div>
+      <div class="sec-sub">Word2Vec · GloVe · FastText · RNN · LSTM · GRU · Sequence-to-Sequence</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--la)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># Word2Vec mantığı — sıfırdan anlama</span>
+<span class="cm"># "Kral - Erkek + Kadın ≈ Kraliçe"</span>
+<span class="kw">from</span> gensim.models <span class="kw">import</span> Word2Vec
+
+<span class="fn">model</span> = Word2Vec(
+    sentences=<span class="fn">tokenized_corpus</span>,
+    vector_size=<span class="num">100</span>,    <span class="cm"># embedding boyutu</span>
+    window=<span class="num">5</span>,           <span class="cm"># bağlam penceresi</span>
+    min_count=<span class="num">2</span>,        <span class="cm"># min frekans</span>
+    workers=<span class="num">4</span>,          <span class="cm"># paralel eğitim</span>
+    sg=<span class="num">1</span>                 <span class="cm"># Skip-gram (vs CBOW)</span>
+)
+<span class="fn">model</span>.wv.<span class="fn">most_similar</span>(<span class="str">"türkiye"</span>, topn=<span class="num">5</span>)
+<span class="fn">model</span>.wv.<span class="fn">most_similar</span>(positive=[<span class="str">"kral"</span>,<span class="str">"kadın"</span>], negative=[<span class="str">"erkek"</span>])
+
+<span class="cm"># LSTM ile sentiment analysis</span>
+<span class="kw">import</span> torch
+<span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+
+<span class="kw">class</span> <span class="cls">SentimentLSTM</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab_sz, emb_dim, hidden, n_layers):
+        <span class="fn">super</span>().__init__()
+        self.embed = nn.Embedding(vocab_sz, emb_dim, padding_idx=<span class="num">0</span>)
+        self.lstm  = nn.LSTM(emb_dim, hidden, n_layers,
+                             batch_first=<span class="kw">True</span>, dropout=<span class="num">0.3</span>, bidirectional=<span class="kw">True</span>)
+        self.fc    = nn.Linear(hidden * <span class="num">2</span>, <span class="num">1</span>)
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        <span class="fn">e</span> = self.embed(x)
+        <span class="fn">out</span>, (<span class="fn">h</span>, _) = self.lstm(e)
+        <span class="fn">h_cat</span> = torch.<span class="fn">cat</span>([<span class="fn">h</span>[-<span class="num">2</span>], <span class="fn">h</span>[-<span class="num">1</span>]], dim=<span class="num">1</span>)
+        <span class="kw">return</span> torch.<span class="fn">sigmoid</span>(self.fc(<span class="fn">h_cat</span>).<span class="fn">squeeze</span>())</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--la)"><div class="card-t">Word2Vec (2013)</div><div class="card-d">CBOW vs Skip-gram. Kelime → 300-boyutlu vektör. Anlamsal aritmetik mümkün.</div></div>
+        <div class="card" style="--sc:var(--la)"><div class="card-t">GloVe (2014)</div><div class="card-d">Global co-occurrence istatistiği. Kelime çiftlerinin birlikte görülme frekansı.</div></div>
+        <div class="card" style="--sc:var(--la)"><div class="card-t">FastText (2016)</div><div class="card-d">Subword (karakter n-gram). Türkçe gibi morfolojik diller için mükemmel.</div></div>
+      </div>
+
+      <div class="proj-row">
+        <div class="pb">📝 Metin Üretme (LSTM)</div>
+        <div class="pb">🎬 Film Yorumu Analizi</div>
+        <div class="pb">🔄 Seq2Seq Çeviri</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B6: TRANSFORMER ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--pk)">
+    <div class="sec-nc"><div class="sec-num">6</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">5–7 AY</div>
+      <div class="sec-title">Transformer Mimarisi — EN KRİTİK KISIM</div>
+      <div class="sec-sub">Attention · Self-Attention · Multi-Head · Positional Encoding · BERT · GPT · T5</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--pk)">
+    <div class="sec-in">
+
+      <div class="quote-bubble">"<strong>Attention Is All You Need</strong>" (Vaswani et al., 2017) — Bu 8 sayfalık paper modern yapay zekanın dönüm noktasıdır. ChatGPT, BERT, T5, LLaMA, Stable Diffusion — hepsi bu mimari üstünde. Okuyun.</div>
+
+      <!-- Transformer Architecture -->
+      <div class="transf">
+        <div class="transf-block">
+          <div class="transf-head" style="background:var(--la)">ENCODER (BERT tipi)</div>
+          <div class="transf-layers">
+            <div class="transf-layer">Input Embedding + Positional Enc.</div>
+            <div class="transf-layer">Multi-Head Self-Attention</div>
+            <div class="transf-layer">Add & Norm (Residual)</div>
+            <div class="transf-layer">Feed-Forward Network</div>
+            <div class="transf-layer">Add & Norm</div>
+            <div class="transf-layer">× N katman (BERT: 12-24)</div>
+            <div class="transf-layer" style="color:var(--la);font-weight:600">→ Kontekst Temsili</div>
+          </div>
+        </div>
+        <div class="transf-arrow">⇄</div>
+        <div class="transf-block">
+          <div class="transf-head" style="background:var(--pk)">DECODER (GPT tipi)</div>
+          <div class="transf-layers">
+            <div class="transf-layer">Output Embedding + Positional Enc.</div>
+            <div class="transf-layer">Masked Self-Attention</div>
+            <div class="transf-layer">Add & Norm</div>
+            <div class="transf-layer">Cross-Attention (Encoder-Decoder)</div>
+            <div class="transf-layer">Feed-Forward Network</div>
+            <div class="transf-layer">× N katman (GPT-3: 96)</div>
+            <div class="transf-layer" style="color:var(--pk);font-weight:600">→ Token Üretimi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="PYTORCH">
+<span class="cm"># Scaled Dot-Product Attention — Transformer'ın kalbi</span>
+<span class="kw">import</span> torch, math
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+
+<span class="kw">def</span> <span class="fn">attention</span>(Q, K, V, mask=<span class="kw">None</span>, dropout=<span class="kw">None</span>):
+    <span class="cm"># Q, K, V: (batch, heads, seq_len, d_head)</span>
+    <span class="fn">d_k</span>    = Q.size(-<span class="num">1</span>)
+    <span class="fn">scores</span> = torch.<span class="fn">matmul</span>(Q, K.<span class="fn">transpose</span>(-<span class="num">2</span>, -<span class="num">1</span>)) / math.<span class="fn">sqrt</span>(<span class="fn">d_k</span>)
+
+    <span class="kw">if</span> mask <span class="kw">is not</span> <span class="kw">None</span>:
+        <span class="fn">scores</span> = <span class="fn">scores</span>.<span class="fn">masked_fill</span>(mask == <span class="num">0</span>, <span class="fn">float</span>(<span class="str">"-inf"</span>))
+
+    <span class="fn">attn</span>   = F.<span class="fn">softmax</span>(<span class="fn">scores</span>, dim=-<span class="num">1</span>)   <span class="cm"># dikkat ağırlıkları</span>
+    <span class="kw">if</span> dropout: <span class="fn">attn</span> = dropout(<span class="fn">attn</span>)
+    <span class="kw">return</span> torch.<span class="fn">matmul</span>(<span class="fn">attn</span>, V), <span class="fn">attn</span>    <span class="cm"># output + weights</span>
+
+<span class="cm"># "attention head her şeye eşit dikkat etmez;"</span>
+<span class="cm"># "konuyla ilgili kelimelere daha fazla dikkat eder"</span></div>
+
+      <div class="llm-grid">
+        <div class="llm-card" style="--lc:var(--la)"><div class="llm-name">BERT</div><div class="llm-maker">GOOGLE · 2018</div><div class="llm-desc">Bidirectional encoder. Anlama odaklı. NER, QA, sınıflandırma için ideal. Masked LM ile eğitildi.</div></div>
+        <div class="llm-card" style="--lc:var(--tl)"><div class="llm-name">GPT-4</div><div class="llm-maker">OPENAI · 2023</div><div class="llm-desc">Decoder-only. Üretim odaklı. Autoregressive. Fine-tuning + RLHF. Sektörde standart.</div></div>
+        <div class="llm-card" style="--lc:var(--pk)"><div class="llm-name">T5</div><div class="llm-maker">GOOGLE · 2020</div><div class="llm-desc">Text-to-Text unified framework. Her NLP görevi metin→metin olarak formüle. Çeviri, özet, QA.</div></div>
+        <div class="llm-card" style="--lc:var(--mn)"><div class="llm-name">LLaMA 3</div><div class="llm-maker">META · 2024</div><div class="llm-desc">Açık kaynak, güçlü. Fine-tuning için ideal. LoRA ile az parametreyle eğit.</div></div>
+        <div class="llm-card" style="--lc:var(--yw)"><div class="llm-name">Mistral</div><div class="llm-maker">MISTRAL AI · 2023</div><div class="llm-desc">Verimli mimari. Sliding window attention. Türkçe dahil çok dil. Açık ağırlıklar.</div></div>
+        <div class="llm-card" style="--lc:var(--or)"><div class="llm-name">Gemma</div><div class="llm-maker">GOOGLE · 2024</div><div class="llm-desc">Hafif, verimli, açık. Edge deployment için uygun. Türkçe destekli.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B7: HUGGING FACE ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--pk)">
+    <div class="sec-nc"><div class="sec-num">7</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">6–8 AY</div>
+      <div class="sec-title">🤗 HuggingFace Ekosistemi</div>
+      <div class="sec-sub">transformers · datasets · tokenizers · PEFT · LoRA · Fine-tuning · Model Hub</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--pk)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># HuggingFace — NLP mühendisinin en önemli silahı</span>
+<span class="kw">from</span> transformers <span class="kw">import</span> (AutoTokenizer, AutoModelForSequenceClassification,
+                           TrainingArguments, Trainer, DataCollatorWithPadding)
+<span class="kw">from</span> datasets      <span class="kw">import</span> load_dataset
+<span class="kw">from</span> peft           <span class="kw">import</span> LoraConfig, get_peft_model, TaskType
+<span class="kw">import</span> evaluate
+
+<span class="cm"># Türkçe BERT fine-tuning — sentiment analysis</span>
+<span class="fn">model_name</span> = <span class="str2">"dbmdz/bert-base-turkish-cased"</span>
+<span class="fn">tokenizer</span>  = AutoTokenizer.<span class="fn">from_pretrained</span>(<span class="fn">model_name</span>)
+<span class="fn">model</span>      = AutoModelForSequenceClassification.<span class="fn">from_pretrained</span>(
+    <span class="fn">model_name</span>, num_labels=<span class="num">3</span>  <span class="cm"># pozitif/negatif/nötr</span>
+)
+
+<span class="cm"># LoRA — büyük modeli az parametreyle fine-tune</span>
+<span class="fn">lora_cfg</span> = LoraConfig(
+    task_type=TaskType.SEQ_CLS,
+    r=<span class="num">16</span>, lora_alpha=<span class="num">32</span>, lora_dropout=<span class="num">0.1</span>,
+    target_modules=[<span class="str">"query"</span>, <span class="str">"value"</span>]  <span class="cm"># attention matrislerine</span>
+)
+<span class="fn">model</span> = get_peft_model(<span class="fn">model</span>, <span class="fn">lora_cfg</span>)
+<span class="fn">model</span>.<span class="fn">print_trainable_parameters</span>()   <span class="cm"># ~0.5% parametre!</span>
+
+<span class="fn">training_args</span> = TrainingArguments(
+    output_dir=<span class="str">"./turkce-sentiment"</span>,
+    num_train_epochs=<span class="num">3</span>,         learning_rate=<span class="num">2e-4</span>,
+    per_device_train_batch_size=<span class="num">16</span>, weight_decay=<span class="num">0.01</span>,
+    eval_strategy=<span class="str">"epoch"</span>,       fp16=<span class="kw">True</span>,
+    load_best_model_at_end=<span class="kw">True</span>,  report_to=<span class="str">"wandb"</span>
+)
+<span class="fn">trainer</span> = Trainer(model=<span class="fn">model</span>, args=<span class="fn">training_args</span>,
+                   train_dataset=<span class="fn">train_ds</span>, eval_dataset=<span class="fn">val_ds</span>,
+                   tokenizer=<span class="fn">tokenizer</span>)
+<span class="fn">trainer</span>.<span class="fn">train</span>()</div>
+
+      <div class="proj-row">
+        <div class="pb">🇹🇷 Türkçe Sentiment</div>
+        <div class="pb">❓ Question Answering</div>
+        <div class="pb">📋 NER Sistemi</div>
+        <div class="pb">🔄 Özet Çıkarma</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B8+9: İLERİ NLP + LLM ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--yw)">
+    <div class="sec-nc"><div class="sec-num">8–9</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">7–10 AY</div>
+      <div class="sec-title">İleri NLP + LLM Mühendisliği</div>
+      <div class="sec-sub">NER · MT · Summarization · Prompt Eng · RAG · LangChain · LlamaIndex</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--yw)">
+    <div class="sec-in">
+
+      <table class="tbl">
+        <tr><th>NLP GÖREVİ</th><th>GİRİŞ</th><th>ÇIKIŞ</th><th>MODEL</th><th>METRİK</th></tr>
+        <tr><td><span class="hi">Sınıflandırma</span></td><td>Metin</td><td>Etiket</td><td>BERT</td><td>F1, Accuracy</td></tr>
+        <tr><td><span class="hi3">NER</span></td><td>Metin</td><td>Span+Tip</td><td>BERT-CRF</td><td>Span F1</td></tr>
+        <tr><td><span class="hi">Çeviri</span></td><td>Kaynak dil</td><td>Hedef dil</td><td>NLLB, mT5</td><td>BLEU, chrF</td></tr>
+        <tr><td><span class="hi3">Özetleme</span></td><td>Uzun metin</td><td>Kısa özet</td><td>BART, T5</td><td>ROUGE-L</td></tr>
+        <tr><td><span class="hi4">Soru Cevap</span></td><td>Metin+Soru</td><td>Cevap</td><td>BERT-QA</td><td>EM, F1</td></tr>
+        <tr><td><span class="hi4">Metin Üretme</span></td><td>Prompt</td><td>Devam</td><td>GPT/LLaMA</td><td>Perplexity</td></tr>
+      </table>
+
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># RAG — Retrieval Augmented Generation</span>
+<span class="cm"># "Modeli yeniden eğitmek yerine bilgiyi dışarıdan ver"</span>
+<span class="kw">from</span> langchain.document_loaders  <span class="kw">import</span> PyPDFLoader
+<span class="kw">from</span> langchain.text_splitter      <span class="kw">import</span> RecursiveCharacterTextSplitter
+<span class="kw">from</span> langchain_openai             <span class="kw">import</span> OpenAIEmbeddings, ChatOpenAI
+<span class="kw">from</span> langchain_chroma             <span class="kw">import</span> Chroma
+<span class="kw">from</span> langchain.chains             <span class="kw">import</span> RetrievalQA
+
+<span class="cm"># 1. PDF yükle ve parçalara böl</span>
+<span class="fn">docs</span>   = PyPDFLoader(<span class="str">"belge.pdf"</span>).<span class="fn">load</span>()
+<span class="fn">chunks</span> = RecursiveCharacterTextSplitter(chunk_size=<span class="num">512</span>, chunk_overlap=<span class="num">64</span>).<span class="fn">split_documents</span>(<span class="fn">docs</span>)
+
+<span class="cm"># 2. Embedding → vektör veritabanı</span>
+<span class="fn">db</span>  = Chroma.<span class="fn">from_documents</span>(<span class="fn">chunks</span>, OpenAIEmbeddings())
+
+<span class="cm"># 3. RAG zinciri</span>
+<span class="fn">rag</span> = RetrievalQA.<span class="fn">from_chain_type</span>(
+    llm=ChatOpenAI(model=<span class="str">"gpt-4o-mini"</span>),
+    retriever=<span class="fn">db</span>.<span class="fn">as_retriever</span>(search_kwargs={<span class="str">"k"</span>: <span class="num">4</span>}),
+    return_source_documents=<span class="kw">True</span>
+)
+<span class="fn">yanit</span> = <span class="fn">rag</span>.<span class="fn">invoke</span>(<span class="str">"Bu belgede ne anlatılıyor?"</span>)</div>
+
+      <div class="note yw"><strong>💡 Prompt Engineering — 5 Teknik:</strong> 1) Zero-shot (direkt sor) 2) Few-shot (örnekler ver) 3) Chain-of-Thought (adım adım düşün) 4) Role prompting (sen bir uzman kimsin) 5) Structured output (JSON formatında ver). Bu teknikleri bilmek LLM çıktı kalitesini 2-3x artırır.</div>
+
+      <div class="proj-row">
+        <div class="pb">📄 PDF Chatbot (RAG)</div>
+        <div class="pb">🧠 Knowledge Base AI</div>
+        <div class="pb">🤖 Türkçe LLM Fine-tune</div>
+        <div class="pb">🔍 AI Arama Motoru</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── B10: DEPLOYMENT ──── -->
+<div class="sec">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--or)">
+    <div class="sec-nc"><div class="sec-num">10</div><div class="sec-wave"></div></div>
+    <div class="sec-info">
+      <div class="sec-time">9–11 AY</div>
+      <div class="sec-title">Deployment & MLOps</div>
+      <div class="sec-sub">FastAPI · Docker · Streaming · Model Monitoring · Gradio · HF Spaces</div>
+    </div>
+    <div class="sec-arr">▶</div>
+  </div>
+  <div class="sec-body" style="--sc:var(--or)">
+    <div class="sec-in">
+      <div class="code" data-lang="PYTHON">
+<span class="cm"># FastAPI + streaming response — modern NLP API</span>
+<span class="kw">from</span> fastapi           <span class="kw">import</span> FastAPI
+<span class="kw">from</span> fastapi.responses <span class="kw">import</span> StreamingResponse
+<span class="kw">from</span> transformers      <span class="kw">import</span> pipeline, TextIteratorStreamer
+<span class="kw">import</span> threading, torch
+
+<span class="fn">app</span>    = FastAPI(title=<span class="str">"NLP API"</span>)
+<span class="fn">model</span>  = pipeline(<span class="str">"text-generation"</span>, model=<span class="str">"microsoft/phi-2"</span>,
+                   device=<span class="num">0</span> <span class="kw">if</span> torch.cuda.<span class="fn">is_available</span>() <span class="kw">else</span> -<span class="num">1</span>)
+
+<span class="fn">@app.post</span>(<span class="str">"/generate"</span>)
+<span class="kw">async def</span> <span class="fn">generate</span>(<span class="fn">prompt</span>: str, max_new_tokens: int = <span class="num">256</span>):
+    <span class="fn">streamer</span> = TextIteratorStreamer(<span class="fn">model</span>.tokenizer, skip_special_tokens=<span class="kw">True</span>)
+    <span class="fn">thread</span>   = threading.<span class="cls">Thread</span>(
+        target=<span class="fn">model</span>, args=([<span class="fn">prompt</span>],),
+        kwargs={<span class="str">"max_new_tokens"</span>: <span class="fn">max_new_tokens</span>, <span class="str">"streamer"</span>: <span class="fn">streamer</span>}
+    )
+    <span class="fn">thread</span>.<span class="fn">start</span>()
+    <span class="kw">return</span> <span class="cls">StreamingResponse</span>(<span class="fn">streamer</span>, media_type=<span class="str">"text/plain"</span>)
+
+<span class="fn">@app.post</span>(<span class="str">"/sentiment"</span>)
+<span class="kw">async def</span> <span class="fn">sentiment</span>(<span class="fn">text</span>: str):
+    <span class="fn">clf</span> = pipeline(<span class="str">"sentiment-analysis"</span>, model=<span class="str">"dbmdz/bert-base-turkish-cased"</span>)
+    <span class="kw">return</span> <span class="fn">clf</span>(<span class="fn">text</span>)[<span class="num">0</span>]</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--or)"><div class="card-t">Gradio / Streamlit</div><div class="card-d">Hızlı demo UI. HuggingFace Spaces'e ücretsiz deploy. Portfolio için ideal.</div></div>
+        <div class="card" style="--sc:var(--or)"><div class="card-t">vLLM / TGI</div><div class="card-d">Yüksek throughput LLM serving. PagedAttention ile bellek optimizasyonu. Üretim standardı.</div></div>
+        <div class="card" style="--sc:var(--or)"><div class="card-t">LangSmith</div><div class="card-d">LLM uygulama debugging ve monitoring. Prompt trace, latency, cost tracking.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Zaman Planı</div>
+    <div class="tl">
+      <div class="tlr"><div class="tld">3<span class="tlu">AY</span></div><div><div class="tln">Temel</div><div class="tls">Python · ML · İstatistik</div></div></div>
+      <div class="tlr"><div class="tld">6<span class="tlu">AY</span></div><div><div class="tln">NLP + DL</div><div class="tls">Klasik NLP · LSTM · Embedding</div></div></div>
+      <div class="tlr"><div class="tld">9<span class="tlu">AY</span></div><div><div class="tln">Transformer</div><div class="tls">BERT · GPT · HuggingFace</div></div></div>
+      <div class="tlr"><div class="tld">12<span class="tlu">AY</span></div><div><div class="tln">İş Hazır</div><div class="tls">LLM · RAG · Deploy · Projeler</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Konu Ağırlıkları</div>
+    <div class="skills" id="skills">
+      <div class="skr"><div class="skl">Transformer</div><div class="skt"><div class="skf" style="--sc2:var(--pk)"></div></div><div class="skp">95%</div></div>
+      <div class="skr"><div class="skl">HuggingFace</div><div class="skt"><div class="skf" style="--sc2:var(--tl)"></div></div><div class="skp">90%</div></div>
+      <div class="skr"><div class="skl">LLM/RAG</div><div class="skt"><div class="skf" style="--sc2:var(--yw)"></div></div><div class="skp">80%</div></div>
+      <div class="skr"><div class="skl">Fine-tuning</div><div class="skt"><div class="skf" style="--sc2:var(--la)"></div></div><div class="skp">75%</div></div>
+      <div class="skr"><div class="skl">Deployment</div><div class="skt"><div class="skf" style="--sc2:var(--or)"></div></div><div class="skp">60%</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Uzmanlaşma Yolları</div>
+    <div class="spec-list">
+      <div class="spec" style="--spc:var(--la)"><div class="spec-n">🔬 NLP Araştırmacı</div><div class="spec-d">Paper okuma · Akademik · Konferans</div></div>
+      <div class="spec" style="--spc:var(--tl)"><div class="spec-n">⚙️ NLP Mühendisi</div><div class="spec-d">Model + deploy + sistem tasarımı</div></div>
+      <div class="spec" style="--spc:var(--pk)"><div class="spec-n">🔥 LLM Engineer</div><div class="spec-d">AI ürün · RAG · Fine-tuning · Trend</div></div>
+      <div class="spec" style="--spc:var(--yw)"><div class="spec-n">📊 AI Product</div><div class="spec-d">LangChain · Ürün geliştirme · PM</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Değerlendirme Metrikleri</div>
+    <div class="metric-list">
+      <div class="metric"><div class="metric-name">BLEU</div><div class="metric-task">Makine çevirisi</div></div>
+      <div class="metric"><div class="metric-name">ROUGE-L</div><div class="metric-task">Özetleme</div></div>
+      <div class="metric"><div class="metric-name">F1 / Span-F1</div><div class="metric-task">NER, QA</div></div>
+      <div class="metric"><div class="metric-name">Perplexity</div><div class="metric-task">Dil modeli</div></div>
+      <div class="metric"><div class="metric-name">BERTScore</div><div class="metric-task">Anlamsal benzerlik</div></div>
+      <div class="metric"><div class="metric-name">chrF</div><div class="metric-task">Çeviri (daha iyi)</div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Mutlaka Oku</div>
+    <div class="read-list">
+      <div class="read-item"><div class="read-year">2017</div><div class="read-title">Attention Is All You Need</div><div class="read-why">Transformer temeli</div></div>
+      <div class="read-item"><div class="read-year">2018</div><div class="read-title">BERT: Pre-training of DNLMs</div><div class="read-why">Bidirectional encoding</div></div>
+      <div class="read-item"><div class="read-year">2020</div><div class="read-title">Language Models are Few-Shot Learners (GPT-3)</div><div class="read-why">Büyük dil modelleri</div></div>
+      <div class="read-item"><div class="read-year">2021</div><div class="read-title">LoRA: Low-Rank Adaptation</div><div class="read-why">Verimli fine-tuning</div></div>
+      <div class="read-item"><div class="read-year">2023</div><div class="read-title">Retrieval-Augmented Generation (RAG)</div><div class="read-why">LLM + bilgi tabanı</div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ══ BOTTOM ══ -->
+<div class="bottom">
+  <div class="bot-l">
+    <h2 class="bot-h">"Anlamadan<br>ezberleme,<br>üretmeden<br><em>öğrenmiş</em><br>sayılmazsın."</h2>
+    <p class="bot-p">Video izlemek ≠ öğrenmek. BERT'i fine-tune et, RAG pipeline kur, API deploy et. Her proje birden fazla cv satırıdır.</p>
+    <a class="btn btn-tl" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+    <a class="btn btn-gh" href="https://huggingface.co" target="_blank">HuggingFace →</a>
+  </div>
+  <div class="bot-r">
+    <div class="plan-list">
+      <div class="plan-item"><div class="plan-n">1</div><div><div class="plan-t">0–3 Ay: Python + ML Temel</div><div class="plan-d">NumPy, Pandas, scikit-learn. Spam classifier yap.</div></div></div>
+      <div class="plan-item"><div class="plan-n">2</div><div><div class="plan-t">3–5 Ay: Klasik NLP</div><div class="plan-d">spaCy, TF-IDF, LSTM. Türkçe metin analizi.</div></div></div>
+      <div class="plan-item"><div class="plan-n">3</div><div><div class="plan-t">5–7 Ay: Transformer Mimarisi</div><div class="plan-d">"Attention is All You Need" oku. Sıfırdan implement et.</div></div></div>
+      <div class="plan-item"><div class="plan-n">4</div><div><div class="plan-t">7–9 Ay: HuggingFace + Fine-tuning</div><div class="plan-d">Türkçe BERT fine-tune. LoRA ile verimli eğitim.</div></div></div>
+      <div class="plan-item"><div class="plan-n">5</div><div><div class="plan-t">9–11 Ay: LLM + RAG + Deploy</div><div class="plan-d">PDF chatbot, LangChain, FastAPI. Gradio ile demo.</div></div></div>
+      <div class="plan-item"><div class="plan-n">6</div><div><div class="plan-t">11–12 Ay: Projeler + Başvuru</div><div class="plan-d">3–5 GitHub projesi. Blog yaz. İş başvurusu.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Doğal Dil İşleme 0→100 Roadmap</span>
+  <span>12 Aşama · 10+ Proje · 12 Ay · Üretmeden öğrenmiş sayılmazsın.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+// ── FLOATING WORDS CANVAS ──
+const wc=document.getElementById('word-canvas');
+const wctx=wc.getContext('2d');
+let WW,WH;
+function resize(){WW=wc.width=window.innerWidth;WH=wc.height=window.innerHeight;}
+resize();window.addEventListener('resize',resize);
+
+const words=['Tokenize','Attention','BERT','Embedding','Transformer','NLP','LLM','GPT','LSTM','Gradient','Softmax','Corpus','Token','Encoder','Decoder','Fine-tune','RAG','Prompt','Vector','NER','BLEU','spaCy','HuggingFace','PyTorch','Sentiment','Semantic','Syntax','Parsing'];
+const particles=words.map(w=>({
+  word:w, x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
+  vx:(Math.random()-.5)*.25, vy:(Math.random()-.5)*.25,
+  size:Math.random()*8+10, alpha:Math.random()*.6+.2
+}));
+
+function drawWords(){
+  wctx.clearRect(0,0,WW,WH);
+  particles.forEach(p=>{
+    wctx.font=`${p.size}px 'Fragment Mono'`;
+    wctx.fillStyle=`rgba(0,229,200,${p.alpha})`;
+    wctx.fillText(p.word,p.x,p.y);
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<-100)p.x=WW+100; if(p.x>WW+100)p.x=-100;
+    if(p.y<-20)p.y=WH+20;   if(p.y>WH+20)p.y=-20;
+  });
+  requestAnimationFrame(drawWords);
+}
+drawWords();
+
+// ── CURSOR ──
+const c1=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.ph,.spec,.read-item,.pb,.card,.llm-card,.pipe-box').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c1.style.width='16px';c1.style.height='16px';c2.style.width='44px';c2.style.height='44px';});
+  el.addEventListener('mouseleave',()=>{c1.style.width='10px';c1.style.height='10px';c2.style.width='28px';c2.style.height='28px';});
+});
+
+// ── ACCORDION ──
+function tog(h){
+  const was=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!was){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+// ── SCROLL REVEAL ──
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+// ── COUNTERS ──
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('s1'),12,800);cnt(document.getElementById('s2'),12,900);cnt(document.getElementById('s3'),10,700);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-right'));
+
+// ── SKILL BARS ──
+const widths=['95%','90%','80%','75%','60%'];
+const sio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  document.querySelectorAll('.skf').forEach((f,i)=>{setTimeout(()=>{f.style.width=widths[i];},i*100);});
+  sio.disconnect();
+}});},{threshold:.5});
+sio.observe(document.getElementById('skills'));
+</script>
+</body>
+</html>

@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Yol Haritası</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06080d;
+  --bg2:#0b0f18;
+  --card:#0f1420;
+  --card2:#141929;
+  --border:#1e2535;
+  --border2:#2a3550;
+  --text:#dde4f0;
+  --muted:#5a6a8a;
+  --dim:#2e3d5a;
+
+  --c1:#61dafb; /* React blue */
+  --c1d:#0e3a4a;
+  --c1b:#0d2f40;
+
+  --c2:#f7df1e; /* JS yellow */
+  --c2d:#3a3200;
+  --c2b:#2e2800;
+
+  --c3:#f97316; /* orange */
+  --c3d:#3d1800;
+  --c3b:#301200;
+
+  --c4:#a78bfa; /* violet */
+  --c4d:#2d1d5a;
+  --c4b:#221548;
+
+  --c5:#34d399; /* green */
+  --c5d:#0d3325;
+  --c5b:#091f17;
+
+  --c6:#f472b6; /* pink */
+  --c6d:#3d0f2a;
+  --c6b:#2e0820;
+
+  --c7:#fb923c; /* amber */
+  --c7d:#3a1a00;
+  --c7b:#2e1300;
+
+  --c8:#60a5fa; /* sky */
+  --c8d:#0d2040;
+  --c8b:#091830;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+}
+
+/* ── CANVAS BG ── */
+#bg-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;opacity:0.35;
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:4rem 2rem 3rem;
+  max-width:1100px;margin:0 auto;
+}
+
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:0.2em;
+  color:var(--c1);text-transform:uppercase;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.6s 0.1s forwards;
+}
+
+.hero-title{
+  font-size:clamp(3rem,8vw,6.5rem);
+  font-weight:800;line-height:0.95;
+  letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.7s 0.2s forwards;
+}
+
+.hero-title .line2{
+  color:transparent;
+  -webkit-text-stroke:1px var(--c1);
+}
+
+.hero-sub{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--muted);
+  line-height:1.7;max-width:500px;
+  opacity:0;animation:fadeUp 0.7s 0.35s forwards;
+}
+
+.hero-stats{
+  display:flex;gap:2rem;margin-top:3rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.7s 0.5s forwards;
+}
+
+.stat{
+  display:flex;flex-direction:column;gap:4px;
+}
+.stat-n{
+  font-size:2rem;font-weight:800;color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.stat-l{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:0.1em;text-transform:uppercase;
+}
+
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:2rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--dim);
+  letter-spacing:0.12em;
+  display:flex;align-items:center;gap:8px;
+  opacity:0;animation:fadeUp 0.7s 0.9s forwards;
+}
+.scroll-line{
+  width:40px;height:1px;background:var(--dim);
+}
+
+/* ── MAIN ── */
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 2rem 6rem;}
+
+/* ── SECTION HEADER ── */
+.s-header{
+  display:flex;align-items:center;gap:1.5rem;
+  margin-bottom:2.5rem;margin-top:5rem;
+}
+.s-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.15em;
+  color:var(--muted);
+  flex-shrink:0;
+}
+.s-line{height:1px;flex:1;background:var(--border);}
+.s-title{
+  font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:800;
+  white-space:nowrap;
+}
+
+/* ── PHASE CARD ── */
+.phase{
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:1.5rem;
+  transition:border-color 0.3s, transform 0.3s;
+  transform:translateY(20px);opacity:0;
+  transition:transform 0.5s,opacity 0.5s,border-color 0.3s;
+}
+.phase.visible{transform:translateY(0);opacity:1;}
+.phase:hover{border-color:var(--border2);}
+
+/* phase color accents */
+.phase[data-c="1"]{--pc:var(--c1);--pcd:var(--c1d);--pcb:var(--c1b);}
+.phase[data-c="2"]{--pc:var(--c2);--pcd:var(--c2d);--pcb:var(--c2b);}
+.phase[data-c="3"]{--pc:var(--c3);--pcd:var(--c3d);--pcb:var(--c3b);}
+.phase[data-c="4"]{--pc:var(--c4);--pcd:var(--c4d);--pcb:var(--c4b);}
+.phase[data-c="5"]{--pc:var(--c5);--pcd:var(--c5d);--pcb:var(--c5b);}
+.phase[data-c="6"]{--pc:var(--c6);--pcd:var(--c6d);--pcb:var(--c6b);}
+.phase[data-c="7"]{--pc:var(--c7);--pcd:var(--c7d);--pcb:var(--c7b);}
+.phase[data-c="8"]{--pc:var(--c8);--pcd:var(--c8d);--pcb:var(--c8b);}
+
+.phase-head{
+  display:flex;align-items:center;gap:16px;
+  padding:1.4rem 1.75rem;
+  cursor:pointer;
+  background:var(--card);
+  border-left:3px solid var(--pc);
+  transition:background 0.2s;
+  user-select:none;
+}
+.phase-head:hover{background:var(--card2);}
+
+.phase-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--pcd);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+
+.phase-info{flex:1;}
+.phase-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.12em;
+  color:var(--pc);text-transform:uppercase;
+  margin-bottom:3px;
+}
+.phase-name{
+  font-size:1.05rem;font-weight:700;
+  color:var(--text);
+}
+
+.phase-meta{
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+  flex-shrink:0;
+}
+.phase-dur{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--muted);
+}
+.phase-level{
+  font-size:10px;padding:2px 9px;border-radius:100px;
+  background:var(--pcd);color:var(--pc);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:0.05em;
+}
+
+.chevron{
+  width:18px;height:18px;color:var(--dim);
+  transition:transform 0.3s;flex-shrink:0;
+}
+.phase.open .chevron{transform:rotate(180deg);}
+
+/* ── PHASE BODY ── */
+.phase-body{
+  display:none;
+  border-top:1px solid var(--border);
+  background:var(--bg2);
+  padding:1.75rem;
+}
+.phase.open .phase-body{display:block;}
+
+/* ── TOPICS GRID ── */
+.topics-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:10px;
+  margin-bottom:1.5rem;
+}
+
+.topic-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1rem 1.1rem;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.topic-card:hover{
+  border-color:var(--pc);
+  transform:translateY(-2px);
+}
+
+.tc-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:500;
+  color:var(--pc);
+  text-transform:uppercase;letter-spacing:0.08em;
+  padding-bottom:8px;margin-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+.tc-list{list-style:none;}
+.tc-list li{
+  font-size:13px;color:var(--text);
+  padding:3px 0;
+  display:flex;align-items:flex-start;gap:8px;
+  line-height:1.5;
+  font-weight:400;
+}
+.tc-list li::before{
+  content:"▸";color:var(--pc);
+  font-size:10px;flex-shrink:0;margin-top:3px;
+}
+
+/* ── PROJECTS ── */
+.proj-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.12em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:10px;margin-top:1.5rem;
+}
+.proj-grid{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.proj-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;
+  padding:6px 14px;
+  border-radius:6px;
+  border:1px solid var(--border2);
+  color:var(--muted);
+  background:var(--card);
+  cursor:default;
+  transition:all 0.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.proj-tag:hover{
+  border-color:var(--pc);
+  color:var(--pc);
+  background:var(--pcb);
+}
+.proj-tag::before{content:"◆";font-size:8px;color:var(--pc);opacity:0.6;}
+
+/* ── TIP ── */
+.tip{
+  margin-top:1.25rem;
+  padding:.9rem 1.1rem;
+  border-radius:8px;
+  border-left:2px solid var(--pc);
+  background:var(--pcb);
+  font-size:13px;color:var(--text);
+  line-height:1.65;font-weight:400;
+  font-style:italic;
+}
+.tip strong{color:var(--pc);font-style:normal;font-weight:600;}
+
+/* ── RESOURCES SECTION ── */
+.resources{
+  margin-top:5rem;
+  padding:2.5rem;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--card);
+  opacity:0;transform:translateY(20px);
+  transition:opacity 0.5s, transform 0.5s;
+}
+.resources.visible{opacity:1;transform:translateY(0);}
+.res-title{
+  font-size:1.4rem;font-weight:800;
+  margin-bottom:1.5rem;
+  color:var(--text);
+}
+.res-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:10px;
+}
+.res-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:.9rem 1rem;
+  transition:border-color 0.2s;
+}
+.res-card:hover{border-color:var(--border2);}
+.res-card-top{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:6px;
+}
+.res-icon{
+  width:24px;height:24px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.res-name{font-size:13px;font-weight:600;color:var(--text);}
+.res-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── ROADMAP VISUAL ── */
+.roadmap-visual{
+  margin:4rem 0;
+  padding:2rem;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow-x:auto;
+  opacity:0;transform:translateY(20px);
+  transition:opacity 0.5s,transform 0.5s;
+}
+.roadmap-visual.visible{opacity:1;transform:translateY(0);}
+
+.rv-title{
+  font-size:1rem;font-weight:700;
+  margin-bottom:1.75rem;
+  color:var(--muted);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:0.1em;text-transform:uppercase;
+}
+
+.rv-track{
+  display:flex;align-items:stretch;
+  gap:0;min-width:700px;
+}
+
+.rv-step{
+  flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;
+  position:relative;
+}
+
+.rv-step::after{
+  content:'';
+  position:absolute;top:18px;left:50%;
+  width:100%;height:2px;
+  background:var(--border2);
+  z-index:0;
+}
+.rv-step:last-child::after{display:none;}
+
+.rv-dot{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:500;
+  position:relative;z-index:1;
+  flex-shrink:0;
+  border:2px solid;
+  transition:transform 0.2s;
+}
+.rv-dot:hover{transform:scale(1.15);}
+
+.rv-name{
+  font-size:11px;font-weight:600;
+  text-align:center;margin-top:10px;
+  color:var(--muted);
+  padding:0 4px;
+  line-height:1.3;
+}
+.rv-weeks{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--dim);
+  margin-top:4px;
+}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  text-align:center;padding:2.5rem 2rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--dim);
+  border-top:1px solid var(--border);
+  letter-spacing:0.06em;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+@media(max-width:640px){
+  .hero{padding:3rem 1.25rem 2rem;}
+  main{padding:0 1.25rem 4rem;}
+  .phase-head{padding:1.1rem 1.25rem;}
+  .phase-body{padding:1.25rem;}
+  .hero-stats{gap:1.5rem;}
+  .stat-n{font-size:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">// Frontend Öğrenme Yol Haritası</p>
+  <h1 class="hero-title">
+    <span class="line1">React</span><br>
+    <span class="line2">Roadmap</span>
+  </h1>
+  <p class="hero-sub">
+    Sıfırdan production-ready React geliştirici olmak için<br>
+    adım adım, konu başlıklı ve proje tabanlı rehber.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-n">8</span>
+      <span class="stat-l">Faz</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">3–9</span>
+      <span class="stat-l">Ay</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">30+</span>
+      <span class="stat-l">Proje</span>
+    </div>
+    <div class="stat">
+      <span class="stat-n">60+</span>
+      <span class="stat-l">Konu</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    <span>aşağı kaydır</span>
+  </div>
+</section>
+
+<main>
+
+<!-- VISUAL ROADMAP STRIP -->
+<div class="roadmap-visual" id="rv">
+  <div class="rv-title">// Öğrenme Akışı</div>
+  <div class="rv-track">
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c2d);border-color:var(--c2);color:var(--c2);">JS</div>
+      <div class="rv-name">JS Temelleri</div>
+      <div class="rv-weeks">2–4 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c1d);border-color:var(--c1);color:var(--c1);">01</div>
+      <div class="rv-name">React Giriş</div>
+      <div class="rv-weeks">2–3 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c3d);border-color:var(--c3);color:var(--c3);">02</div>
+      <div class="rv-name">Hooks</div>
+      <div class="rv-weeks">2–3 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c4d);border-color:var(--c4);color:var(--c4);">03</div>
+      <div class="rv-name">State Yönetimi</div>
+      <div class="rv-weeks">2–3 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c5d);border-color:var(--c5);color:var(--c5);">04</div>
+      <div class="rv-name">Routing & API</div>
+      <div class="rv-weeks">2 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c6d);border-color:var(--c6);color:var(--c6);">05</div>
+      <div class="rv-name">Performans</div>
+      <div class="rv-weeks">2 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c7d);border-color:var(--c7);color:var(--c7);">06</div>
+      <div class="rv-name">Test & Kalite</div>
+      <div class="rv-weeks">2 hafta</div>
+    </div>
+    <div class="rv-step">
+      <div class="rv-dot" style="background:var(--c8d);border-color:var(--c8);color:var(--c8);">07</div>
+      <div class="rv-name">Production</div>
+      <div class="rv-weeks">2–3 hafta</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 0: JS ÖN KOŞULLAR ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 00</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c2)">Ön Koşullar</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="2" id="p0">
+  <div class="phase-head" onclick="toggle('p0')">
+    <div class="phase-icon">⚡</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 00 — Zorunlu Temel</div>
+      <div class="phase-name">Modern JavaScript ES6+</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2–4 hafta</span>
+      <span class="phase-level">başlangıç</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">ES6+ Sözdizimi</div>
+        <ul class="tc-list">
+          <li>let, const vs var farkı</li>
+          <li>Arrow functions</li>
+          <li>Template literals</li>
+          <li>Destructuring (obje & dizi)</li>
+          <li>Spread / Rest operatörü (...)</li>
+          <li>Default parametreler</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Asenkron JS</div>
+        <ul class="tc-list">
+          <li>Callback fonksiyonları</li>
+          <li>Promise ve .then()/.catch()</li>
+          <li>async / await sözdizimi</li>
+          <li>fetch API ile HTTP istekleri</li>
+          <li>try/catch/finally</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Dizi Metodları</div>
+        <ul class="tc-list">
+          <li>map(), filter(), reduce()</li>
+          <li>find(), findIndex()</li>
+          <li>some(), every()</li>
+          <li>flat(), flatMap()</li>
+          <li>Fonksiyonel programlama mantığı</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Modüller & Sınıflar</div>
+        <ul class="tc-list">
+          <li>import / export sözdizimi</li>
+          <li>Default vs named export</li>
+          <li>ES6 Classes ve inheritance</li>
+          <li>Optional chaining (?.) ve nullish (??)</li>
+          <li>Closures ve scope kavramı</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip">
+      <strong>Kritik:</strong> React'i öğrenmeden önce bu konuları iyice kavra. Özellikle map(), destructuring ve async/await — bunları anlamadan React kodu okumak çok zorlaşır.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 1: REACT GİRİŞ ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 01</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c1)">React Temelleri</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="1" id="p1">
+  <div class="phase-head" onclick="toggle('p1')">
+    <div class="phase-icon">⚛</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 01 — Çekirdek Kavramlar</div>
+      <div class="phase-name">React'e Giriş & Bileşenler</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2–3 hafta</span>
+      <span class="phase-level">başlangıç</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">React Nedir?</div>
+        <ul class="tc-list">
+          <li>Virtual DOM ve Reconciliation</li>
+          <li>React vs Vanilla JS farkı</li>
+          <li>SPA (Single Page Application) kavramı</li>
+          <li>Vite ile proje kurulumu</li>
+          <li>Proje yapısı ve dosya düzeni</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">JSX</div>
+        <ul class="tc-list">
+          <li>JSX sözdizimi ve kuralları</li>
+          <li>className vs class farkı</li>
+          <li>JavaScript ifadeleri JSX içinde</li>
+          <li>Koşullu render (&&, ternary)</li>
+          <li>Listeler ve key prop</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Bileşenler (Components)</div>
+        <ul class="tc-list">
+          <li>Fonksiyonel bileşenler</li>
+          <li>Bileşen hiyerarşisi & kompozisyon</li>
+          <li>Bileşen dosya yapısı</li>
+          <li>Default ve named export</li>
+          <li>Children prop</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Props</div>
+        <ul class="tc-list">
+          <li>Props geçirme ve alma</li>
+          <li>Props destructuring</li>
+          <li>Default props değerleri</li>
+          <li>PropTypes ile tip kontrolü</li>
+          <li>Props drilling sorunu</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">State & Events</div>
+        <ul class="tc-list">
+          <li>useState hook'una giriş</li>
+          <li>State güncellemesi (immutability)</li>
+          <li>Event handling (onClick, onChange)</li>
+          <li>Form yönetimi temelleri</li>
+          <li>Controlled vs Uncontrolled components</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">Counter Uygulaması</span>
+      <span class="proj-tag">Todo List</span>
+      <span class="proj-tag">Renk Değiştirici</span>
+      <span class="proj-tag">Basit Form Uygulaması</span>
+    </div>
+    <div class="tip">
+      <strong>İpucu:</strong> Her konuyu öğrendikten hemen sonra küçük bir demo yap. React öğrenmek okumakla değil, yazmakla olur.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 2: HOOKS ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 02</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c3)">Hooks Dünyası</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="3" id="p2">
+  <div class="phase-head" onclick="toggle('p2')">
+    <div class="phase-icon">🪝</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 02 — React Hooks</div>
+      <div class="phase-name">Built-in Hooks & Custom Hooks</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2–3 hafta</span>
+      <span class="phase-level">orta</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">useState & useReducer</div>
+        <ul class="tc-list">
+          <li>useState ile karmaşık state</li>
+          <li>Fonksiyonel güncelleme formu</li>
+          <li>useReducer ile state makinesi</li>
+          <li>dispatch ve action pattern</li>
+          <li>Ne zaman reducer kullanılır?</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">useEffect</div>
+        <ul class="tc-list">
+          <li>Bileşen yaşam döngüsü</li>
+          <li>Dependency array mantığı</li>
+          <li>Cleanup fonksiyonu</li>
+          <li>API çağrıları useEffect içinde</li>
+          <li>Race condition ve AbortController</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">useRef & useCallback</div>
+        <ul class="tc-list">
+          <li>DOM erişimi için useRef</li>
+          <li>Persistent değerler (render'lar arası)</li>
+          <li>useCallback ile fonksiyon memoization</li>
+          <li>useMemo ile hesaplama önbellekleme</li>
+          <li>Bağımlılık dizisi tuzakları</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">useContext</div>
+        <ul class="tc-list">
+          <li>Context oluşturma (createContext)</li>
+          <li>Provider ve Consumer</li>
+          <li>useContext hook'u</li>
+          <li>Context ile tema/dil yönetimi</li>
+          <li>Context performans tuzakları</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Custom Hooks</div>
+        <ul class="tc-list">
+          <li>Custom hook anatomisi</li>
+          <li>useFetch — API çağrısı hook'u</li>
+          <li>useLocalStorage hook'u</li>
+          <li>useDebounce hook'u</li>
+          <li>Hook'ları kütüphaneleştirme</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">Hava Durumu Uygulaması (API)</span>
+      <span class="proj-tag">Dark / Light Mode Toggle</span>
+      <span class="proj-tag">Autocomplete Arama</span>
+      <span class="proj-tag">Custom useFetch Hook</span>
+    </div>
+    <div class="tip">
+      <strong>Dikkat:</strong> useEffect bağımlılık dizisini yanlış yazmak en yaygın React hatasıdır. ESLint plugin'i <strong>exhaustive-deps</strong> kuralını aktif et.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 3: STATE YÖNETİMİ ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 03</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c4)">State Yönetimi</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="4" id="p3">
+  <div class="phase-head" onclick="toggle('p3')">
+    <div class="phase-icon">🗃</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 03 — Global State</div>
+      <div class="phase-name">Zustand, Redux Toolkit & React Query</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2–3 hafta</span>
+      <span class="phase-level">orta</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">State Yönetimi Temelleri</div>
+        <ul class="tc-list">
+          <li>Local vs Global state ayrımı</li>
+          <li>Props drilling problemi & çözümler</li>
+          <li>State lifting pattern</li>
+          <li>Ne zaman global state?</li>
+          <li>State yönetimi araçları karşılaştırması</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Zustand</div>
+        <ul class="tc-list">
+          <li>Store oluşturma (create)</li>
+          <li>Actions ve selectors</li>
+          <li>Immer ile immutable updates</li>
+          <li>Persist middleware</li>
+          <li>DevTools entegrasyonu</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Redux Toolkit</div>
+        <ul class="tc-list">
+          <li>configureStore ile kurulum</li>
+          <li>createSlice ve reducers</li>
+          <li>createAsyncThunk</li>
+          <li>RTK Query ile API yönetimi</li>
+          <li>Redux DevTools kullanımı</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">React Query (TanStack)</div>
+        <ul class="tc-list">
+          <li>useQuery ile veri getirme</li>
+          <li>useMutation ile veri yazma</li>
+          <li>Cache ve stale time yönetimi</li>
+          <li>Optimistic updates</li>
+          <li>Infinite scroll & pagination</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">E-Ticaret Sepet (Zustand)</span>
+      <span class="proj-tag">Blog Uygulaması (React Query)</span>
+      <span class="proj-tag">Kullanıcı Yönetimi (RTK)</span>
+    </div>
+    <div class="tip">
+      <strong>Tavsiye:</strong> 2024 itibarıyla çoğu proje için <strong>Zustand + React Query</strong> kombinasyonu Redux'tan daha pragmatik ve öğrenmesi kolay bir seçimdir.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 4: ROUTING & API ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 04</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c5)">Routing & API</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="5" id="p4">
+  <div class="phase-head" onclick="toggle('p4')">
+    <div class="phase-icon">🛣</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 04 — Navigasyon & Veri</div>
+      <div class="phase-name">React Router v6 & HTTP İletişimi</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2 hafta</span>
+      <span class="phase-level">orta</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">React Router v6</div>
+        <ul class="tc-list">
+          <li>BrowserRouter & Routes kurulumu</li>
+          <li>Route, Link, NavLink bileşenleri</li>
+          <li>URL parametreleri (useParams)</li>
+          <li>Query string (useSearchParams)</li>
+          <li>Programatik navigasyon (useNavigate)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Gelişmiş Routing</div>
+        <ul class="tc-list">
+          <li>Nested routes yapısı</li>
+          <li>Outlet bileşeni</li>
+          <li>Protected routes (auth guard)</li>
+          <li>Lazy loading ile code splitting</li>
+          <li>404 ve redirect yönetimi</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">API İletişimi</div>
+        <ul class="tc-list">
+          <li>fetch API ile CRUD işlemleri</li>
+          <li>Axios kurulumu ve interceptors</li>
+          <li>Base URL ve headers yönetimi</li>
+          <li>Error handling stratejileri</li>
+          <li>Loading & error state yönetimi</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Authentication</div>
+        <ul class="tc-list">
+          <li>JWT token yönetimi</li>
+          <li>localStorage ile token saklama</li>
+          <li>Axios request interceptor</li>
+          <li>Refresh token pattern</li>
+          <li>Auth context oluşturma</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">Çok Sayfalı Portfolio</span>
+      <span class="proj-tag">Login + Protected Routes</span>
+      <span class="proj-tag">Movie / Book Keşif Uygulaması</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 5: PERFORMANS ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 05</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c6)">Performans</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="6" id="p5">
+  <div class="phase-head" onclick="toggle('p5')">
+    <div class="phase-icon">⚡</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 05 — Optimizasyon</div>
+      <div class="phase-name">Re-render Kontrolü & Code Splitting</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2 hafta</span>
+      <span class="phase-level">ileri</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">Re-render Optimizasyonu</div>
+        <ul class="tc-list">
+          <li>React.memo ile bileşen memoization</li>
+          <li>useMemo ile hesaplama cache</li>
+          <li>useCallback ile fonksiyon cache</li>
+          <li>Re-render tetikleyicileri anlama</li>
+          <li>React Profiler ile analiz</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Code Splitting</div>
+        <ul class="tc-list">
+          <li>React.lazy ile dinamik import</li>
+          <li>Suspense ve fallback UI</li>
+          <li>Route-based code splitting</li>
+          <li>Component-level splitting</li>
+          <li>Bundle analizi (vite-bundle-analyzer)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Sanallaştırma (Virtualization)</div>
+        <ul class="tc-list">
+          <li>Büyük liste problemi</li>
+          <li>react-window ile windowing</li>
+          <li>TanStack Virtual kullanımı</li>
+          <li>Infinite scroll implementasyonu</li>
+          <li>Image lazy loading</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Web Vitals & Ölçüm</div>
+        <ul class="tc-list">
+          <li>LCP, FID, CLS metrikleri</li>
+          <li>Chrome DevTools Performance tab</li>
+          <li>Lighthouse ile audit</li>
+          <li>React DevTools Profiler</li>
+          <li>why-did-you-render kütüphanesi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">10.000 Satırlık Sanal Liste</span>
+      <span class="proj-tag">Lazy-loaded Dashboard</span>
+      <span class="proj-tag">Performans Audit Raporu</span>
+    </div>
+    <div class="tip">
+      <strong>Altın kural:</strong> Önce çalış, sonra ölç, sonra optimize et. Erken optimizasyon yapma — React DevTools Profiler ile gerçek bottleneck'i bul.
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 6: TEST ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 06</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c7)">Test & Kalite</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="7" id="p6">
+  <div class="phase-head" onclick="toggle('p6')">
+    <div class="phase-icon">🧪</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 06 — Test Stratejisi</div>
+      <div class="phase-name">Vitest, Testing Library & Cypress</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2 hafta</span>
+      <span class="phase-level">ileri</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">Unit & Entegrasyon Testi</div>
+        <ul class="tc-list">
+          <li>Vitest kurulumu ve yapılandırması</li>
+          <li>describe, it, expect sözdizimi</li>
+          <li>@testing-library/react</li>
+          <li>render, screen, userEvent</li>
+          <li>Custom hook testi</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Mock & Spy</div>
+        <ul class="tc-list">
+          <li>vi.mock ile modül mocklamak</li>
+          <li>API isteklerini mocklama (msw)</li>
+          <li>Mock Service Worker (MSW)</li>
+          <li>Spy fonksiyonlar</li>
+          <li>Snapshot testleri</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">E2E Test (Cypress)</div>
+        <ul class="tc-list">
+          <li>Cypress kurulumu</li>
+          <li>cy.visit, cy.get, cy.click</li>
+          <li>Form doldurma ve gönderme</li>
+          <li>API intercept</li>
+          <li>CI/CD entegrasyonu</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Kod Kalitesi</div>
+        <ul class="tc-list">
+          <li>ESLint kurulum ve kurallar</li>
+          <li>Prettier yapılandırması</li>
+          <li>Husky ile pre-commit hook</li>
+          <li>lint-staged kullanımı</li>
+          <li>TypeScript ile tip güvenliği</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">Todo App için Unit Testler</span>
+      <span class="proj-tag">Auth Flow E2E Testi</span>
+      <span class="proj-tag">%80+ Coverage Projesi</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FAZ 7: PRODUCTION ═══════════════════ -->
+<div class="s-header">
+  <span class="s-num">// 07</span>
+  <div class="s-line"></div>
+  <h2 class="s-title" style="color:var(--c8)">Production & İleri Konular</h2>
+  <div class="s-line"></div>
+</div>
+
+<div class="phase" data-c="8" id="p7">
+  <div class="phase-head" onclick="toggle('p7')">
+    <div class="phase-icon">🚀</div>
+    <div class="phase-info">
+      <div class="phase-label">Faz 07 — Production Ready</div>
+      <div class="phase-name">Next.js, TypeScript, Deployment & Ekosistem</div>
+    </div>
+    <div class="phase-meta">
+      <span class="phase-dur">2–3 hafta</span>
+      <span class="phase-level">ileri</span>
+    </div>
+    <svg class="chevron" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 7l4.5 4.5L13.5 7"/></svg>
+  </div>
+  <div class="phase-body">
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-title">Next.js (App Router)</div>
+        <ul class="tc-list">
+          <li>Server vs Client Components</li>
+          <li>File-based routing sistemi</li>
+          <li>Server Actions</li>
+          <li>Static & Dynamic rendering</li>
+          <li>Metadata ve SEO yönetimi</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">TypeScript ile React</div>
+        <ul class="tc-list">
+          <li>Props type tanımlama (interface)</li>
+          <li>useState ile generic tipler</li>
+          <li>Event tipleri (MouseEvent vb.)</li>
+          <li>Generic bileşenler</li>
+          <li>Utility types (Partial, Pick, Omit)</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Styling Araçları</div>
+        <ul class="tc-list">
+          <li>Tailwind CSS ile hızlı styling</li>
+          <li>CSS Modules</li>
+          <li>Styled-components / Emotion</li>
+          <li>shadcn/ui bileşen kütüphanesi</li>
+          <li>Framer Motion ile animasyon</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Form Yönetimi</div>
+        <ul class="tc-list">
+          <li>React Hook Form kurulumu</li>
+          <li>Validation ile Zod entegrasyonu</li>
+          <li>Field arrays</li>
+          <li>Form submission ve error handling</li>
+          <li>Formik alternatifi</li>
+        </ul>
+      </div>
+      <div class="topic-card">
+        <div class="tc-title">Deployment & CI/CD</div>
+        <ul class="tc-list">
+          <li>Vercel ile deploy</li>
+          <li>Environment variables yönetimi</li>
+          <li>GitHub Actions ile CI pipeline</li>
+          <li>Docker ile containerization</li>
+          <li>Monitoring (Sentry, LogRocket)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proj-label">// Faz Projeleri</div>
+    <div class="proj-grid">
+      <span class="proj-tag">Full-stack Next.js Uygulaması</span>
+      <span class="proj-tag">TypeScript'li E-Ticaret</span>
+      <span class="proj-tag">Portfolio + Vercel Deploy</span>
+      <span class="proj-tag">Real-time Chat (WebSocket)</span>
+    </div>
+    <div class="tip">
+      <strong>Son hedef:</strong> Bir production React uygulaması deploy et ve GitHub'a koy. İşverenlerin görmek istediği şey budur — teori değil, çalışan proje.
+    </div>
+  </div>
+</div>
+
+<!-- RESOURCES -->
+<div class="resources" id="resources">
+  <div class="res-title">Önerilen Kaynaklar</div>
+  <div class="res-grid">
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c1d);color:var(--c1);">📖</div>
+        <div class="res-name">react.dev</div>
+      </div>
+      <div class="res-desc">Resmi React dökümantasyonu — başlangıç için en iyi kaynak</div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c3d);color:var(--c3);">🎬</div>
+        <div class="res-name">Scrimba</div>
+      </div>
+      <div class="res-desc">İnteraktif React kursları — kodu tarayıcıda yazarak öğren</div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c4d);color:var(--c4);">🧠</div>
+        <div class="res-name">Josh W. Comeau</div>
+        </div>
+      <div class="res-desc">joshwcomeau.com — derinlemesine React ve CSS makaleleri</div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c5d);color:var(--c5);">🛠</div>
+        <div class="res-name">TkDodo Blog</div>
+      </div>
+      <div class="res-desc">React Query ve state yönetimi üzerine mükemmel blog</div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c2d);color:var(--c2);">⚡</div>
+        <div class="res-name">Jack Herrington</div>
+      </div>
+      <div class="res-desc">YouTube — ileri seviye React pattern'leri ve mimari</div>
+    </div>
+    <div class="res-card">
+      <div class="res-card-top">
+        <div class="res-icon" style="background:var(--c7d);color:var(--c7);">🔬</div>
+        <div class="res-name">patterns.dev</div>
+      </div>
+      <div class="res-desc">React design pattern'leri görsel olarak öğren</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  React Yol Haritası &mdash; 8 Faz / 3–9 Ay &mdash; Sıfırdan Production'a
+</footer>
+
+<script>
+/* ── Accordion ── */
+function toggle(id){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+/* ── Scroll reveal ── */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+},{threshold:0.08});
+
+document.querySelectorAll('.phase,.roadmap-visual,.resources').forEach(el=>observer.observe(el));
+
+/* ── Animated canvas bg ── */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w,h,particles=[];
+
+  const COLORS=['#61dafb','#f7df1e','#a78bfa','#34d399','#f472b6'];
+
+  function resize(){
+    w=canvas.width=window.innerWidth;
+    h=canvas.height=window.innerHeight;
+  }
+
+  function Particle(){
+    this.x=Math.random()*w;
+    this.y=Math.random()*h;
+    this.r=Math.random()*1.5+0.5;
+    this.vx=(Math.random()-0.5)*0.3;
+    this.vy=(Math.random()-0.5)*0.3;
+    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.alpha=Math.random()*0.4+0.1;
+  }
+
+  Particle.prototype.update=function(){
+    this.x+=this.vx;
+    this.y+=this.vy;
+    if(this.x<0)this.x=w;
+    if(this.x>w)this.x=0;
+    if(this.y<0)this.y=h;
+    if(this.y>h)this.y=0;
+  };
+
+  Particle.prototype.draw=function(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.globalAlpha=this.alpha;
+    ctx.fill();
+    ctx.globalAlpha=1;
+  };
+
+  function connect(){
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x;
+        const dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=particles[i].color;
+          ctx.globalAlpha=(1-d/120)*0.08;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+          ctx.globalAlpha=1;
+        }
+      }
+    }
+  }
+
+  function init(){
+    resize();
+    particles=[];
+    const count=Math.floor((w*h)/14000);
+    for(let i=0;i<count;i++) particles.push(new Particle());
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{p.update();p.draw();});
+    connect();
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize',init);
+  init();
+  loop();
+})();
+</script>
+</body>
+</html>

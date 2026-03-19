@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Programlama Yol Haritası</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f12;
+    --surface: #13161b;
+    --surface2: #1a1e25;
+    --border: #252b35;
+    --border2: #2f3745;
+    --text: #e8eaf0;
+    --muted: #7a8494;
+    --dim: #4a5568;
+
+    --blue-bg: #0d1f35;
+    --blue-text: #63b3ff;
+    --blue-border: #1a3a5c;
+
+    --green-bg: #0d2318;
+    --green-text: #5dd88a;
+    --green-border: #1a3d28;
+
+    --amber-bg: #251a08;
+    --amber-text: #f5c26b;
+    --amber-border: #3d2c10;
+
+    --purple-bg: #1a1030;
+    --purple-text: #b09fff;
+    --purple-border: #2e1f55;
+
+    --teal-bg: #071f1c;
+    --teal-text: #4dd6c0;
+    --teal-border: #0e3530;
+
+    --accent: #63b3ff;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    padding: 4rem 2rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  h1 span {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .header-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  .summary-bar {
+    display: flex;
+    gap: 1px;
+    margin-top: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .summary-item {
+    flex: 1;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface);
+    text-align: center;
+  }
+
+  .summary-item:hover { background: var(--surface2); }
+
+  .summary-num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .summary-lbl {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+    display: block;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .phase {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .phase:hover { border-color: var(--border2); }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1.2rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    background: var(--surface);
+    transition: background 0.15s;
+  }
+
+  .phase-header:hover { background: var(--surface2); }
+
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 100px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+
+  .n1 { background: var(--blue-bg); color: var(--blue-text); border: 1px solid var(--blue-border); }
+  .n2 { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
+  .n3 { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
+  .n4 { background: var(--purple-bg); color: var(--purple-text); border: 1px solid var(--purple-border); }
+  .n5 { background: var(--teal-bg); color: var(--teal-text); border: 1px solid var(--teal-border); }
+
+  .phase-title {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    font-family: 'Fraunces', serif;
+  }
+
+  .phase-duration {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--dim);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .phase.open .chevron { transform: rotate(180deg); }
+
+  .phase-body {
+    display: none;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .phase.open .phase-body { display: block; }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.15s;
+  }
+
+  .topic-card:hover { border-color: var(--border2); }
+
+  .topic-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic-list {
+    list-style: none;
+  }
+
+  .topic-list li {
+    font-size: 13.5px;
+    color: var(--text);
+    padding: 3px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.55;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+  }
+
+  .topic-list li::before {
+    content: "›";
+    color: var(--dim);
+    flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .project-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+  }
+
+  .project-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    background: var(--surface);
+    cursor: default;
+    transition: all 0.15s;
+  }
+
+  .project-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--blue-bg);
+  }
+
+  .tip-box {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 8px;
+    border-left: 2px solid var(--accent);
+    background: var(--blue-bg);
+    font-size: 13px;
+    color: var(--blue-text);
+    line-height: 1.65;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .divider-line {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    border-top: 1px solid var(--border);
+    max-width: 900px;
+    margin: 0 auto;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 600px) {
+    header, main { padding-left: 1rem; padding-right: 1rem; }
+    .summary-bar { flex-direction: column; }
+    .phase-header { padding: 1rem; }
+    .phase-body { padding: 1rem; }
+    .topic-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="header-label">Öğrenme Yol Haritası — 2024</p>
+  <h1>C Programlama<br><span>Sıfırdan Uzmanlığa</span></h1>
+  <p class="header-desc">Adım adım, proje tabanlı C programlama öğrenme rehberi. 5 faz, 20+ proje, 40+ konu.</p>
+  <div class="summary-bar">
+    <div class="summary-item">
+      <span class="summary-num">5</span>
+      <span class="summary-lbl">Faz</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-num">6–12</span>
+      <span class="summary-lbl">Ay</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-num">20+</span>
+      <span class="summary-lbl">Proje</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-num">40+</span>
+      <span class="summary-lbl">Konu</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- FAZ 1 -->
+  <div class="phase open" id="p1">
+    <div class="phase-header" onclick="toggle('p1')">
+      <span class="phase-num n1">Faz 01</span>
+      <span class="phase-title">Temel Kavramlar — C'ye Giriş</span>
+      <span class="phase-duration">2–4 hafta</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="phase-body">
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="topic-card-title">Ortam Kurulumu</div>
+          <ul class="topic-list">
+            <li>GCC / Clang kurulumu</li>
+            <li>VS Code veya CLion ayarı</li>
+            <li>Makefile temelleri</li>
+            <li>Derleme & çalıştırma akışı</li>
+            <li>İlk "Hello, World!" programı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Veri Tipleri & Değişkenler</div>
+          <ul class="topic-list">
+            <li>int, float, double, char</li>
+            <li>Signed / unsigned farkı</li>
+            <li>sizeof operatörü</li>
+            <li>Sabitler ve #define</li>
+            <li>Tür dönüşümleri (casting)</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Operatörler & İfadeler</div>
+          <ul class="topic-list">
+            <li>Aritmetik operatörler</li>
+            <li>Karşılaştırma & mantık</li>
+            <li>Bit düzeyinde operatörler</li>
+            <li>Operatör önceliği</li>
+            <li>Ternary operatör</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Kontrol Akışı</div>
+          <ul class="topic-list">
+            <li>if / else if / else</li>
+            <li>switch-case</li>
+            <li>for, while, do-while</li>
+            <li>break, continue, goto</li>
+            <li>İç içe döngüler</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">I/O İşlemleri</div>
+          <ul class="topic-list">
+            <li>printf format belirticileri</li>
+            <li>scanf ile girdi alma</li>
+            <li>getchar / putchar</li>
+            <li>Hata akışı stderr</li>
+            <li>Format string güvenliği</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider-line"></div>
+      <div class="section-label">Faz Projeleri</div>
+      <div class="project-list">
+        <span class="project-tag">Hesap Makinesi</span>
+        <span class="project-tag">Sıcaklık Dönüştürücü</span>
+        <span class="project-tag">FizzBuzz</span>
+        <span class="project-tag">Asal Sayı Bulucu</span>
+        <span class="project-tag">Sayı Tahmin Oyunu</span>
+      </div>
+      <div class="tip-box">Bu fazda her gün en az 1 küçük program yaz. Kodu ezberlemek yerine mantığını anlamaya odaklan. Derleme hatalarını okumaktan korkma — onlar seni öğretir.</div>
+    </div>
+  </div>
+
+  <!-- FAZ 2 -->
+  <div class="phase" id="p2">
+    <div class="phase-header" onclick="toggle('p2')">
+      <span class="phase-num n2">Faz 02</span>
+      <span class="phase-title">Fonksiyonlar, Diziler & String'ler</span>
+      <span class="phase-duration">2–4 hafta</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="phase-body">
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="topic-card-title">Fonksiyonlar</div>
+          <ul class="topic-list">
+            <li>Fonksiyon tanımlama & prototip</li>
+            <li>Parametre geçirme (değer/referans)</li>
+            <li>Return tipleri & void</li>
+            <li>Özyinelemeli (recursive) fonksiyonlar</li>
+            <li>Fonksiyon aşırı yükleme (yok, ama alternatifler)</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Diziler</div>
+          <ul class="topic-list">
+            <li>1D ve 2D diziler</li>
+            <li>Dizi başlatma yöntemleri</li>
+            <li>Dizi üzerinde döngüler</li>
+            <li>Fonksiyona dizi geçirme</li>
+            <li>Dizi sınır dışı erişim riski</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">String İşlemleri</div>
+          <ul class="topic-list">
+            <li>char dizisi ve null terminator \0</li>
+            <li>strcpy, strcat, strlen</li>
+            <li>strcmp, strstr, strtok</li>
+            <li>String okuma: fgets</li>
+            <li>sprintf ve snprintf</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Kapsam & Depolama</div>
+          <ul class="topic-list">
+            <li>Yerel vs global değişkenler</li>
+            <li>static değişkenler</li>
+            <li>auto, register, extern</li>
+            <li>Stack frame kavramı</li>
+            <li>Kapsam çakışması riski</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider-line"></div>
+      <div class="section-label">Faz Projeleri</div>
+      <div class="project-list">
+        <span class="project-tag">Sıralama Algoritmaları (Bubble, Insertion, Selection)</span>
+        <span class="project-tag">Matris Çarpımı</span>
+        <span class="project-tag">Sözcük Sayacı</span>
+        <span class="project-tag">Fibonacci & Faktöriyel</span>
+        <span class="project-tag">Palindrom Kontrolü</span>
+      </div>
+      <div class="tip-box">Recursive fonksiyonları yazarken her zaman base case'i önce düşün. Sonsuz özyinelemeli çağrı stack overflow'a neden olur.</div>
+    </div>
+  </div>
+
+  <!-- FAZ 3 -->
+  <div class="phase" id="p3">
+    <div class="phase-header" onclick="toggle('p3')">
+      <span class="phase-num n3">Faz 03</span>
+      <span class="phase-title">Pointer'lar & Bellek Yönetimi</span>
+      <span class="phase-duration">3–5 hafta</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="phase-body">
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="topic-card-title">Pointer Temelleri</div>
+          <ul class="topic-list">
+            <li>Adres & referans operatörleri (* ve &)</li>
+            <li>Pointer aritmetiği</li>
+            <li>Pointer ve diziler ilişkisi</li>
+            <li>void pointer, NULL pointer</li>
+            <li>Dangling pointer tehlikesi</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Dinamik Bellek</div>
+          <ul class="topic-list">
+            <li>malloc, calloc, realloc</li>
+            <li>free ile bellek serbest bırakma</li>
+            <li>Bellek sızıntısı (memory leak)</li>
+            <li>Valgrind ile hata tespiti</li>
+            <li>Heap vs Stack farkı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Gelişmiş Pointer Kullanımı</div>
+          <ul class="topic-list">
+            <li>Pointer dizileri</li>
+            <li>Pointer'a pointer (çift yıldız **)</li>
+            <li>Fonksiyon pointer'ları</li>
+            <li>const pointer kullanımı</li>
+            <li>restrict anahtar kelimesi</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">String & Bellek</div>
+          <ul class="topic-list">
+            <li>memcpy, memmove, memset</li>
+            <li>Dinamik string manipülasyonu</li>
+            <li>Buffer overflow riskleri</li>
+            <li>Güvenli string fonksiyonları</li>
+            <li>strdup ile kopyalama</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider-line"></div>
+      <div class="section-label">Faz Projeleri</div>
+      <div class="project-list">
+        <span class="project-tag">Dinamik Not Takip Sistemi</span>
+        <span class="project-tag">String Reverse & Manipülasyon</span>
+        <span class="project-tag">Fonksiyon Pointer Menü</span>
+        <span class="project-tag">Dinamik Dizi Genişletici</span>
+      </div>
+      <div class="tip-box">Bu faz C öğrenmenin en kritik noktasıdır. Pointer'ları tam kavramadan ilerlemek ilerleyen konularda büyük sorunlara yol açar. Her malloc için bir free yazdığını garantile. Bolca pratik yap.</div>
+    </div>
+  </div>
+
+  <!-- FAZ 4 -->
+  <div class="phase" id="p4">
+    <div class="phase-header" onclick="toggle('p4')">
+      <span class="phase-num n4">Faz 04</span>
+      <span class="phase-title">Struct, Dosya I/O & Veri Yapıları</span>
+      <span class="phase-duration">3–5 hafta</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="phase-body">
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="topic-card-title">Struct & Union</div>
+          <ul class="topic-list">
+            <li>struct tanımlama & kullanım</li>
+            <li>Pointer ile struct erişimi (->)</li>
+            <li>İç içe struct'lar</li>
+            <li>union ve enum kullanımı</li>
+            <li>Anonim struct'lar</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">typedef & Bit Alanları</div>
+          <ul class="topic-list">
+            <li>typedef ile tip takma adı</li>
+            <li>Bit field yapıları</li>
+            <li>Bellek hizalama (alignment)</li>
+            <li>Padding ve sizeof struct</li>
+            <li>Packed struct kullanımı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Dosya İşlemleri</div>
+          <ul class="topic-list">
+            <li>fopen, fclose, fread, fwrite</li>
+            <li>fprintf, fscanf, fgets</li>
+            <li>Binary vs text dosya modu</li>
+            <li>fseek, ftell, rewind</li>
+            <li>Hata kontrolü ve feof</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Bağlı Listeler</div>
+          <ul class="topic-list">
+            <li>Tek yönlü bağlı liste</li>
+            <li>Çift yönlü bağlı liste</li>
+            <li>Döngüsel bağlı liste</li>
+            <li>Stack ve Queue implementasyonu</li>
+            <li>Liste üzerinde arama & silme</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Ağaç & Hash Yapıları</div>
+          <ul class="topic-list">
+            <li>Binary search tree (BST)</li>
+            <li>Tree traversal (inorder, preorder, postorder)</li>
+            <li>Hash tablosu implementasyonu</li>
+            <li>Çakışma çözme yöntemleri</li>
+            <li>Basit graf temsili (adjacency list)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider-line"></div>
+      <div class="section-label">Faz Projeleri</div>
+      <div class="project-list">
+        <span class="project-tag">Kişi Rehberi (Dosya Destekli)</span>
+        <span class="project-tag">Stack & Queue Implementasyonu</span>
+        <span class="project-tag">Binary Search Tree</span>
+        <span class="project-tag">CSV Dosya İşleyici</span>
+        <span class="project-tag">Basit Veritabanı Simülasyonu</span>
+      </div>
+      <div class="tip-box">Veri yapılarını kağıt üzerinde çizerek anlamak, kodu doğrudan yazmaktan çok daha etkilidir. Her veri yapısını önce diyagramla, sonra kodla.</div>
+    </div>
+  </div>
+
+  <!-- FAZ 5 -->
+  <div class="phase" id="p5">
+    <div class="phase-header" onclick="toggle('p5')">
+      <span class="phase-num n5">Faz 05</span>
+      <span class="phase-title">İleri Seviye — Sistem Programlama & Optimizasyon</span>
+      <span class="phase-duration">4–8 hafta</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="phase-body">
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="topic-card-title">Önişlemci (Preprocessor)</div>
+          <ul class="topic-list">
+            <li>#define, #ifdef, #ifndef, #endif</li>
+            <li>Makro fonksiyonları & tuzakları</li>
+            <li>Çok dosyalı proje yapısı</li>
+            <li>Header guard kullanımı</li>
+            <li>#pragma once</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Hata Yönetimi</div>
+          <ul class="topic-list">
+            <li>errno ve perror kullanımı</li>
+            <li>Hata kodları ve geri dönüş değerleri</li>
+            <li>assert makrosu</li>
+            <li>Savunmacı programlama teknikleri</li>
+            <li>setjmp / longjmp ile exception benzeri yapı</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Sistem Çağrıları (POSIX)</div>
+          <ul class="topic-list">
+            <li>fork, exec, wait</li>
+            <li>Sinyal (signal) mekanizması</li>
+            <li>Pipe ve FIFO</li>
+            <li>Shared memory (shmget)</li>
+            <li>Socket programlamaya giriş</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Çok İş Parçacıklı Programlama</div>
+          <ul class="topic-list">
+            <li>pthreads kütüphanesi</li>
+            <li>Mutex ve semafor</li>
+            <li>Race condition ve deadlock</li>
+            <li>Thread-safe programlama</li>
+            <li>Thread pool implementasyonu</li>
+          </ul>
+        </div>
+        <div class="topic-card">
+          <div class="topic-card-title">Performans & Araçlar</div>
+          <ul class="topic-list">
+            <li>GDB ile adım adım debug etme</li>
+            <li>Valgrind bellek analizi</li>
+            <li>Profiling (gprof, perf)</li>
+            <li>Compiler optimizasyonları (-O1, -O2, -O3)</li>
+            <li>Cache-friendly kod yazımı</li>
+          </ul>
+        </div>
+      </div>
+      <div class="divider-line"></div>
+      <div class="section-label">Faz Projeleri</div>
+      <div class="project-list">
+        <span class="project-tag">Mini Shell (Komut Satırı Yorumlayıcı)</span>
+        <span class="project-tag">Çok Parçacıklı Dosya Kopyalayıcı</span>
+        <span class="project-tag">TCP Echo Server / Client</span>
+        <span class="project-tag">Custom malloc Implementasyonu</span>
+        <span class="project-tag">Basit HTTP Sunucusu</span>
+      </div>
+      <div class="tip-box">Bu faza gelmeden önce önceki fazları tam kavradığından emin ol. Faz 5 projeleri iş başvurularında ve sistem programlamada doğrudan kullanılabilir seviyedir. Mini Shell projesi tek başına mükemmel bir portföy parçasıdır.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  C Programlama Yol Haritası &mdash; Sıfırdan Uzmanlığa &mdash; 5 Faz / 6–12 Ay
+</footer>
+
+<script>
+  function toggle(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS 0 → PRO Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────── TOKENS ─────────── */
+:root {
+  --bg:      #0f0e17;
+  --bg2:     #16152a;
+  --surface: rgba(255,255,255,0.04);
+  --glass:   rgba(255,255,255,0.07);
+  --border:  rgba(255,255,255,0.09);
+  --ink:     #f4f0ff;
+  --ink2:    #a89fbf;
+  --ink3:    #6b6485;
+
+  /* level palette */
+  --c1: #7ed6a0;   /* green  – temel    */
+  --c2: #f9cb74;   /* yellow – orta     */
+  --c3: #79b8f8;   /* blue   – ileri    */
+  --c4: #c084fc;   /* purple – pro      */
+  --c5: #fb7185;   /* rose   – master   */
+
+  /* gradient mesh */
+  --g1: #3b1fa8;
+  --g2: #6d28d9;
+  --g3: #be185d;
+  --g4: #0f766e;
+
+  --font-h: 'Clash Display',    sans-serif;
+  --font-b: 'Cabinet Grotesk',  sans-serif;
+  --font-c: 'Fira Code',        monospace;
+
+  --r:  10px;
+  --r2: 6px;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── GRADIENT BG MESH ── */
+.mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 60% at 15%  10%, rgba(59,31,168,.35) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 85%  20%, rgba(190,24,93,.22) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 55% at 70%  85%, rgba(109,40,217,.28) 0%, transparent 70%),
+    radial-gradient(ellipse 45% 45% at 10%  80%, rgba(15,118,110,.25) 0%, transparent 70%);
+  animation: meshShift 18s ease-in-out infinite alternate;
+}
+@keyframes meshShift {
+  0%   { opacity:.7; }
+  50%  { opacity:1; }
+  100% { opacity:.8; }
+}
+
+/* ── GRID OVERLAY ── */
+.grid-over {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cur  { position:fixed; width:10px; height:10px; background:var(--ink); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; transition:width .15s,height .15s; }
+#cur2 { position:fixed; width:36px; height:36px; border:1.5px solid rgba(255,255,255,.35); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s,height .2s; }
+
+/* ─────────── LAYOUT ─────────── */
+.page { position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:0 28px 100px; }
+
+/* ─────────── HERO ─────────── */
+.hero { padding:68px 0 52px; position:relative; }
+
+.hero-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 14px; border:1px solid var(--border);
+  background:var(--glass); backdrop-filter:blur(12px);
+  border-radius:999px; font-family:var(--font-c);
+  font-size:.65rem; letter-spacing:.12em; color:var(--ink2);
+  margin-bottom:20px;
+  animation: up .6s ease both;
+}
+.hero-pill-dot { width:7px; height:7px; border-radius:50%; background:var(--c1); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.hero-title {
+  font-family: var(--font-h);
+  font-size: clamp(4rem,12vw,9.5rem);
+  font-weight: 700;
+  line-height: .92;
+  letter-spacing: -.03em;
+  animation: up .6s .08s ease both;
+}
+.hl-grad {
+  background: linear-gradient(135deg, #c084fc 0%, #79b8f8 40%, #7ed6a0 80%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub-row {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  margin-top:24px; gap:24px; flex-wrap:wrap;
+  animation: up .6s .16s ease both;
+}
+.hero-desc { font-size:.95rem; color:var(--ink2); max-width:520px; line-height:1.7; }
+.hero-desc strong { color:var(--ink); }
+
+.hero-stat-row {
+  display:flex; gap:0; border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden; flex-shrink:0;
+  animation: up .6s .24s ease both;
+}
+.hstat { padding:14px 22px; text-align:center; border-right:1px solid var(--border); }
+.hstat:last-child { border-right:none; }
+.hstat-n { font-family:var(--font-h); font-size:1.9rem; background:linear-gradient(135deg,var(--c4),var(--c3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; }
+.hstat-l { font-family:var(--font-c); font-size:.55rem; color:var(--ink3); margin-top:4px; letter-spacing:.1em; }
+
+/* ─────────── LEVEL STRIP ─────────── */
+.level-strip {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:10px; margin:32px 0;
+  animation: up .6s .32s ease both;
+}
+.lvl-card {
+  padding:16px 14px; border:1px solid var(--border);
+  border-radius:var(--r); background:var(--surface);
+  backdrop-filter:blur(10px); cursor:pointer; position:relative;
+  overflow:hidden; transition:all .3s;
+}
+.lvl-card::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,var(--lc) 0%,transparent 60%);
+  opacity:0; transition:opacity .3s;
+}
+.lvl-card:hover { border-color:var(--lc); transform:translateY(-3px); box-shadow:0 8px 30px rgba(0,0,0,.3); }
+.lvl-card:hover::before { opacity:.08; }
+.lvl-dot2 { width:9px; height:9px; border-radius:50%; background:var(--lc); margin-bottom:8px; }
+.lvl-num { font-family:var(--font-h); font-size:.7rem; letter-spacing:.15em; color:var(--ink3); }
+.lvl-name { font-family:var(--font-h); font-size:1rem; margin-top:4px; }
+.lvl-count { font-family:var(--font-c); font-size:.6rem; color:var(--ink3); margin-top:4px; }
+.lvl-bar-wrap { margin-top:10px; height:2px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; }
+.lvl-bar-fill { height:100%; background:var(--lc); width:0; transition:width 1.2s cubic-bezier(.4,0,.2,1); border-radius:2px; }
+.lvl-card.bar-in .lvl-bar-fill { width:var(--bw,100%); }
+
+/* ─────────── MAIN GRID ─────────── */
+.main { display:grid; grid-template-columns:1fr 290px; gap:0; border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+
+/* ─────────── SECTION ─────────── */
+.secs { }
+
+.sec {
+  border-bottom:1px solid var(--border);
+  opacity:0; transform:translateY(14px);
+  transition:opacity .5s, transform .5s;
+}
+.sec:last-child { border-bottom:none; }
+.sec.in { opacity:1; transform:none; }
+
+.sec-hd {
+  display:grid; grid-template-columns:56px 1fr auto;
+  cursor:pointer; align-items:start; transition:background .2s;
+}
+.sec-hd:hover { background:var(--glass); }
+.sec-hd.open { background:rgba(255,255,255,.055); }
+
+.sec-badge-col {
+  display:flex; flex-direction:column; align-items:center;
+  padding:18px 0; gap:6px;
+}
+.sec-badge-num {
+  font-family:var(--font-h); font-size:1.7rem;
+  color:rgba(255,255,255,.12); line-height:1;
+  transition:color .2s;
+}
+.sec-hd.open .sec-badge-num,
+.sec-hd:hover .sec-badge-num { color:var(--sc,var(--c1)); }
+
+.sec-stripe { width:2px; height:0; background:var(--sc,var(--c1)); border-radius:2px; transition:height .3s; }
+.sec-hd.open .sec-stripe,
+.sec-hd:hover .sec-stripe { height:22px; }
+
+.sec-body-hd { padding:18px 16px; }
+.sec-lvl { font-family:var(--font-c); font-size:.58rem; letter-spacing:.2em; color:var(--sc,var(--c1)); margin-bottom:5px; }
+.sec-title { font-family:var(--font-h); font-size:1.3rem; font-weight:600; line-height:1.15; }
+.sec-sub { font-size:.74rem; color:var(--ink3); margin-top:4px; font-family:var(--font-c); }
+
+.sec-chevron { padding:18px 16px 0 0; font-size:.6rem; color:var(--ink3); transition:transform .3s; align-self:flex-start; }
+.sec-hd.open .sec-chevron { transform:rotate(90deg); color:var(--sc); }
+
+/* CONTENT */
+.sec-content { display:none; border-top:1px solid var(--border); }
+.sec-content.open { display:block; animation:fadeIn .28s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+
+.sec-in { padding:22px 20px 26px; }
+
+/* CHIPS */
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+.chip {
+  font-family:var(--font-c); font-size:.65rem;
+  padding:4px 11px; border-radius:999px;
+  border:1px solid var(--border); color:var(--ink2);
+  background:var(--surface); transition:all .2s; cursor:default;
+}
+.chip:hover { border-color:var(--sc,var(--c1)); color:var(--sc,var(--c1)); background:rgba(255,255,255,.06); }
+
+/* CODE */
+.code {
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.07);
+  border-left:3px solid var(--sc,var(--c1));
+  border-radius:var(--r2); font-family:var(--font-c);
+  font-size:.74rem; line-height:1.8;
+  padding:16px 18px; margin:14px 0; overflow-x:auto;
+  position:relative;
+}
+.code::after {
+  content:attr(data-lang);
+  position:absolute; top:6px; right:10px;
+  font-size:.55rem; letter-spacing:.12em; color:var(--ink3);
+}
+.p  { color:#c084fc; } /* property  */
+.v  { color:#7ed6a0; } /* value     */
+.s  { color:#f9cb74; } /* selector  */
+.cm { color:#4a4463; font-style:italic; } /* comment */
+.u  { color:#79b8f8; } /* unit      */
+.fn2{ color:#fb7185; } /* function  */
+.at { color:#f4a261; } /* at-rule   */
+
+/* GRID CARDS */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:12px 0; }
+
+.card {
+  padding:12px 14px; border:1px solid var(--border);
+  border-radius:var(--r2); background:var(--surface);
+  transition:all .2s; border-left:2px solid var(--sc,var(--c1));
+}
+.card:hover { border-color:var(--sc,var(--c1)); background:var(--glass); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.3); }
+.card-t { font-family:var(--font-c); font-size:.74rem; color:var(--ink); margin-bottom:4px; font-weight:500; }
+.card-d { font-size:.71rem; color:var(--ink3); line-height:1.5; }
+
+/* NOTE */
+.note {
+  padding:12px 16px; border-radius:var(--r2); margin:12px 0;
+  font-size:.8rem; line-height:1.65; color:var(--ink2);
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.03);
+  border-left:3px solid var(--nc,var(--c3));
+}
+.note strong { color:var(--nc,var(--c3)); }
+
+/* DEMO — live CSS showcase */
+.demo {
+  margin:14px 0; padding:16px;
+  border:1px solid var(--border); border-radius:var(--r2);
+  background:rgba(0,0,0,.3);
+}
+.demo-label { font-family:var(--font-c); font-size:.58rem; letter-spacing:.15em; color:var(--ink3); margin-bottom:10px; }
+
+/* Box model visual */
+.bm-outer { background:rgba(249,203,116,.08); border:2px dashed rgba(249,203,116,.4); padding:12px; border-radius:4px; text-align:center; }
+.bm-margin-lbl { font-family:var(--font-c); font-size:.55rem; color:#f9cb74; margin-bottom:8px; }
+.bm-border-box { background:rgba(126,214,160,.08); border:2px solid rgba(126,214,160,.5); padding:10px; border-radius:3px; }
+.bm-padding-box { background:rgba(121,184,248,.08); border:2px dashed rgba(121,184,248,.4); padding:8px; border-radius:2px; }
+.bm-content { background:rgba(192,132,252,.2); border:1px solid rgba(192,132,252,.6); padding:8px 4px; border-radius:2px; font-family:var(--font-c); font-size:.6rem; color:var(--c4); }
+.bm-lbl { font-family:var(--font-c); font-size:.52rem; margin-top:3px; }
+
+/* Flex demo */
+.flex-demo { display:flex; gap:6px; flex-wrap:wrap; }
+.flex-demo[data-jc="center"]       { justify-content:center; }
+.flex-demo[data-jc="space-between"]{ justify-content:space-between; }
+.flex-demo[data-jc="flex-end"]     { justify-content:flex-end; }
+.fb { width:28px; height:28px; border-radius:4px; background:linear-gradient(135deg,var(--c4),var(--c3)); opacity:.8; }
+.flex-controls { display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; }
+.fc-btn { font-family:var(--font-c); font-size:.6rem; padding:3px 9px; border:1px solid var(--border); border-radius:999px; color:var(--ink3); cursor:pointer; transition:all .2s; background:transparent; }
+.fc-btn:hover,.fc-btn.active { border-color:var(--c4); color:var(--c4); background:rgba(192,132,252,.08); }
+
+/* Specificity pyramid */
+.spec-pyramid { display:flex; flex-direction:column; gap:6px; }
+.spec-row { display:flex; align-items:center; gap:10px; }
+.spec-bar { height:22px; border-radius:3px; display:flex; align-items:center; padding:0 10px; font-family:var(--font-c); font-size:.64rem; font-weight:500; transition:width 1s cubic-bezier(.4,0,.2,1); }
+.spec-score { font-family:var(--font-c); font-size:.6rem; color:var(--ink3); flex-shrink:0; }
+
+/* Target */
+.target {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:var(--r2);
+  background:rgba(255,255,255,.03); border:1px solid var(--border);
+  border-left:2px solid var(--sc,var(--c1));
+  font-family:var(--font-c); font-size:.72rem; margin-top:14px;
+  color:var(--ink2);
+}
+.target::before { content:'▸'; color:var(--sc,var(--c1)); flex-shrink:0; }
+
+/* ─────────── SIDEBAR ─────────── */
+.sidebar { border-left:1px solid var(--border); }
+
+.sb { padding:20px 18px; border-bottom:1px solid var(--border); }
+.sb:last-child { border-bottom:none; }
+.sb-t { font-family:var(--font-c); font-size:.58rem; letter-spacing:.2em; color:var(--ink3); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.sb-t::before { content:'//'; color:var(--c4); }
+
+/* Timeline */
+.tl2 { display:flex; flex-direction:column; }
+.tl2-row { display:grid; grid-template-columns:36px 1fr; gap:8px; padding:10px 0; border-bottom:1px solid var(--border); align-items:start; }
+.tl2-row:last-child { border-bottom:none; }
+.tl2-d { font-family:var(--font-h); font-size:1.5rem; color:var(--sc2,var(--c2)); line-height:1; text-align:center; }
+.tl2-u { font-family:var(--font-c); font-size:.48rem; color:var(--ink3); text-align:center; display:block; }
+.tl2-n { font-size:.82rem; font-weight:700; }
+.tl2-s { font-family:var(--font-c); font-size:.62rem; color:var(--ink3); margin-top:2px; }
+
+/* Color palette mini */
+.palette { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; }
+.pal-item { height:36px; border-radius:var(--r2); position:relative; overflow:hidden; cursor:default; transition:transform .2s; }
+.pal-item:hover { transform:scaleY(1.08); }
+.pal-item::after { content:attr(data-name); position:absolute; bottom:3px; left:0; right:0; text-align:center; font-family:var(--font-c); font-size:.48rem; color:rgba(255,255,255,.7); }
+
+/* Project list */
+.proj-list2 { display:flex; flex-direction:column; gap:7px; }
+.proj2 {
+  padding:10px 12px; border-radius:var(--r2);
+  border:1px solid var(--border); background:var(--surface);
+  transition:all .2s; position:relative; overflow:hidden;
+}
+.proj2::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--pc,var(--c1)); }
+.proj2:hover { border-color:var(--pc,var(--c1)); background:var(--glass); transform:translateX(3px); }
+.proj2-n { font-family:var(--font-c); font-size:.58rem; color:var(--ink3); letter-spacing:.1em; }
+.proj2-name { font-size:.82rem; font-weight:700; margin-top:3px; }
+.proj2-tags { display:flex; gap:4px; margin-top:5px; flex-wrap:wrap; }
+.proj2-tag { font-family:var(--font-c); font-size:.55rem; padding:2px 7px; border:1px solid var(--border); border-radius:3px; color:var(--ink3); }
+
+/* Skill wheel */
+.wheel-wrap { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.wheel-item { text-align:center; }
+.ring-svg { transform:rotate(-90deg); }
+.ring-bg  { fill:none; stroke:rgba(255,255,255,.05); stroke-width:4; }
+.ring-fg  { fill:none; stroke-width:4; stroke-linecap:round; stroke-dasharray:100 100; transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+.ring-label { font-family:var(--font-c); font-size:.6rem; color:var(--ink2); margin-top:5px; }
+.ring-pct { font-family:var(--font-h); font-size:1rem; }
+
+/* ─────────── BOTTOM CTA ─────────── */
+.cta {
+  margin-top:28px;
+  border-radius:var(--r);
+  overflow:hidden; position:relative;
+  border:1px solid var(--border);
+}
+.cta-inner {
+  display:grid; grid-template-columns:1fr 1fr; gap:0;
+}
+.cta-bg {
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:linear-gradient(135deg, rgba(109,40,217,.15) 0%, rgba(190,24,93,.1) 50%, rgba(14,165,233,.1) 100%);
+}
+.cta-left,.cta-right { padding:44px 36px; position:relative; z-index:1; }
+.cta-left { border-right:1px solid var(--border); }
+
+.cta-h {
+  font-family:var(--font-h);
+  font-size:clamp(1.8rem,4vw,3rem);
+  line-height:1; margin-bottom:14px; font-weight:700;
+}
+.cta-p { font-size:.85rem; color:var(--ink2); line-height:1.7; margin-bottom:22px; }
+.btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:11px 22px; border-radius:var(--r2);
+  font-family:var(--font-b); font-size:.8rem; font-weight:700;
+  text-decoration:none; cursor:pointer; transition:all .2s;
+}
+.btn-grd {
+  background:linear-gradient(135deg,var(--c4),var(--c3));
+  color:var(--bg); border:none;
+}
+.btn-grd:hover { filter:brightness(1.1); transform:translateY(-1px); box-shadow:0 8px 24px rgba(192,132,252,.3); }
+.btn-ghost { background:transparent; border:1px solid var(--border); color:var(--ink2); margin-left:8px; }
+.btn-ghost:hover { border-color:var(--c4); color:var(--c4); }
+
+.cta-rules { display:flex; flex-direction:column; gap:10px; }
+.cta-rule { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+.cta-rule:last-child { border-bottom:none; }
+.cta-rule-arrow { color:var(--sc2,var(--c4)); font-size:1rem; flex-shrink:0; font-family:var(--font-h); margin-top:1px; }
+.cta-rule-t { font-weight:800; font-size:.88rem; }
+.cta-rule-d { font-family:var(--font-c); font-size:.64rem; color:var(--ink3); margin-top:2px; }
+
+/* FOOTER */
+footer { padding:20px 0; display:flex; justify-content:space-between; font-family:var(--font-c); font-size:.62rem; color:var(--ink3); border-top:1px solid var(--border); margin-top:28px; }
+
+/* ANIMATIONS */
+@keyframes up { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .main{grid-template-columns:1fr}
+  .sidebar{border-left:none;border-top:1px solid var(--border)}
+  .cta-inner{grid-template-columns:1fr}
+  .cta-left{border-right:none;border-bottom:1px solid var(--border)}
+  .level-strip{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:640px){
+  .page{padding:0 14px 60px}
+  .level-strip{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3{grid-template-columns:1fr}
+  .hero-stat-row{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="mesh"></div>
+<div class="grid-over"></div>
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<div class="page">
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero-pill">
+    <div class="hero-pill-dot"></div>
+    CSS 0 → PRO · 5 Seviye · Görsel Stil Ustası
+  </div>
+
+  <h1 class="hero-title">
+    <span class="hl-grad">CSS</span><br>Sıfırdan<br>Ustaya
+  </h1>
+
+  <div class="hero-sub-row">
+    <p class="hero-desc">
+      Box Model'den Design System'e — <strong>selector'lardan animasyonlara</strong> —
+      frontend'in görsel gücünü adım adım öğren.<br>
+      <strong>Ezber değil, pratik.</strong>
+    </p>
+    <div class="hero-stat-row">
+      <div class="hstat"><div class="hstat-n" id="hs1">0</div><div class="hstat-l">SEVİYE</div></div>
+      <div class="hstat"><div class="hstat-n" id="hs2">0</div><div class="hstat-l">PROJE</div></div>
+      <div class="hstat"><div class="hstat-n" id="hs3">0</div><div class="hstat-l">BÖLÜM</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ LEVEL STRIP ═══ -->
+<div class="level-strip">
+  <div class="lvl-card" style="--lc:var(--c1);--bw:100%">
+    <div class="lvl-dot2" style="background:var(--c1)"></div>
+    <div class="lvl-num">LEVEL 01</div>
+    <div class="lvl-name" style="color:var(--c1)">Temel</div>
+    <div class="lvl-count">Bölüm 1 · Foundation</div>
+    <div class="lvl-bar-wrap"><div class="lvl-bar-fill"></div></div>
+  </div>
+  <div class="lvl-card" style="--lc:var(--c2);--bw:100%">
+    <div class="lvl-dot2" style="background:var(--c2)"></div>
+    <div class="lvl-num">LEVEL 02</div>
+    <div class="lvl-name" style="color:var(--c2)">Orta</div>
+    <div class="lvl-count">Bölüm 2 · Layout</div>
+    <div class="lvl-bar-wrap"><div class="lvl-bar-fill"></div></div>
+  </div>
+  <div class="lvl-card" style="--lc:var(--c3);--bw:100%">
+    <div class="lvl-dot2" style="background:var(--c3)"></div>
+    <div class="lvl-num">LEVEL 03</div>
+    <div class="lvl-name" style="color:var(--c3)">İleri</div>
+    <div class="lvl-count">Bölüm 3 · Pro Look</div>
+    <div class="lvl-bar-wrap"><div class="lvl-bar-fill"></div></div>
+  </div>
+  <div class="lvl-card" style="--lc:var(--c4);--bw:100%">
+    <div class="lvl-dot2" style="background:var(--c4)"></div>
+    <div class="lvl-num">LEVEL 04</div>
+    <div class="lvl-name" style="color:var(--c4)">Pro</div>
+    <div class="lvl-count">Bölüm 4 · Arch+Tools</div>
+    <div class="lvl-bar-wrap"><div class="lvl-bar-fill"></div></div>
+  </div>
+  <div class="lvl-card" style="--lc:var(--c5);--bw:100%">
+    <div class="lvl-dot2" style="background:var(--c5)"></div>
+    <div class="lvl-num">LEVEL 05</div>
+    <div class="lvl-name" style="color:var(--c5)">Master</div>
+    <div class="lvl-count">Bölüm 5 · Senior</div>
+    <div class="lvl-bar-wrap"><div class="lvl-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+<div class="secs">
+
+<!-- ──── BÖLÜM 1: TEMEL ──── -->
+<div class="sec" data-lvl="1">
+  <div class="sec-hd open" onclick="tog(this)" style="--sc:var(--c1)">
+    <div class="sec-badge-col"><div class="sec-badge-num">01</div><div class="sec-stripe"></div></div>
+    <div class="sec-body-hd">
+      <div class="sec-lvl">// TEMEL — FOUNDATION</div>
+      <div class="sec-title">CSS Nedir? Nasıl Çalışır?</div>
+      <div class="sec-sub">Cascade · Selector · Box Model · Position · Units</div>
+    </div>
+    <div class="sec-chevron">▶</div>
+  </div>
+  <div class="sec-content open" style="--sc:var(--c1)">
+    <div class="sec-in">
+
+      <!-- Bağlama -->
+      <div class="chips">
+        <span class="chip">Cascade</span><span class="chip">Inheritance</span>
+        <span class="chip">Specificity</span><span class="chip">Box Model</span>
+        <span class="chip">Selector</span><span class="chip">Units</span>
+      </div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* 3 CSS Bağlama Yöntemi */</span>
+
+<span class="cm">/* 1 — Inline (en yüksek specificity, kullanma) */</span>
+&lt;p <span class="p">style</span>=<span class="v">"color: red"</span>&gt;
+
+<span class="cm">/* 2 — Internal */</span>
+&lt;<span class="s">style</span>&gt;
+  <span class="s">p</span> { <span class="p">color</span>: <span class="v">red</span>; }
+&lt;/<span class="s">style</span>&gt;
+
+<span class="cm">/* 3 — External (EN İYİ YÖNTEM) */</span>
+&lt;<span class="s">link</span> <span class="p">rel</span>=<span class="v">"stylesheet"</span> <span class="p">href</span>=<span class="v">"style.css"</span>&gt;</div>
+
+      <!-- Selector tablosu -->
+      <table style="width:100%;border-collapse:collapse;font-size:.75rem;margin:14px 0;">
+        <tr style="background:rgba(255,255,255,.04)">
+          <th style="padding:7px 10px;text-align:left;font-family:var(--font-c);font-size:.6rem;letter-spacing:.1em;color:var(--ink3);border-bottom:1px solid var(--border)">SELECTOR</th>
+          <th style="padding:7px 10px;text-align:left;font-family:var(--font-c);font-size:.6rem;letter-spacing:.1em;color:var(--ink3);border-bottom:1px solid var(--border)">AÇIKLAMA</th>
+          <th style="padding:7px 10px;text-align:left;font-family:var(--font-c);font-size:.6rem;letter-spacing:.1em;color:var(--ink3);border-bottom:1px solid var(--border)">SPESIFICITY</th>
+        </tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c1)">*</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">Tüm elementler</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">0,0,0</td></tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c1)">div, p</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">Tag selector</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">0,0,1</td></tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c2)">.class</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">Class selector</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">0,1,0</td></tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c3)">#id</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">ID selector</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">1,0,0</td></tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c4)">div > p</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">Direkt child</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">0,0,2</td></tr>
+        <tr><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--c5)">div + p</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);color:var(--ink2)">Adjacent sibling</td><td style="padding:7px 10px;border-bottom:1px solid var(--border);font-family:var(--font-c);color:var(--ink3)">0,0,2</td></tr>
+        <tr><td style="padding:7px 10px;font-family:var(--font-c);color:var(--ink)">style=""</td><td style="padding:7px 10px;color:var(--ink2)">Inline style</td><td style="padding:7px 10px;font-family:var(--font-c);color:var(--c5)">1,0,0,0</td></tr>
+      </table>
+
+      <!-- Box Model DEMO -->
+      <div class="demo">
+        <div class="demo-label">// CANLI DEMO — CSS BOX MODEL</div>
+        <div class="bm-outer">
+          <div class="bm-margin-lbl">MARGIN (dış boşluk)</div>
+          <div class="bm-border-box">
+            <div class="bm-lbl" style="font-family:var(--font-c);font-size:.52rem;color:var(--c1);margin-bottom:6px">BORDER (kenarlık)</div>
+            <div class="bm-padding-box">
+              <div class="bm-lbl" style="font-family:var(--font-c);font-size:.52rem;color:var(--c3);margin-bottom:6px">PADDING (iç boşluk)</div>
+              <div class="bm-content">CONTENT · width × height</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* box-sizing: border-box — KULLAN, HAYATİ! */</span>
+<span class="s">*, *::before, *::after</span> {
+  <span class="p">box-sizing</span>: <span class="v">border-box</span>;
+  <span class="cm">/* padding/border, width dışına taşmaz */</span>
+}
+
+<span class="s">.kart</span> {
+  <span class="p">width</span>:    <span class="u">320px</span>;
+  <span class="p">padding</span>: <span class="u">20px</span>;
+  <span class="p">border</span>:  <span class="u">2px</span> <span class="v">solid</span> <span class="v">#333</span>;
+  <span class="p">margin</span>:  <span class="u">16px</span> <span class="v">auto</span>;
+  <span class="cm">/* content-box'ta toplam: 320+40+4 = 364px */</span>
+  <span class="cm">/* border-box'ta toplam:  320px (sabit!)    */</span>
+}</div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Position değerleri */</span>
+<span class="p">position</span>: <span class="v">static</span>;   <span class="cm">/* default — akış içinde */</span>
+<span class="p">position</span>: <span class="v">relative</span>; <span class="cm">/* kendi yerine göre ofset */</span>
+<span class="p">position</span>: <span class="v">absolute</span>; <span class="cm">/* en yakın relative parent'a göre */</span>
+<span class="p">position</span>: <span class="v">fixed</span>;    <span class="cm">/* viewport'a sabit */</span>
+<span class="p">position</span>: <span class="v">sticky</span>;   <span class="cm">/* scroll'da sabit kalır — navbar! */</span>
+
+<span class="cm">/* Birimler */</span>
+<span class="u">16px</span>   <span class="cm">/* mutlak piksel */</span>
+<span class="u">1rem</span>   <span class="cm">/* root font-size (genelde 16px) */</span>
+<span class="u">1em</span>    <span class="cm">/* ebeveyn font-size — dikkat! */</span>
+<span class="u">50%</span>    <span class="cm">/* ebeveyn boyutuna göre */</span>
+<span class="u">100vw</span>  <span class="cm">/* viewport genişliği */</span>
+<span class="fn2">clamp</span>(<span class="u">1rem</span>, <span class="u">2vw</span>, <span class="u">2rem</span>) <span class="cm">/* fluid — min/ideal/max */</span></div>
+
+      <div class="target">Hedef: Box model'i gözlerin kapalı çiz. Position farkını somut örneklerle test et.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── BÖLÜM 2: ORTA — LAYOUT ──── -->
+<div class="sec" data-lvl="2">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--c2)">
+    <div class="sec-badge-col"><div class="sec-badge-num">02</div><div class="sec-stripe"></div></div>
+    <div class="sec-body-hd">
+      <div class="sec-lvl">// ORTA — LAYOUT USTASI</div>
+      <div class="sec-title">Flexbox · Grid · Responsive</div>
+      <div class="sec-sub">justify-content · grid-template · media queries · mobile-first</div>
+    </div>
+    <div class="sec-chevron">▶</div>
+  </div>
+  <div class="sec-content" style="--sc:var(--c2)">
+    <div class="sec-in">
+
+      <!-- Flexbox DEMO -->
+      <div class="demo" style="--sc:var(--c2)">
+        <div class="demo-label">// İNTERAKTİF DEMO — FLEXBOX</div>
+        <div class="flex-controls">
+          <button class="fc-btn active" onclick="setJC(this,'flex-start')">flex-start</button>
+          <button class="fc-btn" onclick="setJC(this,'center')">center</button>
+          <button class="fc-btn" onclick="setJC(this,'space-between')">space-between</button>
+          <button class="fc-btn" onclick="setJC(this,'flex-end')">flex-end</button>
+        </div>
+        <div id="flex-demo" class="flex-demo" data-jc="flex-start">
+          <div class="fb"></div><div class="fb"></div><div class="fb"></div><div class="fb"></div>
+        </div>
+      </div>
+
+      <div class="code" data-lang="CSS">
+<span class="s">.konteyner</span> {
+  <span class="p">display</span>:          <span class="v">flex</span>;
+  <span class="p">justify-content</span>: <span class="v">space-between</span>; <span class="cm">/* x ekseni */</span>
+  <span class="p">align-items</span>:     <span class="v">center</span>;       <span class="cm">/* y ekseni */</span>
+  <span class="p">flex-direction</span>:  <span class="v">row</span>;          <span class="cm">/* row | column */</span>
+  <span class="p">flex-wrap</span>:       <span class="v">wrap</span>;         <span class="cm">/* alt satıra geç */</span>
+  <span class="p">gap</span>:             <span class="u">16px</span>;
+}
+
+<span class="s">.eleman</span> {
+  <span class="p">flex</span>:     <span class="u">1</span>;         <span class="cm">/* grow · shrink · basis */</span>
+  <span class="p">flex</span>:     <span class="u">0 0 200px</span>; <span class="cm">/* sabit genişlik */</span>
+  <span class="p">order</span>:    <span class="u">2</span>;         <span class="cm">/* sıra değiştir */</span>
+  <span class="p">align-self</span>: <span class="v">flex-start</span>; <span class="cm">/* bireysel hizalama */</span>
+}</div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* CSS GRID — layout kralı */</span>
+<span class="s">.layout</span> {
+  <span class="p">display</span>:               <span class="v">grid</span>;
+  <span class="p">grid-template-columns</span>: <span class="u">1fr 2fr 1fr</span>;
+  <span class="p">grid-template-rows</span>:    <span class="v">auto 1fr auto</span>;
+  <span class="p">gap</span>:                   <span class="u">20px</span>;
+}
+
+<span class="cm">/* Named areas — çok okunabilir! */</span>
+<span class="s">.layout</span> {
+  <span class="p">grid-template-areas</span>:
+    <span class="v">"header header header"</span>
+    <span class="v">"sidebar main    ads"</span>
+    <span class="v">"footer footer  footer"</span>;
+}
+<span class="s">.header</span>  { <span class="p">grid-area</span>: <span class="v">header</span>;  }
+<span class="s">.sidebar</span> { <span class="p">grid-area</span>: <span class="v">sidebar</span>; }
+
+<span class="cm">/* repeat + minmax — responsive grid */</span>
+<span class="p">grid-template-columns</span>: <span class="fn2">repeat</span>(<span class="v">auto-fill</span>, <span class="fn2">minmax</span>(<span class="u">240px</span>, <span class="u">1fr</span>));</div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Mobile-first Responsive */</span>
+<span class="s">.grid</span> { <span class="p">grid-template-columns</span>: <span class="u">1fr</span>; } <span class="cm">/* mobil */</span>
+
+<span class="at">@media</span> (<span class="p">min-width</span>: <span class="u">640px</span>)  { <span class="s">.grid</span> { <span class="p">grid-template-columns</span>: <span class="fn2">repeat</span>(<span class="u">2</span>,<span class="u">1fr</span>); } }
+<span class="at">@media</span> (<span class="p">min-width</span>: <span class="u">1024px</span>) { <span class="s">.grid</span> { <span class="p">grid-template-columns</span>: <span class="fn2">repeat</span>(<span class="u">3</span>,<span class="u">1fr</span>); } }
+<span class="at">@media</span> (<span class="p">min-width</span>: <span class="u">1280px</span>) { <span class="s">.grid</span> { <span class="p">grid-template-columns</span>: <span class="fn2">repeat</span>(<span class="u">4</span>,<span class="u">1fr</span>); } }
+
+<span class="cm">/* Container Queries (modern!) */</span>
+<span class="s">.wrapper</span> { <span class="p">container-type</span>: <span class="v">inline-size</span>; }
+<span class="at">@container</span> (<span class="p">min-width</span>: <span class="u">600px</span>) {
+  <span class="s">.kart</span> { <span class="p">flex-direction</span>: <span class="v">row</span>; }
+}</div>
+
+      <div class="target">Hedef: Flexbox ile navbar + sidebar, Grid ile dashboard layout yap. Media query olmadan responsive olmaz.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── BÖLÜM 3: İLERİ — PRO LOOK ──── -->
+<div class="sec" data-lvl="3">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--c3)">
+    <div class="sec-badge-col"><div class="sec-badge-num">03</div><div class="sec-stripe"></div></div>
+    <div class="sec-body-hd">
+      <div class="sec-lvl">// İLERİ — PROFESYONEl GÖRÜNÜM</div>
+      <div class="sec-title">Animasyon · Pseudo · Variables</div>
+      <div class="sec-sub">@keyframes · transform · ::before · CSS custom props</div>
+    </div>
+    <div class="sec-chevron">▶</div>
+  </div>
+  <div class="sec-content" style="--sc:var(--c3)">
+    <div class="sec-in">
+      <div class="chips">
+        <span class="chip">:hover</span><span class="chip">:nth-child</span><span class="chip">::before</span>
+        <span class="chip">::after</span><span class="chip">transition</span><span class="chip">transform</span>
+        <span class="chip">@keyframes</span><span class="chip">CSS Variables</span><span class="chip">filter</span>
+      </div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Pseudo Classes */</span>
+<span class="s">a:hover</span>                { <span class="p">color</span>: <span class="v">blue</span>; }
+<span class="s">input:focus</span>            { <span class="p">outline</span>: <span class="u">2px</span> <span class="v">solid</span> <span class="v">#7ed6a0</span>; }
+<span class="s">li:nth-child(odd)</span>      { <span class="p">background</span>: <span class="v">#f9f9f9</span>; }
+<span class="s">li:first-child</span>         { <span class="p">border-radius</span>: <span class="u">8px 8px 0 0</span>; }
+<span class="s">p:not(.excluded)</span>       { <span class="p">color</span>: <span class="v">inherit</span>; }
+<span class="s">:is(h1, h2, h3)</span>        { <span class="p">font-family</span>: <span class="v">serif</span>; }
+
+<span class="cm">/* Pseudo Elements */</span>
+<span class="s">.btn::before</span> {
+  <span class="p">content</span>: <span class="v">""</span>;         <span class="cm">/* zorunlu! */</span>
+  <span class="p">position</span>: <span class="v">absolute</span>;
+  <span class="p">inset</span>: <span class="u">0</span>;
+  <span class="p">background</span>: <span class="fn2">linear-gradient</span>(<span class="v">135deg</span>, <span class="v">#7ed6a0</span>, <span class="v">#79b8f8</span>);
+  <span class="p">opacity</span>: <span class="u">0</span>;
+  <span class="p">transition</span>: <span class="v">opacity</span> <span class="u">.3s</span>;
+}
+<span class="s">.btn:hover::before</span> { <span class="p">opacity</span>: <span class="u">1</span>; }</div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* CSS Custom Properties (Variables) */</span>
+<span class="s">:root</span> {
+  <span class="p">--renk-birincil</span>: <span class="v">#7ed6a0</span>;
+  <span class="p">--renk-ikincil</span>:  <span class="v">#c084fc</span>;
+  <span class="p">--bosluk-md</span>:     <span class="u">16px</span>;
+  <span class="p">--gecis</span>:         <span class="v">all .25s ease</span>;
+}
+
+<span class="s">.kart</span> {
+  <span class="p">color</span>:      <span class="fn2">var</span>(<span class="p">--renk-birincil</span>);
+  <span class="p">padding</span>:    <span class="fn2">var</span>(<span class="p">--bosluk-md</span>);
+  <span class="p">transition</span>: <span class="fn2">var</span>(<span class="p">--gecis</span>);
+}
+
+<span class="cm">/* Dark mode ile */</span>
+<span class="at">@media</span> (<span class="p">prefers-color-scheme</span>: <span class="v">dark</span>) {
+  <span class="s">:root</span> { <span class="p">--renk-birincil</span>: <span class="v">#4ade80</span>; }
+}</div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Transition — basit geçiş */</span>
+<span class="s">.kart</span> {
+  <span class="p">transition</span>: <span class="v">transform</span> <span class="u">.3s</span> <span class="v">cubic-bezier(.4,0,.2,1)</span>,
+              <span class="v">box-shadow</span> <span class="u">.3s</span> <span class="v">ease</span>;
+}
+<span class="s">.kart:hover</span> {
+  <span class="p">transform</span>:  <span class="fn2">translateY</span>(<span class="u">-6px</span>) <span class="fn2">scale</span>(<span class="u">1.02</span>);
+  <span class="p">box-shadow</span>: <span class="u">0</span> <span class="u">20px</span> <span class="u">40px</span> <span class="fn2">rgba</span>(<span class="u">0</span>,<span class="u">0</span>,<span class="u">0</span>,.<span class="u">2</span>);
+}
+
+<span class="cm">/* @keyframes animation */</span>
+<span class="at">@keyframes</span> <span class="v">float</span> {
+  <span class="u">0%</span>, <span class="u">100%</span> { <span class="p">transform</span>: <span class="fn2">translateY</span>(<span class="u">0</span>); }
+  <span class="u">50%</span>       { <span class="p">transform</span>: <span class="fn2">translateY</span>(-<span class="u">12px</span>); }
+}
+
+<span class="s">.logo</span> {
+  <span class="p">animation</span>: <span class="v">float</span> <span class="u">3s</span> <span class="v">ease-in-out</span> <span class="v">infinite</span>;
+}
+
+<span class="cm">/* Stagger effect — JS ile kombinle */</span>
+<span class="s">.card:nth-child(1)</span> { <span class="p">animation-delay</span>: <span class="u">0ms</span>;   }
+<span class="s">.card:nth-child(2)</span> { <span class="p">animation-delay</span>: <span class="u">100ms</span>; }
+<span class="s">.card:nth-child(3)</span> { <span class="p">animation-delay</span>: <span class="u">200ms</span>; }</div>
+
+      <div class="note" style="--nc:var(--c3)"><strong>💡 Transform GPU'yu kullanır</strong> — margin/top yerine transform kullan. left/top değiştirmek layout reflow tetikler, çok yavaş. <strong>translate3d()</strong> ile GPU kompozisyonunu aktive et.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── BÖLÜM 4: PRO ──── -->
+<div class="sec" data-lvl="4">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--c4)">
+    <div class="sec-badge-col"><div class="sec-badge-num">04</div><div class="sec-stripe"></div></div>
+    <div class="sec-body-hd">
+      <div class="sec-lvl">// PRO — GERÇEK FRONTENDÇİ</div>
+      <div class="sec-title">SCSS · BEM · Tailwind · Architecture</div>
+      <div class="sec-sub">Metodoloji · Preprocessor · Utility CSS · Performance</div>
+    </div>
+    <div class="sec-chevron">▶</div>
+  </div>
+  <div class="sec-content" style="--sc:var(--c4)">
+    <div class="sec-in">
+      <div class="code" data-lang="SCSS">
+<span class="cm">// SCSS — Nesting + Variables + Mixin</span>
+
+<span class="at">$renk-birincil</span>: <span class="v">#7ed6a0</span>;
+<span class="at">$aralik</span>: <span class="u">8px</span>;
+
+<span class="at">@mixin</span> <span class="fn2">esnek</span>(<span class="at">$yon</span>: <span class="v">row</span>, <span class="at">$bosluk</span>: <span class="at">$aralik</span>) {
+  <span class="p">display</span>:         <span class="v">flex</span>;
+  <span class="p">flex-direction</span>:  <span class="at">$yon</span>;
+  <span class="p">gap</span>:             <span class="at">$bosluk</span>;
+}
+
+<span class="s">.kart</span> {
+  <span class="at">@include</span> <span class="fn2">esnek</span>(<span class="v">column</span>, <span class="u">16px</span>);
+  <span class="p">padding</span>: <span class="at">$aralik</span> * <span class="u">2</span>;
+
+  <span class="cm">// Nesting — parent &amp; ile</span>
+  <span class="s">&amp;:hover</span> { <span class="p">transform</span>: <span class="fn2">translateY</span>(-<span class="u">4px</span>); }
+  <span class="s">&amp;__baslik</span> { <span class="p">font-size</span>: <span class="u">1.2rem</span>; }   <span class="cm">// BEM!</span>
+  <span class="s">&amp;--vurgulu</span> { <span class="p">border-color</span>: <span class="at">$renk-birincil</span>; }
+
+  <span class="cm">// Partials ile import</span>
+  <span class="at">@use</span> <span class="v">'./tokens'</span>;
+  <span class="at">@use</span> <span class="v">'./mixins'</span>;
+}</div>
+
+      <div class="code" data-lang="BEM">
+<span class="cm">/* BEM — Block__Element--Modifier */</span>
+
+<span class="cm">/* Block: bağımsız bileşen */</span>
+<span class="s">.kart</span> { }
+
+<span class="cm">/* Element: bloğun parçası */</span>
+<span class="s">.kart__baslik</span>   { }
+<span class="s">.kart__icerik</span>   { }
+<span class="s">.kart__buton</span>    { }
+
+<span class="cm">/* Modifier: durum veya varyant */</span>
+<span class="s">.kart--buyuk</span>    { }
+<span class="s">.kart--vurgulu</span>  { }
+<span class="s">.kart--yukluyor</span> { }
+
+<span class="cm">/* HTML kullanımı */</span>
+&lt;<span class="s">div</span> <span class="p">class</span>=<span class="v">"kart kart--vurgulu"</span>&gt;
+  &lt;<span class="s">h2</span> <span class="p">class</span>=<span class="v">"kart__baslik"</span>&gt;Başlık&lt;/<span class="s">h2</span>&gt;
+&lt;/<span class="s">div</span>&gt;</div>
+
+      <div class="code" data-lang="TAILWIND">
+<span class="cm">/* Tailwind — utility-first */</span>
+
+&lt;<span class="s">div</span> <span class="p">class</span>=<span class="v">"flex items-center gap-4 p-6 rounded-xl
+            bg-white shadow-lg hover:shadow-xl
+            transition-all duration-300"</span>&gt;
+
+  &lt;<span class="s">img</span> <span class="p">class</span>=<span class="v">"w-12 h-12 rounded-full object-cover"</span>&gt;
+
+  &lt;<span class="s">div</span> <span class="p">class</span>=<span class="v">"flex-1 min-w-0"</span>&gt;
+    &lt;<span class="s">h3</span> <span class="p">class</span>=<span class="v">"text-lg font-bold text-gray-900
+              truncate"</span>&gt;Başlık&lt;/<span class="s">h3</span>&gt;
+    &lt;<span class="s">p</span> <span class="p">class</span>=<span class="v">"text-sm text-gray-500 mt-1"</span>&gt;Alt başlık&lt;/<span class="s">p</span>&gt;
+  &lt;/<span class="s">div</span>&gt;
+
+&lt;/<span class="s">div</span>&gt;</div>
+
+      <div class="g2">
+        <div class="card" style="--sc:var(--c4)"><div class="card-t">CSS Minification</div><div class="card-d">cssnano / lightningcss ile prod build'de %30-50 boyut azaltma. Critical CSS inline et.</div></div>
+        <div class="card" style="--sc:var(--c4)"><div class="card-t">Autoprefixer</div><div class="card-d">-webkit-, -moz- prefix'lerini otomatik ekle. PostCSS pipeline'ına dahil et.</div></div>
+        <div class="card" style="--sc:var(--c4)"><div class="card-t">PurgeCSS</div><div class="card-d">Kullanılmayan CSS'i sil. Tailwind ile entegre gelir. Prod bundle'ı küçültür.</div></div>
+        <div class="card" style="--sc:var(--c4)"><div class="card-t">CSS Layers (@layer)</div><div class="card-d">Specificity çakışmalarını katman bazlı yönet. Framework + custom kod karışımı için ideal.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──── BÖLÜM 5: MASTER ──── -->
+<div class="sec" data-lvl="5">
+  <div class="sec-hd" onclick="tog(this)" style="--sc:var(--c5)">
+    <div class="sec-badge-col"><div class="sec-badge-num">05</div><div class="sec-stripe"></div></div>
+    <div class="sec-body-hd">
+      <div class="sec-lvl">// MASTER — SENİOR FRONTEND MİNDSET</div>
+      <div class="sec-title">Design System · A11y · Modern CSS</div>
+      <div class="sec-sub">Container queries · clamp() · scroll-snap · aspect-ratio · debugging</div>
+    </div>
+    <div class="sec-chevron">▶</div>
+  </div>
+  <div class="sec-content" style="--sc:var(--c5)">
+    <div class="sec-in">
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Modern CSS — Az kod, çok iş */</span>
+
+<span class="cm">/* aspect-ratio */</span>
+<span class="s">.video-wrapper</span> {
+  <span class="p">aspect-ratio</span>: <span class="u">16 / 9</span>;
+  <span class="p">width</span>: <span class="u">100%</span>;
+}
+
+<span class="cm">/* object-fit — görsel taşmasını engelle */</span>
+<span class="s">img</span> { <span class="p">object-fit</span>: <span class="v">cover</span>; <span class="p">object-position</span>: <span class="v">center top</span>; }
+
+<span class="cm">/* scroll-snap — native carousel */</span>
+<span class="s">.slider</span> {
+  <span class="p">display</span>: <span class="v">flex</span>;
+  <span class="p">overflow-x</span>: <span class="v">auto</span>;
+  <span class="p">scroll-snap-type</span>: <span class="v">x mandatory</span>;
+}
+<span class="s">.slide</span>   { <span class="p">scroll-snap-align</span>: <span class="v">start</span>; <span class="p">flex-shrink</span>: <span class="u">0</span>; <span class="p">width</span>: <span class="u">100%</span>; }
+
+<span class="cm">/* backdrop-filter — glassmorphism */</span>
+<span class="s">.glass-panel</span> {
+  <span class="p">background</span>:       <span class="fn2">rgba</span>(<span class="u">255</span>,<span class="u">255</span>,<span class="u">255</span>,.<span class="u">08</span>);
+  <span class="p">backdrop-filter</span>:  <span class="fn2">blur</span>(<span class="u">12px</span>) <span class="fn2">saturate</span>(<span class="u">1.5</span>);
+  <span class="p">border</span>:           <span class="u">1px</span> <span class="v">solid</span> <span class="fn2">rgba</span>(<span class="u">255</span>,<span class="u">255</span>,<span class="u">255</span>,.<span class="u">15</span>);
+}
+
+<span class="cm">/* Fluid typography — clamp */</span>
+<span class="s">h1</span> {
+  <span class="p">font-size</span>: <span class="fn2">clamp</span>(<span class="u">2rem</span>, <span class="u">5vw</span> + <span class="u">1rem</span>, <span class="u">5rem</span>);
+  <span class="cm">/* min: 2rem · ideal: 5vw+1rem · max: 5rem */</span>
+}
+
+<span class="cm">/* @layer — cascade yönetimi */</span>
+<span class="at">@layer</span> <span class="v">reset, tokens, components, utilities</span>;
+
+<span class="at">@layer</span> <span class="v">tokens</span> {
+  <span class="s">:root</span> { <span class="p">--spacing-base</span>: <span class="u">4px</span>; }
+}
+<span class="at">@layer</span> <span class="v">utilities</span> {
+  <span class="s">.mt-4</span> { <span class="p">margin-top</span>: <span class="fn2">calc</span>(<span class="fn2">var</span>(<span class="p">--spacing-base</span>) * <span class="u">4</span>); }
+}</div>
+
+      <div class="g3">
+        <div class="card" style="--sc:var(--c5)"><div class="card-t">Renk Kontrastı</div><div class="card-d">WCAG AA: 4.5:1 metin, 3:1 UI. Chrome DevTools'ta kontrol et.</div></div>
+        <div class="card" style="--sc:var(--c5)"><div class="card-t">:focus-visible</div><div class="card-d">Klavye navigasyonu için görünür focus. Fareyle tıklayınca gizle.</div></div>
+        <div class="card" style="--sc:var(--c5)"><div class="card-t">prefers-reduced-motion</div><div class="card-d">Animasyon hassasiyeti olan kullanıcılar için animasyonları kapat.</div></div>
+      </div>
+
+      <div class="code" data-lang="CSS">
+<span class="cm">/* Design Token sistemi */</span>
+<span class="s">:root</span> {
+  <span class="cm">/* Spacing scale */</span>
+  <span class="p">--space-1</span>:  <span class="u">4px</span>;  <span class="p">--space-2</span>:  <span class="u">8px</span>;
+  <span class="p">--space-4</span>: <span class="u">16px</span>;  <span class="p">--space-8</span>: <span class="u">32px</span>;
+
+  <span class="cm">/* Typography scale */</span>
+  <span class="p">--text-sm</span>: <span class="fn2">clamp</span>(<span class="u">.8rem</span>,  <span class="u">1vw</span>, <span class="u">.875rem</span>);
+  <span class="p">--text-xl</span>: <span class="fn2">clamp</span>(<span class="u">1.2rem</span>, <span class="u">2vw</span>, <span class="u">1.5rem</span>);
+
+  <span class="cm">/* Shadow scale */</span>
+  <span class="p">--shadow-sm</span>: <span class="u">0 1px 3px</span> <span class="fn2">rgba</span>(<span class="u">0</span>,<span class="u">0</span>,<span class="u">0</span>,.<span class="u">12</span>);
+  <span class="p">--shadow-lg</span>: <span class="u">0 20px 40px</span> <span class="fn2">rgba</span>(<span class="u">0</span>,<span class="u">0</span>,<span class="u">0</span>,.<span class="u">25</span>);
+}</div>
+
+      <div class="target">Hedef: Figma tasarımını birebir uygula. Responsive sorunsuz. Animasyon var. Accessibility geçti. → CSS tamamdır.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /secs -->
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+
+  <div class="sb">
+    <div class="sb-t">Renk Paleti</div>
+    <div class="palette">
+      <div class="pal-item" data-name="Temel" style="background:linear-gradient(160deg,#7ed6a0,#4ade80)"></div>
+      <div class="pal-item" data-name="Orta" style="background:linear-gradient(160deg,#f9cb74,#f59e0b)"></div>
+      <div class="pal-item" data-name="İleri" style="background:linear-gradient(160deg,#79b8f8,#3b82f6)"></div>
+      <div class="pal-item" data-name="Pro" style="background:linear-gradient(160deg,#c084fc,#9333ea)"></div>
+      <div class="pal-item" data-name="Master" style="background:linear-gradient(160deg,#fb7185,#e11d48)"></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Öğrenme Takvimi</div>
+    <div class="tl2">
+      <div class="tl2-row" style="--sc2:var(--c1)"><div class="tl2-d">1<span class="tl2-u">HAFTA</span></div><div><div class="tl2-n">Temel CSS</div><div class="tl2-s">Box model · Selector · Position</div></div></div>
+      <div class="tl2-row" style="--sc2:var(--c2)"><div class="tl2-d">2<span class="tl2-u">HAFTA</span></div><div><div class="tl2-n">Layout</div><div class="tl2-s">Flexbox · Grid · Responsive</div></div></div>
+      <div class="tl2-row" style="--sc2:var(--c3)"><div class="tl2-d">3<span class="tl2-u">HAFTA</span></div><div><div class="tl2-n">İleri CSS</div><div class="tl2-s">Animasyon · Pseudo · Variables</div></div></div>
+      <div class="tl2-row" style="--sc2:var(--c4)"><div class="tl2-d">4<span class="tl2-u">HAFTA</span></div><div><div class="tl2-n">Pro Tools</div><div class="tl2-s">SCSS · BEM · Tailwind</div></div></div>
+      <div class="tl2-row" style="--sc2:var(--c5)"><div class="tl2-d">6<span class="tl2-u">HAFTA</span></div><div><div class="tl2-n">Master Level</div><div class="tl2-s">Design System · A11y · Modern</div></div></div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">Core Beceriler</div>
+    <div class="wheel-wrap" id="wheelWrap">
+      <div class="wheel-item">
+        <svg class="ring-svg" width="70" height="70" viewBox="0 0 40 40">
+          <circle class="ring-bg" cx="20" cy="20" r="15.9"/>
+          <circle class="ring-fg" cx="20" cy="20" r="15.9" stroke="var(--c2)" style="stroke-dashoffset:15" id="r1"/>
+        </svg>
+        <div class="ring-pct" style="color:var(--c2)">85%</div>
+        <div class="ring-label">Flexbox</div>
+      </div>
+      <div class="wheel-item">
+        <svg class="ring-svg" width="70" height="70" viewBox="0 0 40 40">
+          <circle class="ring-bg" cx="20" cy="20" r="15.9"/>
+          <circle class="ring-fg" cx="20" cy="20" r="15.9" stroke="var(--c3)" style="stroke-dashoffset:20" id="r2"/>
+        </svg>
+        <div class="ring-pct" style="color:var(--c3)">80%</div>
+        <div class="ring-label">Grid</div>
+      </div>
+      <div class="wheel-item">
+        <svg class="ring-svg" width="70" height="70" viewBox="0 0 40 40">
+          <circle class="ring-bg" cx="20" cy="20" r="15.9"/>
+          <circle class="ring-fg" cx="20" cy="20" r="15.9" stroke="var(--c4)" style="stroke-dashoffset:30" id="r3"/>
+        </svg>
+        <div class="ring-pct" style="color:var(--c4)">70%</div>
+        <div class="ring-label">Animation</div>
+      </div>
+      <div class="wheel-item">
+        <svg class="ring-svg" width="70" height="70" viewBox="0 0 40 40">
+          <circle class="ring-bg" cx="20" cy="20" r="15.9"/>
+          <circle class="ring-fg" cx="20" cy="20" r="15.9" stroke="var(--c5)" style="stroke-dashoffset:40" id="r4"/>
+        </svg>
+        <div class="ring-pct" style="color:var(--c5)">60%</div>
+        <div class="ring-label">SCSS/BEM</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb">
+    <div class="sb-t">5 Proje Yolu</div>
+    <div class="proj-list2">
+      <div class="proj2" style="--pc:var(--c1)"><div class="proj2-n">PROJE 01</div><div class="proj2-name">Landing Page</div><div class="proj2-tags"><span class="proj2-tag">Navbar</span><span class="proj2-tag">Footer</span><span class="proj2-tag">Box</span></div></div>
+      <div class="proj2" style="--pc:var(--c2)"><div class="proj2-n">PROJE 02</div><div class="proj2-name">Responsive Blog</div><div class="proj2-tags"><span class="proj2-tag">Grid</span><span class="proj2-tag">Media</span></div></div>
+      <div class="proj2" style="--pc:var(--c3)"><div class="proj2-n">PROJE 03</div><div class="proj2-name">Animasyonlu UI</div><div class="proj2-tags"><span class="proj2-tag">@keyframes</span><span class="proj2-tag">Hover</span></div></div>
+      <div class="proj2" style="--pc:var(--c4)"><div class="proj2-n">PROJE 04</div><div class="proj2-name">Admin Dashboard</div><div class="proj2-tags"><span class="proj2-tag">SCSS</span><span class="proj2-tag">BEM</span><span class="proj2-tag">Dark</span></div></div>
+      <div class="proj2" style="--pc:var(--c5)"><div class="proj2-n">PROJE 05</div><div class="proj2-name">UI Kit / System</div><div class="proj2-tags"><span class="proj2-tag">Tokens</span><span class="proj2-tag">A11y</span></div></div>
+    </div>
+  </div>
+
+</aside>
+</div><!-- /main -->
+
+<!-- ═══ BOTTOM CTA ═══ -->
+<div class="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="cta-left">
+      <h2 class="cta-h"><span class="hl-grad">CSS = Pratik</span><br>Ezber Değil.</h2>
+      <p class="cta-p">
+        %30 teori, %70 proje. Flexbox'ı bir kere anlayan hiç unutmaz.
+        Grid'i projede kullanan anlıyor. Animasyonu yazan seviyor.
+      </p>
+      <a class="btn btn-grd" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">↑ Başa Dön</a>
+      <a class="btn btn-ghost" href="https://developer.mozilla.org/tr/docs/Web/CSS" target="_blank">MDN CSS</a>
+    </div>
+    <div class="cta-right">
+      <div class="cta-rules">
+        <div class="cta-rule"><div class="cta-rule-arrow">→</div><div><div class="cta-rule-t">HTML + CSS birlikte git</div><div class="cta-rule-d">CSS'i tek başına öğrenmek eksik</div></div></div>
+        <div class="cta-rule"><div class="cta-rule-arrow">→</div><div><div class="cta-rule-t">Flexbox → Grid sırası şart</div><div class="cta-rule-d">Grid'e geçmeden önce Flexbox tam otur</div></div></div>
+        <div class="cta-rule"><div class="cta-rule-arrow">→</div><div><div class="cta-rule-t">Mobile-first yaz</div><div class="cta-rule-d">min-width breakpoint, max-width değil</div></div></div>
+        <div class="cta-rule"><div class="cta-rule-arrow">→</div><div><div class="cta-rule-t">DevTools'u kullan</div><div class="cta-rule-d">Her CSS sorunun cevabı DevTools'ta</div></div></div>
+        <div class="cta-rule"><div class="cta-rule-arrow">→</div><div><div class="cta-rule-t">Figma tasarım oku</div><div class="cta-rule-d">Pixel-perfect uygulama hedef</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>CSS 0 → PRO Roadmap · 5 Seviye</span>
+  <span>Ezber değil — yaz, boz, tekrar et.</span>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+/* CURSOR */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function t(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(t);})();
+document.querySelectorAll('.sec-hd,.btn,.fc-btn,.lvl-card,.proj2').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='16px';cur.style.height='16px';cur2.style.width='52px';cur2.style.height='52px';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';cur2.style.width='36px';cur2.style.height='36px';});
+});
+
+/* ACCORDION */
+function tog(h){
+  const isOpen=h.classList.contains('open');
+  document.querySelectorAll('.sec-hd.open').forEach(x=>{x.classList.remove('open');x.nextElementSibling.classList.remove('open');});
+  if(!isOpen){h.classList.add('open');h.nextElementSibling.classList.add('open');}
+}
+
+/* SCROLL REVEAL */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.04});
+document.querySelectorAll('.sec').forEach(s=>io.observe(s));
+
+/* LEVEL BAR ANIM */
+const bio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('bar-in');bio.unobserve(e.target);}});},{threshold:.5});
+document.querySelectorAll('.lvl-card').forEach(c=>bio.observe(c));
+
+/* HERO COUNTERS */
+function cnt(el,to,ms){let s=0;const f=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/ms,1);el.textContent=Math.round((1-Math.pow(1-p,3))*to);p<1?requestAnimationFrame(f):el.textContent=to;};requestAnimationFrame(f);}
+const cio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){cnt(document.getElementById('hs1'),5,900);cnt(document.getElementById('hs2'),5,800);cnt(document.getElementById('hs3'),20,1100);cio.disconnect();}});},{threshold:.5});
+cio.observe(document.querySelector('.hero-stat-row'));
+
+/* FLEXBOX DEMO */
+function setJC(btn,val){
+  document.querySelectorAll('.fc-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const d=document.getElementById('flex-demo');
+  d.style.justifyContent=val;
+}
+
+/* RING ANIM */
+const rio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  [['r1',15],['r2',20],['r3',30],['r4',40]].forEach(([id,v])=>{
+    const el=document.getElementById(id);
+    if(el){el.style.strokeDashoffset='100';setTimeout(()=>{el.style.transition='stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)';el.style.strokeDashoffset=v;},100);}
+  });
+  rio.disconnect();
+}});},{threshold:.5});
+rio.observe(document.getElementById('wheelWrap'));
+</script>
+</body>
+</html>
